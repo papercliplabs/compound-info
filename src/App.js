@@ -1,25 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import styled from 'styled-components'
+import ChartContainer from './components/chartContainer.js'
+import { APY_CHART_TITLE, SELECTED_COIN_COLORS, APY_DATA_SELECTOR, ACTIVE_COIN } from './config'
+import { fetchApyData, parseApyData }  from './contexts/apyData' 
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+function App(props) {
+	return (
+		<>
+			<ChartContainer 
+				title={APY_CHART_TITLE}
+				selectedCoinColors={SELECTED_COIN_COLORS} 
+				dataSelectors={APY_DATA_SELECTOR} 
+				activeCoin={ACTIVE_COIN}
+				fetchData={fetchApyData}
+				parseData={parseApyData}
+			/>
+		</>
+	);
 }
+
 
 export default App;
