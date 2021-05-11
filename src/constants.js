@@ -21,8 +21,9 @@ export const TIME_SELECTORS = [
 	{name: "All", days: null},
 ];
 
-
 export const URLS = {
 	APY_LONG: 'https://api.flipsidecrypto.com/api/v2/queries/ebad7f35-11e0-4561-9346-fa87c88d7598/data/latest' ,
 	APY_SHORT: 'https://api.flipsidecrypto.com/api/v2/queries/dc338ecd-cdce-4c0b-ae9e-ac7978c2469e/data/latest'
 }
+
+export const SHORT_TERM_DAYS = 8; // Any days more is considered long term data

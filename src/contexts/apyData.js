@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
-import { URLS, COINS } from '../constants'
+import { URLS, COINS, SHORT_TERM_DAYS } from '../constants'
 
 
 // Fetch the data using the URL's pointing to flipside queries
@@ -61,18 +61,18 @@ export async function fetchApyData() {
 
 export function parseApyData(rawData, dataSelector, timeSelector) {
 	// Grab short term, or long term and create a copy
-	let data = timeSelector.days <= 8 ? rawData.shortTerm.slice() : rawData.longTerm.slice();
+	let data = timeSelector.days !== null && timeSelector.days <= SHORT_TERM_DAYS ? rawData.shortTerm.slice() : rawData.longTerm.slice();
 
 	let startTime = new Date();
 	if(timeSelector.days === null) {
-		startTime = new Date(-8640000000000000); // smallest date
+		startTime = new Date(1700, 1, 1); // smallest date
 	} else {
 		startTime.setDate(startTime.getDate() - timeSelector.days);
 	}
 
 	// Filter on dataSelector
 	data = data.map(entry => {
-		return	Object.assign(entry.values[dataSelector.name.toLowerCase()], {'blockTime': entry.blockTime})
+		return	Object.assign(entry.values[dataSelector.name.toLowerCase()], {'blockTime': entry.blockTime});
 	})
 
 	// Filter on timeSelector

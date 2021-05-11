@@ -4,14 +4,14 @@ import OptionRow from './optionRow'
 import OptionButton from './buttons'
 import CoinButton from './buttons/coinButton'
 import MultilineChart from './multilineChart'
-import { COINS, TIME_SELECTORS } from '../constants' 
 import { formatPercent } from '../utils'
 
 const StyledChartContainer = styled.div`
 	border: solid ${({ theme })  => theme.border.thickness + ' ' + theme.color.border1};
 	border-radius: ${({ theme }) => theme.border.radius};
-	width: 1024px;
+	max-width: 1024px;
 	padding: 15px;
+	margin: auto;
 `;
 
 class ChartContainer extends React.Component {
@@ -19,7 +19,7 @@ class ChartContainer extends React.Component {
 		super(props);
 
 		// Set inital state for coins, activeCoin will get selected in componentDidMount
-		const coinStates = COINS.map((coin, i) => {
+		const coinStates = this.props.coins.map((coin, i) => {
 			return (
 				{'name': coin.name, 'selectedPosition': null, 'value': null, 'color': null, 'cAddress': coin.cAddress} 
 			);
@@ -28,7 +28,7 @@ class ChartContainer extends React.Component {
 		this.state = {
 			coinStates: coinStates,
 			dataSelector: this.props.dataSelectors[0],
-			timeSelector: TIME_SELECTORS.slice(-1)[0],
+			timeSelector: this.props.timeSelectors.slice(-1)[0],
 			activeCoin: this.props.activeCoin,
 			maxCoinsSelected: this.props.selectedCoinColors.length,
 			colorStack: this.props.selectedCoinColors.reverse(),
@@ -52,7 +52,7 @@ class ChartContainer extends React.Component {
 		this.setState({
 			rawData: rawData,				
 		})
-		this.updateData();
+		this.updateData(this.props.dataSelectors[0], this.props.timeSelectors.slice(-1)[0]);
 		this.handleHoverDate(null); // Trigger loading coin values on load
 	}
 
@@ -111,13 +111,13 @@ class ChartContainer extends React.Component {
 	}
 
 	handleTimeSelectorClick = (i) => {
-		this.setState({timeSelector: TIME_SELECTORS[i]});
-		this.updateData();
+		const newTimeSelector = this.props.timeSelectors[i];
+		this.updateData(this.state.dataSelector, newTimeSelector);
 	}
 
 	handleDataSelectorClick = (i) => {
-		this.setState({dataSelector: this.props.dataSelectors[i]});
-		this.updateData();
+		const newDataSelector = this.props.dataSelectors[i];
+		this.updateData(newDataSelector, this.state.timeSelector);
 	}
 	
 	handleHoverDate = (hoverDate) => {
@@ -149,12 +149,13 @@ class ChartContainer extends React.Component {
 
 	
 	//// Helpers
-	updateData = () => {
-		// TODO: getting wrong timeSelector (delayed by 1)
-		const data = this.props.parseData(this.state.rawData, this.state.dataSelector, this.state.timeSelector)		
+	updateData = (dataSelector, timeSelector) => {
+		const data = this.props.parseData(this.state.rawData, dataSelector, timeSelector)		
 
 		this.setState({
 			parsedData: data,
+			dataSelector: dataSelector,
+			timeSelector: timeSelector,
 		})
 	}
 	
@@ -186,7 +187,7 @@ class ChartContainer extends React.Component {
 			);
 		});
 
-		const timeSelectorButtons = TIME_SELECTORS.map((selector, i) => {
+		const timeSelectorButtons = this.props.timeSelectors.map((selector, i) => {
 			return (
 				<OptionButton 
 					key={i} 
