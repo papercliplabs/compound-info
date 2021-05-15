@@ -31,10 +31,9 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 		async function fetchDataAsync() {
 			const response = await fetchData();
 			setRawData(response);
+			handleHoverDate(null); // Trigger loading coin values on load
 		}
 		fetchDataAsync(); // Get the raw data
-
-		handleHoverDate(null); // Trigger loading coin values on load
 	}, []);
 
 
