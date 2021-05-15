@@ -61,7 +61,7 @@ class MultilineChart extends React.Component {
 	// Only rerender if the data changes, or if the selected coins change for optimization
 	shouldComponentUpdate(nextProps, nextState) {
 		const newData = this.props.data !== nextProps.data;
-		const newCoin = this.props.selectedCoinColor.length !== nextProps.selectedCoinColor.length; // Object equality breaks down here, length comparrison is sufficient
+		const newCoin = this.props.selectedCoinColor !== nextProps.selectedCoinColor;
 		return newData || newCoin;
 	}
 
@@ -100,7 +100,6 @@ class MultilineChart extends React.Component {
 		return (
 			<ResponsiveContainer width='100%' height={300} >
 				<LineChart margin={{right: 20, left: 0, top: 0, bottom: 0}} data={this.props.data}>
-					{console.log(this.props.margin)}
 					{lines}
 					<XAxis 
 						dataKey='blockTime' 
