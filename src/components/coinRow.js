@@ -6,9 +6,8 @@ import { formatPercent } from '../utils'
 
 
 function defaultCoinStates(coinList) {
-	let pos = 1;
 	return coinList.map((coinData, i) => {
-		return {name: coinData.name, color: null, selectedPosition: coinData.allowDeselect ? null : pos++}
+		return {name: coinData.name, color: null, selectedPosition: null}
 	});
 }
 
@@ -17,24 +16,20 @@ export default function CoinRow({ coinList, selectedCoinColors, updateSelectedCo
 	const [coinStates, setCoinStates] = useState(defaultCoinStates(coinList));
 
 
-	// On mount, set up the default colors
+	// On mount, set up the default selected and colors
 	useEffect(() => {
-		let newColorStack = colorStack.slice();
-		let newCoinStates = JSON.parse(JSON.stringify(coinStates)); // deep copy
-		newCoinStates.forEach((coinState) => {
-			if(coinState.selectedPosition !== null) {
-				coinState.color = newColorStack.pop();
+		let noneSelected = true;
+		coinList.forEach((coinInfo, i) => {
+			if(!coinInfo.allowDeselect) {
+				handleClick(i);
+				noneSelected = false;
 			}
 		});
 
 		// If there are none selected, select the first
-		if(newColorStack.length == colorStack.length) {
-			newCoinStates[0].selectedPosition = 1;
-			newCoinStates[0].color = newColorStack.pop();
+		if(noneSelected) {
+			handleClick(0);
 		}
-
-		setColorStack(newColorStack);
-		setCoinStates(newCoinStates);
 	}, []);
 
 
