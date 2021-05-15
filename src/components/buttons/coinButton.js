@@ -10,7 +10,7 @@ const StyledCoinButton = styled(OptionButton)`
 	display: flex;
 
 	${props => props.active && css`
-		width: ${props => props.activeCoin ? '120px' : '143px'};
+		width: ${props => props.allowDeselect ? '143px' : '120px'};
 		border-width: 2px;	
 		border-color: ${props => props.selectedColor};
 	`}
@@ -91,7 +91,7 @@ function CoinButton(props) {
 			selectedColor={props.color} 
 			active={props.selected}
 			onClick={props.onClick}
-			activeCoin={props.activeCoin}	
+			allowDeselect={props.allowDeselect}	
 		>
 			<HidingContainer hidden={!props.selected}>
 				<SelectedIndicator selectedColor={props.color} />
@@ -103,7 +103,7 @@ function CoinButton(props) {
 				<CoinName>{props.name}</CoinName>
 				<CoinValue>{props.value}</CoinValue>
 			</CoinInfo>
-			<HidingContainer hidden={!props.selected || props.activeCoin}>
+			<HidingContainer hidden={!props.selected || !props.allowDeselect}>
 				<CloseIndicator src={process.env.PUBLIC_URL + 'img/closeIcon.svg'} />
 			</HidingContainer>
 		</StyledCoinButton>
