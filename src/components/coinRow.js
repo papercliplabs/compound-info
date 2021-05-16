@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
 import CoinButton from './buttons/coinButton'
 import OptionRow from './optionRow'
 import { formatPercent } from '../utils'
