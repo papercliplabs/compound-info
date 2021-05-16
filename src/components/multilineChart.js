@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { LineChart, Line, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 import { formatDate } from '../utils'
 import { SHORT_TERM_DAYS } from '../constants'
 
@@ -77,8 +77,6 @@ class MultilineChart extends React.Component {
 	}
 
 	render() {
-		const aspect = 7.0/3.0;
-
 		const lines = this.props.selectedCoinColor.map((coin, i) => {
 			return (
 				<Line 

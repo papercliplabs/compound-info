@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import OptionRow from './optionRow'
 import OptionButton from './buttons'
-import CoinButton from './buttons/coinButton'
 import MultilineChart from './multilineChart'
-import { formatPercent } from '../utils'
 import CoinRow from './coinRow'
 
 const StyledChartContainer = styled.div`
@@ -16,45 +14,24 @@ const StyledChartContainer = styled.div`
 `;
 
 
-export default function ChartContainer({ title, coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, fetchData, parseData }) {
+export default function ChartContainer({ title, coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, useData }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
 	const [timeSelector, setTimeSelector] = useState(timeSelectors[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
-	const [rawData, setRawData] = useState(null); // This will be removed when data is moved to context
-	const [parsedData, setParsedData] = useState(null); // This will be removed when data is moved to context
 	const [coinValues, setCoinValues] = useState(coins.map((coin) => {return {name: coin.name, value: 0}}));
 
-
-	// Set up on mount
-	useEffect(() => {
-		async function fetchDataAsync() {
-			const response = await fetchData();
-			setRawData(response);
-			handleHoverDate(null); // Trigger loading coin values on load
-		}
-		fetchDataAsync(); // Get the raw data
-	}, []);
-
-
-	// Set new chart data when selections change
-	useEffect(() => {
-		if(!rawData) return;
-		const data = parseData(rawData, dataSelector, timeSelector)		
-
-		setParsedData(data);
-	}, [dataSelector, timeSelector, rawData]);
-
+	const data = useData(dataSelector, timeSelector); 
 
 	// Set coin values when hover date changes
 	useEffect(() => {
-		const currentCoinValues = parsedData?.slice(-1)[0];
-		const coinValuesOnHoverDate = parsedData?.filter(entry => entry.blockTime === hoverDate)[0];
+		const currentCoinValues = data?.slice(-1)[0];
+		const coinValuesOnHoverDate = data?.filter(entry => entry.blockTime === hoverDate)[0];
 		if(!currentCoinValues) return;
 
 		let newCoinValues = JSON.parse(JSON.stringify(coinValues)); // Deep copy
 		newCoinValues = newCoinValues.map(({name, value}) => {
-			const isSelected = selectedCoinsAndColors.filter(obj => obj.name == name).length == 1;
+			const isSelected = selectedCoinsAndColors.filter(obj => obj.name === name).length === 1;
 			let newValue;
 			if(!isSelected || !hoverDate || !coinValuesOnHoverDate) {
 				newValue = currentCoinValues[name];
@@ -104,7 +81,7 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 	});
 
 	const coinList = coins.map((coin) => {
-		const value = coinValues.filter(obj => obj.name == coin.name)[0].value;
+		const value = coinValues.filter(obj => obj.name === coin.name)[0].value;
 		return {'name': coin.name, value: value, allowDeselect: coin.name !== activeCoin?.name}
 	});
 
@@ -120,7 +97,7 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 				</OptionRow>
 			</OptionRow>
 
-			<MultilineChart data={parsedData} selectedCoinColor={selectedCoinsAndColors} setHoverDate={(date) => handleHoverDate(date)} />
+			<MultilineChart data={data} selectedCoinColor={selectedCoinsAndColors} setHoverDate={(date) => handleHoverDate(date)} />
 
 			Compare to:
 			<CoinRow 
