@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CoinButton from './buttons/coinButton'
 import OptionRow from './optionRow'
 import { formatPercent } from '../utils'
@@ -13,35 +13,20 @@ function defaultCoinStates(coinList) {
 export default function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 	const [colorStack, setColorStack] = useState(selectedCoinColors.reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates(coinList));
+	const loaded = useRef(false);
 
 
-	// On mount, set up the default selected and colors
-	useEffect(() => {
-		let noneSelected = true;
-		coinList.forEach((coinInfo, i) => {
-			if(!coinInfo.allowDeselect) {
-				handleClick(i);
-				noneSelected = false;
-			}
-		});
-
-		// If there are none selected, select the first
-		if(noneSelected) {
-			handleClick(0);
-		}
-	}, []);
-
-
-	// Callback to parent with new selected coins and colors
-	useEffect(() => {
-		let selectedCoinsAndColors = coinStates.filter(coinState => coinState.selectedPosition !== null);
-		selectedCoinsAndColors = selectedCoinsAndColors.map((coinState) => {return {name: coinState.name, color: coinState.color}});
-		updateSelectedCoins(selectedCoinsAndColors);
+	// Helpers
+	const getNumberSelected = useCallback(() => {
+		const numberSelected = coinStates.reduce((T, coinState) => {
+			return coinState.selectedPosition !== null ? T + 1 : T;
+		}, 0);
+		return numberSelected;
 	}, [coinStates]);
 
 
 	// Handles changing selected state, color, and reordering
-	function handleClick(i) {
+	const handleClick = useCallback((i) => {
 		let newColorStack = colorStack.slice();
 		let newCoinStates = JSON.parse(JSON.stringify(coinStates)); // deep copy
 		
@@ -89,16 +74,34 @@ export default function CoinRow({ coinList, selectedCoinColors, updateSelectedCo
 
 		setColorStack(newColorStack);
 		setCoinStates(newCoinStates);
-	}
+	}, [colorStack, coinStates, getNumberSelected, coinList, selectedCoinColors]);
 
 
-	// Helpers
-	function getNumberSelected() {
-		const numberSelected = coinStates.reduce((T, coinState) => {
-			return coinState.selectedPosition !== null ? T + 1 : T;
-		}, 0);
-		return numberSelected;
-	}
+	// On mount, set up the default selected and colors
+	useEffect(() => {
+		if(!loaded.current) {
+			let noneSelected = true;
+			coinList.forEach((coinInfo, i) => {
+				if(!coinInfo.allowDeselect) {
+					handleClick(i);
+					noneSelected = false;
+				}
+			});
+
+			// If there are none selected, select the first
+			if(noneSelected) {
+				handleClick(0);
+			}
+			loaded.current = true;
+		}
+	}, [handleClick, coinList]);
+
+	// Callback to parent with new selected coins and colors
+	useEffect(() => {
+		let selectedCoinsAndColors = coinStates.filter(coinState => coinState.selectedPosition !== null);
+		selectedCoinsAndColors = selectedCoinsAndColors.map((coinState) => {return {name: coinState.name, color: coinState.color}});
+		updateSelectedCoins(selectedCoinsAndColors);
+	}, [coinStates, updateSelectedCoins]);
 
 
 	// Render
