@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import OptionRow from './optionRow'
 import OptionButton from './buttons'
@@ -13,15 +13,18 @@ const StyledChartContainer = styled.div`
 	margin: auto;
 `;
 
+function initialCoinValues(coins) {
+	return coins.map((coin) => {return {name: coin.name, value: 0}});
+}
 
 export default function ChartContainer({ title, coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, useData }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
 	const [timeSelector, setTimeSelector] = useState(timeSelectors[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
-	const [coinValues, setCoinValues] = useState(coins.map((coin) => {return {name: coin.name, value: 0}}));
-
+	const [coinValues, setCoinValues] = useState(initialCoinValues(coins));
 	const data = useData(dataSelector, timeSelector); 
+
 
 	// Set coin values when hover date changes
 	useEffect(() => {
@@ -29,7 +32,7 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 		const coinValuesOnHoverDate = data?.filter(entry => entry.blockTime === hoverDate)[0];
 		if(!currentCoinValues) return;
 
-		let newCoinValues = JSON.parse(JSON.stringify(coinValues)); // Deep copy
+		let newCoinValues = initialCoinValues(coins); 
 		newCoinValues = newCoinValues.map(({name, value}) => {
 			const isSelected = selectedCoinsAndColors.filter(obj => obj.name === name).length === 1;
 			let newValue;
@@ -42,17 +45,12 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 		});
 
 		setCoinValues(newCoinValues);
-	}, [selectedCoinsAndColors, hoverDate]);
+	}, [selectedCoinsAndColors, hoverDate, data, coins]);
 
 
-	// Callback handlers
-	function handleHoverDate(newHoverDate) {
-		if(newHoverDate === hoverDate) { // Gaurd that the data has changed, as this function will get called in an infinite state change loop
-			return
-		}
-
-		setHoverDate(newHoverDate);
-	}
+	const handleSelectedCoinsAndColors = useCallback((newSelectedCoinsAndColors) => {
+		setSelectedCoinsAndColors(newSelectedCoinsAndColors);	
+	}, []);
 
 
 	// Render
@@ -97,13 +95,13 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 				</OptionRow>
 			</OptionRow>
 
-			<MultilineChart data={data} selectedCoinColor={selectedCoinsAndColors} setHoverDate={(date) => handleHoverDate(date)} />
+			<MultilineChart data={data} selectedCoinsAndColors={selectedCoinsAndColors} setHoverDate={(date) => setHoverDate(date)} />
 
 			Compare to:
 			<CoinRow 
 				coinList={coinList} 
 				selectedCoinColors={selectedCoinColors} 
-				updateSelectedCoins={(newSelectedCoinsAndColors) => setSelectedCoinsAndColors(newSelectedCoinsAndColors)}
+				updateSelectedCoins={handleSelectedCoinsAndColors}
 			/>
 			</StyledChartContainer>
 		);
