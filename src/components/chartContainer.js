@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import OptionRow from './optionRow'
 import OptionButton from './buttons'
@@ -54,29 +54,37 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 
 
 	// Render
-	const dataSelectorButtons = dataSelectors.map((selector, i) => {
+	const dataSelectorButtons = useMemo(() => {
 		return (
-			<OptionButton 
-			key={i} 
-			active={dataSelector === selector}
-			onClick={() => setDataSelector(selector)}
-		>
-				{selector.name}
-		</OptionButton>
+			dataSelectors.map((selector, i) => {
+				return (
+					<OptionButton 
+						key={i} 
+						active={dataSelector === selector}
+						onClick={() => setDataSelector(selector)}
+					>
+						{selector.name}
+					</OptionButton>
+				);
+			})
 		);
-	});
+	}, [dataSelector, dataSelectors, setDataSelector]);
 
-	const timeSelectorButtons = timeSelectors.map((selector, i) => {
+	const timeSelectorButtons = useMemo(() => {
 		return (
-			<OptionButton 
-			key={i} 
-			active={timeSelector === selector}
-			onClick={() => setTimeSelector(selector)}
-		>
-				{selector.name}
-		</OptionButton>
+			timeSelectors.map((selector, i) => {
+				return (
+					<OptionButton 
+						key={i} 
+						active={timeSelector === selector}
+						onClick={() => setTimeSelector(selector)}
+					>
+						{selector.name}
+					</OptionButton>
+				);
+			})	
 		);
-	});
+	}, [timeSelector, timeSelectors, setTimeSelector]);
 
 	const coinList = coins.map((coin) => {
 		const value = coinValues.filter(obj => obj.name === coin.name)[0].value;
