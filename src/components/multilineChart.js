@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { formatDate } from '../utils'
-import { SHORT_TERM_DAYS } from '../constants'
+import { formatDate } from 'utils'
+import { SHORT_TERM_DAYS } from 'constants/index'
+import { Typography } from 'theme'
+
+// Note: with ReChart, I am unable to use Typography to set the x and y axis tick styles
 
 const cursorConfig = {
 	stroke: 'gray', // Can't use theme here
@@ -12,19 +15,18 @@ const cursorConfig = {
 
 const activeDotConfig = {
 	r: 5, // dot radius
+	strokeWidth: 0,
 }
 
 const StyledTooltip = styled.div`
 	background-color: red;
 	text-align: center;
 	padding: 5px 0;
-	width: ${({toolTipWidth}) => toolTipWidth}px;
-	color: ${({theme}) => theme.color.secondary1};
-	border: solid ${({theme}) => theme.border.thickness + ' ' + theme.color.border1};
-	border-radius: ${({theme}) => theme.border.radius};
-	background-color: ${({theme}) => theme.color.bg1};
-	font-size: ${({theme}) => theme.fontSize.body};
-	transform: translate(${({translationX}) => translationX}px);
+	width: ${({ toolTipWidth }) => toolTipWidth}px;
+	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
+	border-radius: ${({ theme }) => theme.border.radius};
+	background-color: ${({ theme }) => theme.color.bg1};
+	transform: translate(${({ translationX }) => translationX}px);
 `;
 
 function CustomTooltip({ coordinate, toolTipWidth, viewBox, setHoverDate, showTime, payload }) {
@@ -46,21 +48,28 @@ function CustomTooltip({ coordinate, toolTipWidth, viewBox, setHoverDate, showTi
 		const translationX = rightX > maxX ? maxX - rightX : 0; 
 
 		return (
-			<StyledTooltip toolTipWidth={toolTipWidth} translationX={translationX} >{formattedDate}</StyledTooltip>
+			<StyledTooltip toolTipWidth={toolTipWidth} translationX={translationX} >
+				<Typography.subheader>{formattedDate}</Typography.subheader>
+			</StyledTooltip>
 		);
 	} else {
 		return null;
 	}
 }
 
-function CustomXTick(props) {
-	const {x, y, payload, showTime} = props;
+function CustomXTick({ x, y, payload, showTime, fill }) {
 	const date = new Date(payload.value);
 	const formattedDate = formatDate(date, showTime);
-	return <text x={x} y={y+15} textAnchor='middle'>{formattedDate}</text>
+	return (
+		<text fill={fill} x={x} y={y+15} textAnchor='middle'>
+			{formattedDate}
+		</text>
+	);
 }
 
 export default function MultilineChart({ data, selectedCoinsAndColors, setHoverDate }) {
+	const theme = useTheme();
+
 	function shouldShowTime() {
 		if(!data) return false;
 
@@ -77,6 +86,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 			type='monotone' 
 			dataKey={coin.name} 
 			stroke={coin.color} 
+			strokeWidth={2}
 			key={i} 
 			dot={false} 
 			activeDot={activeDotConfig}
@@ -95,13 +105,14 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				{lines}
 				<XAxis 
 					dataKey='blockTime' 
-					tick={<CustomXTick showTime={showTime} />} 
+					tick={<CustomXTick fill={theme.color.secondary1} tshowTime={showTime} />} 
 					tickCount={3}
 				/>
 				<YAxis 
 					datekey='price' 
 					padding={{top: 30}} // Space for tooltip above the data
 					orientation='left'
+					tick={{fill: theme.color.secondary1}}
 				/>
 				<Tooltip 
 					cursor={cursorConfig} 

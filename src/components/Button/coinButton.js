@@ -1,12 +1,13 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import OptionButton from './'
+import { Typography } from 'theme'
 
 
 const StyledCoinButton = styled(OptionButton)`
 	background-color: ${props => props.theme.color.bg1};
 	width: 104px;
-	height: 48px;
+	height: 50px;
 	display: flex;
 
 	${props => props.active && css`
@@ -62,18 +63,15 @@ const CoinInfo = styled.div`
 	flex-direction: column;
 	width: 50px;
 	padding-left: 5px;
-	font-size: ${props => props.theme.fontSize.subheading};
 `;
 
 const CoinName = styled.div`
-	color: ${props => props.theme.color.primary1};
 	display: flex;
 	height: 50%;	
 	align-items: flex-end;
 `;
 
 const CoinValue = styled.div`
-	color: ${props => props.theme.color.secondary1};
 	height: 50%;
 	text-align: left;
 `;
@@ -100,8 +98,8 @@ function CoinButton(props) {
 				<CoinLogo src={process.env.PUBLIC_URL + `img/coins/${props.name}.svg`} />				
 			</CoinLogoContainer>
 			<CoinInfo>
-				<CoinName>{props.name}</CoinName>
-				<CoinValue>{props.value}</CoinValue>
+				<CoinName><Typography.header>{props.name}</Typography.header></CoinName>
+				<CoinValue><Typography.subheader>{props.value}</Typography.subheader></CoinValue>
 			</CoinInfo>
 			<HidingContainer hidden={!props.selected || !props.allowDeselect}>
 				<CloseIndicator src={process.env.PUBLIC_URL + 'img/closeIcon.svg'} />

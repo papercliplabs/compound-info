@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { StrictMode } from 'react'
 import ReactDOM from 'react-dom'
-import App from './app'
-import Theme, {GlobalStyle} from './theme'
-import GlobalStoreProvider from './store'
+import App from 'app'
+import Theme, { GlobalStyle } from 'theme'
+import GlobalStoreProvider from 'store'
 
 ReactDOM.render(
-	<GlobalStoreProvider>
-		<Theme>
-			<GlobalStyle />
-			<App />
-		</Theme>
-	</GlobalStoreProvider>,
+	<StrictMode>
+		<GlobalStoreProvider>
+			<Theme darkMode={true}>
+				<GlobalStyle />
+				<App />
+			</Theme>
+		</GlobalStoreProvider>
+	</StrictMode>,
 	document.getElementById('root')
 );
