@@ -1,22 +1,35 @@
 import React from 'react'
-import ChartContainer from './components/chartContainer'
-import { APY_CHART_TITLE, SELECTED_COIN_COLORS, APY_DATA_SELECTOR, ACTIVE_COIN } from './config'
-import { COINS, TIME_SELECTORS } from './constants'
-import { useApyData } from './store'
+import Overview from 'pages/Overview'
+import Market from 'pages/Market'
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import styled from 'styled-components'
+
+
+const StyledBody = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 40px;
+	column-gap: ${({ theme }) => theme.spacing.card};
+	row-gap: ${({ theme}) => theme.spacing.card};
+	
+	> * {
+		max-width: 1200px;
+  	}
+`;
 
 function App() {
 	return (
-		<>
-			<ChartContainer 
-				title={APY_CHART_TITLE}
-				selectedCoinColors={SELECTED_COIN_COLORS} 
-				dataSelectors={APY_DATA_SELECTOR} 
-				activeCoin={ACTIVE_COIN}
-				coins={COINS}
-				timeSelectors={TIME_SELECTORS}
-				useData={useApyData}
-			/>
-		</>
+		<HashRouter>
+			<StyledBody>
+				<Switch>
+					<Route exact strict path='/' component={Overview} />
+					<Route exact strict path='/market' component={Market} />
+				</Switch>
+			</StyledBody>
+		</HashRouter>
 	);
 }
 

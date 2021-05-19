@@ -1,30 +1,28 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import OptionRow from './optionRow'
-import OptionButton from './buttons'
+import OptionButton from './Button'
 import MultilineChart from './multilineChart'
-import CoinRow from './coinRow'
+import Row, { ResponsiveRow, CoinRow } from './Row'
+import { Typography } from 'theme'
 
 const StyledChartContainer = styled.div`
-	border: solid ${({ theme })  => theme.border.thickness + ' ' + theme.color.border1};
-	border-radius: ${({ theme }) => theme.border.radius};
-	max-width: 1024px;
-	padding: 15px;
-	margin: auto;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	row-gap: ${({ theme }) => theme.spacing.default};
 `;
 
 function initialCoinValues(coins) {
 	return coins.map((coin) => {return {name: coin.name, value: 0}});
 }
 
-export default function ChartContainer({ title, coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, useData }) {
+export default function ChartContainer({ coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, useData }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
 	const [timeSelector, setTimeSelector] = useState(timeSelectors[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues(coins));
 	const data = useData(dataSelector, timeSelector); 
-
 
 	// Set coin values when hover date changes
 	useEffect(() => {
@@ -63,7 +61,7 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 						active={dataSelector === selector}
 						onClick={() => setDataSelector(selector)}
 					>
-						{selector.name}
+						<Typography.subheader>{selector.name}</Typography.subheader>
 					</OptionButton>
 				);
 			})
@@ -79,7 +77,7 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 						active={timeSelector === selector}
 						onClick={() => setTimeSelector(selector)}
 					>
-						{selector.name}
+						<Typography.subheader>{selector.name}</Typography.subheader>
 					</OptionButton>
 				);
 			})	
@@ -93,15 +91,14 @@ export default function ChartContainer({ title, coins, selectedCoinColors, dataS
 
 	return (
 		<StyledChartContainer>
-			{title}
-			<OptionRow>
-				<OptionRow>
+			<ResponsiveRow>
+				<Row>
 					{dataSelectorButtons}
-				</OptionRow>
-				<OptionRow justify='flex-end'>
+				</Row>
+				<Row justify='flex-end'>
 					{timeSelectorButtons}
-				</OptionRow>
-			</OptionRow>
+				</Row>
+			</ResponsiveRow>
 
 			<MultilineChart data={data} selectedCoinsAndColors={selectedCoinsAndColors} setHoverDate={(date) => setHoverDate(date)} />
 

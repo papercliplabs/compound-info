@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import CoinButton from './buttons/coinButton'
-import OptionRow from './optionRow'
-import { formatPercent } from '../utils'
+import CoinButton from '../Button/coinButton'
+import { ScrollRow } from './index'
+import { formatPercent } from '../../utils'
 
 
 function defaultCoinStates(coinList) {
@@ -10,7 +10,7 @@ function defaultCoinStates(coinList) {
 	});
 }
 
-export default function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
+export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 	const [colorStack, setColorStack] = useState(selectedCoinColors.reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates(coinList));
 	const loaded = useRef(false);
@@ -123,8 +123,8 @@ export default function CoinRow({ coinList, selectedCoinColors, updateSelectedCo
 	});
 
 	return (
-		<OptionRow>
+		<ScrollRow>
 			{coinButtons}
-		</OptionRow>
+		</ScrollRow>
 	);
 }
