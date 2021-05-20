@@ -4,6 +4,7 @@ import OptionButton from './Button'
 import MultilineChart from './multilineChart'
 import Row, { ResponsiveRow, CoinRow } from './Row'
 import { Typography } from 'theme'
+import { COINS, TIME_SELECTORS } from 'constants/index'
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -12,16 +13,16 @@ const StyledChartContainer = styled.div`
 	row-gap: ${({ theme }) => theme.spacing.default};
 `;
 
-function initialCoinValues(coins) {
-	return coins.map((coin) => {return {name: coin.name, value: 0}});
+function initialCoinValues() {
+	return COINS.map((coin) => {return {name: coin.name, value: 0}});
 }
 
-export default function ChartContainer({ coins, selectedCoinColors, dataSelectors, timeSelectors, activeCoin, useData }) {
+export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
-	const [timeSelector, setTimeSelector] = useState(timeSelectors[0]);
+	const [timeSelector, setTimeSelector] = useState(TIME_SELECTORS[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
-	const [coinValues, setCoinValues] = useState(initialCoinValues(coins));
+	const [coinValues, setCoinValues] = useState(initialCoinValues());
 	const data = useData(dataSelector, timeSelector); 
 
 	// Set coin values when hover date changes
@@ -30,7 +31,7 @@ export default function ChartContainer({ coins, selectedCoinColors, dataSelector
 		const coinValuesOnHoverDate = data?.filter(entry => entry.blockTime === hoverDate)[0];
 		if(!currentCoinValues) return;
 
-		let newCoinValues = initialCoinValues(coins); 
+		let newCoinValues = initialCoinValues(); 
 		newCoinValues = newCoinValues.map(({name, value}) => {
 			const isSelected = selectedCoinsAndColors.filter(obj => obj.name === name).length === 1;
 			let newValue;
@@ -43,7 +44,7 @@ export default function ChartContainer({ coins, selectedCoinColors, dataSelector
 		});
 
 		setCoinValues(newCoinValues);
-	}, [selectedCoinsAndColors, hoverDate, data, coins]);
+	}, [selectedCoinsAndColors, hoverDate, data]);
 
 
 	const handleSelectedCoinsAndColors = useCallback((newSelectedCoinsAndColors) => {
@@ -70,7 +71,7 @@ export default function ChartContainer({ coins, selectedCoinColors, dataSelector
 
 	const timeSelectorButtons = useMemo(() => {
 		return (
-			timeSelectors.map((selector, i) => {
+			TIME_SELECTORS.map((selector, i) => {
 				return (
 					<OptionButton 
 						key={i} 
@@ -82,11 +83,11 @@ export default function ChartContainer({ coins, selectedCoinColors, dataSelector
 				);
 			})	
 		);
-	}, [timeSelector, timeSelectors, setTimeSelector]);
+	}, [timeSelector, setTimeSelector]);
 
-	const coinList = coins.map((coin) => {
+	const coinList = COINS.map((coin) => {
 		const value = coinValues.filter(obj => obj.name === coin.name)[0].value;
-		return {'name': coin.name, value: value, allowDeselect: coin.name !== activeCoin?.name}
+		return {name: coin.name, imgSrc: coin.imgSrc, value: value, allowDeselect: coin.name !== activeCoin?.name}
 	});
 
 	return (
@@ -104,8 +105,8 @@ export default function ChartContainer({ coins, selectedCoinColors, dataSelector
 
 			Compare to:
 			<CoinRow 
+				activeCoin={activeCoin}
 				coinList={coinList} 
-				selectedCoinColors={selectedCoinColors} 
 				updateSelectedCoins={handleSelectedCoinsAndColors}
 			/>
 			</StyledChartContainer>

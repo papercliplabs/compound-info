@@ -22,9 +22,6 @@ const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 // General theme
 const theme = (darkMode) => ({
 	color: {
-		white: '#000000',
-		black: '#FFFFFF',
-
 		bg0: darkMode ? '#000000' : '#FFFFFF',
 		bg1: darkMode ? '#19191A' : '#FFFFFF',
 
@@ -34,6 +31,9 @@ const theme = (darkMode) => ({
 		active1: darkMode ? '#000000' : '#0366D6',
 
 		border1: darkMode ? '#272B31' : '#DEDFE1',
+
+		linkInternal: darkMode ? '#0095D5' : '#0095D5',
+		linkExternal: darkMode ? '#808994' : '#586069',
 	},
 
 	border: {
@@ -105,7 +105,7 @@ export const GlobalStyle = createGlobalStyle`
 		width: 100%;
 		height: 100%;
 		font-weight: 400;
-		overflow-y: none;
+		overflow-x: hidden;
 		color: ${({ theme }) => theme.color.primary1};
 		background-color: ${({ theme }) => theme.color.bg0};
 	}
