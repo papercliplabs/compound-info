@@ -5,12 +5,13 @@ const Row = styled.div`
 	flex-direction: row;
 	flex-wrap: nowrap;
 	width: ${({ width }) => width ?? '100%'};
+	height: ${({ height }) => height ?? 'none'};
   	justify-content: ${({ justify }) => justify ?? 'flex-start'};
   	align-items: ${({ align }) => align ?? 'center'};
   	padding: ${({ padding } ) => padding ?? '0'};
   	border: ${({ border }) => border};
   	border-radius: ${({ borderRadius }) => borderRadius};	
-	margin: 0;
+	margin: ${({ margin }) => margin ?? '0'};
 	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
 	row-gap: ${({ gap, theme}) => gap ?? theme.spacing.default};
 `;
