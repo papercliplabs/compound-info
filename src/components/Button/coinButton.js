@@ -2,18 +2,19 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import OptionButton from './'
 import { Typography } from 'theme'
+import closeIcon from 'assets/closeIcon.svg'
 
 
 const StyledCoinButton = styled(OptionButton)`
-	background-color: ${props => props.theme.color.bg1};
+	background-color: ${({ theme }) => theme.color.bg1};
 	width: 104px;
 	height: 50px;
 	display: flex;
 
-	${props => props.active && css`
-		width: ${props => props.allowDeselect ? '143px' : '120px'};
+	${({ active }) => active && css`
+		width: ${({ allowDeselect }) => allowDeselect ? '143px' : '120px'};
 		border-width: 2px;	
-		border-color: ${props => props.selectedColor};
+		border-color: ${({ selectedColor }) => selectedColor};
 	`}
 `;
 
@@ -27,7 +28,7 @@ const HidingContainer = styled.div`
 	padding-left: 4px;
 	padding-right: 4px;
 
-	${props => props.hidden && css`
+	${({ hidden }) => hidden && css`
 		opacity: 0;	
 		width: 0;
 		padding: 0;
@@ -35,7 +36,7 @@ const HidingContainer = styled.div`
 `;
 
 const SelectedIndicator = styled.div`
-	background-color: ${props => props.selectedColor};	
+	background-color: ${({ selectedColor }) => selectedColor};	
 	width: 12px;
 	height: 12px;
 	border-radius: 6px;
@@ -83,26 +84,26 @@ const CloseIndicator = styled.img`
 `;
 
 
-function CoinButton(props) {
+function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
 	return (
 		<StyledCoinButton 
-			selectedColor={props.color} 
-			active={props.selected}
-			onClick={props.onClick}
-			allowDeselect={props.allowDeselect}	
+			selectedColor={color} 
+			active={selected}
+			onClick={onClick}
+			allowDeselect={allowDeselect}	
 		>
-			<HidingContainer hidden={!props.selected}>
-				<SelectedIndicator selectedColor={props.color} />
+			<HidingContainer hidden={!selected}>
+				<SelectedIndicator selectedColor={color} />
 			</HidingContainer>
 			<CoinLogoContainer>
-				<CoinLogo src={process.env.PUBLIC_URL + `img/coins/${props.name}.svg`} />				
+				<CoinLogo src={imgSrc} />				
 			</CoinLogoContainer>
 			<CoinInfo>
-				<CoinName><Typography.header>{props.name}</Typography.header></CoinName>
-				<CoinValue><Typography.subheader>{props.value}</Typography.subheader></CoinValue>
+				<CoinName><Typography.header>{name}</Typography.header></CoinName>
+				<CoinValue><Typography.subheader>{value}</Typography.subheader></CoinValue>
 			</CoinInfo>
-			<HidingContainer hidden={!props.selected || !props.allowDeselect}>
-				<CloseIndicator src={process.env.PUBLIC_URL + 'img/closeIcon.svg'} />
+			<HidingContainer hidden={!selected || !allowDeselect}>
+				<CloseIndicator src={closeIcon} />
 			</HidingContainer>
 		</StyledCoinButton>
 	);

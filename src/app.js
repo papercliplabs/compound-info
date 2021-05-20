@@ -4,7 +4,6 @@ import Market from 'pages/Market'
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components'
 
-
 const StyledBody = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -18,6 +17,10 @@ const StyledBody = styled.div`
 	> * {
 		max-width: 1200px;
   	}
+
+	${({ theme }) => theme.mediaWidth.small`
+		padding: 40px 15px;
+	`}
 `;
 
 function App() {
@@ -26,7 +29,7 @@ function App() {
 			<StyledBody>
 				<Switch>
 					<Route exact strict path='/' component={Overview} />
-					<Route exact strict path='/market' component={Market} />
+					<Route exact strict path='/:coin' component={Market} />
 				</Switch>
 			</StyledBody>
 		</HashRouter>
