@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CoinButton from '../Button/coinButton'
 import { ScrollRow } from './index'
 import { formatPercent } from '../../utils'
+import { LINE_CHART_COLORS } from 'constants/index'
 
 
 function defaultCoinStates(coinList) {
@@ -10,10 +11,11 @@ function defaultCoinStates(coinList) {
 	});
 }
 
-export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
-	const [colorStack, setColorStack] = useState(selectedCoinColors.reverse());
+export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
+	const [colorStack, setColorStack] = useState(LINE_CHART_COLORS.reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates(coinList));
 	const loaded = useRef(false);
+	const [reload, setReload] = useState(false);
 
 
 	// Helpers
@@ -30,7 +32,7 @@ export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 		let newColorStack = colorStack.slice();
 		let newCoinStates = JSON.parse(JSON.stringify(coinStates)); // deep copy
 		
-		const maxCoinsSelected = selectedCoinColors.length;
+		const maxCoinsSelected = LINE_CHART_COLORS.length;
 		const currentPosition = newCoinStates[i].selectedPosition;
 		const numberSelected = getNumberSelected();
 
@@ -74,7 +76,7 @@ export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 
 		setColorStack(newColorStack);
 		setCoinStates(newCoinStates);
-	}, [colorStack, coinStates, getNumberSelected, coinList, selectedCoinColors]);
+	}, [colorStack, coinStates, getNumberSelected, coinList]);
 
 
 	// On mount, set up the default selected and colors
@@ -94,7 +96,7 @@ export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 			}
 			loaded.current = true;
 		}
-	}, [handleClick, coinList]);
+	}, [handleClick, coinList, reload]);
 
 	// Callback to parent with new selected coins and colors
 	useEffect(() => {
@@ -102,6 +104,13 @@ export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 		selectedCoinsAndColors = selectedCoinsAndColors.map((coinState) => {return {name: coinState.name, color: coinState.color}});
 		updateSelectedCoins(selectedCoinsAndColors);
 	}, [coinStates, updateSelectedCoins]);
+
+	// When activeCoin changes, reset default selected
+	useEffect(() => {
+		setColorStack(LINE_CHART_COLORS.reverse());
+		setCoinStates(defaultCoinStates(coinList));
+		loaded.current = false;
+	}, [activeCoin, setCoinStates]);
 
 
 	// Render
@@ -113,6 +122,7 @@ export function CoinRow({ coinList, selectedCoinColors, updateSelectedCoins}) {
 			<CoinButton 
 				key={i}
 				name={coinState.name} 
+				imgSrc={coinData.imgSrc}
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null} 
 				value={formatPercent(coinData.value ? coinData.value : 0)}
