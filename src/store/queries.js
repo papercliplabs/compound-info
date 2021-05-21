@@ -1,0 +1,34 @@
+import { SHORT_TERM_DAYS } from 'constants/index'
+
+//// Queries used by hooks to return useful data from the store (reducers)
+
+export function queryApyData(rawData, dataSelector, timeSelector) {
+	if(!rawData) return null;
+	// Grab short term, or long term and create a copy
+	let data = timeSelector.days !== null && timeSelector.days <= SHORT_TERM_DAYS ? rawData.shortTerm.slice() : rawData.longTerm.slice();
+
+	let startTime = new Date();
+	if(timeSelector.days === null) {
+		startTime = new Date(1700, 1, 1); // smallest date
+	} else {
+		startTime.setDate(startTime.getDate() - timeSelector.days);
+	}
+
+	// Filter on dataSelector
+	data = data.map(entry => {
+		return	Object.assign(entry.values[dataSelector.name.toLowerCase()], {'blockTime': entry.blockTime});
+	})
+
+	// Filter on timeSelector
+	data = data.filter(entry => {
+		const blockStartTime = new Date(entry.blockTime);
+		return blockStartTime >= startTime;
+	});
+
+	return data;
+}
+
+// coinName: name of underlying asset (ex: USDC), coinName = ALL returns protocol summary data 
+export function querySummaryData(summaryData, coinName) {
+	return summaryData[coinName];
+}

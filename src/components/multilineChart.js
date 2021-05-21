@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { formatDate } from 'utils'
+import { formatDate, formatNumber } from 'utils'
 import { SHORT_TERM_DAYS } from 'constants/index'
 import { Typography } from 'theme'
 
@@ -105,7 +105,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				{lines}
 				<XAxis 
 					dataKey='blockTime' 
-					tick={<CustomXTick fill={theme.color.secondary1} tshowTime={showTime} />} 
+					tick={<CustomXTick fill={theme.color.secondary1} showTime={showTime} />} 
 					tickCount={3}
 				/>
 				<YAxis 
@@ -113,6 +113,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 					padding={{top: 30}} // Space for tooltip above the data
 					orientation='left'
 					tick={{fill: theme.color.secondary1}}
+					tickFormatter={(val) => val*100}
 				/>
 				<Tooltip 
 					cursor={cursorConfig} 

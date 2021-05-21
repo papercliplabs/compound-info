@@ -1,6 +1,7 @@
 import React from 'react'
 import styled  from 'styled-components'
 import { Typography } from 'theme'
+import { formatNumber } from 'utils'
 
 const Card = styled.div`
 	display: flex;
@@ -18,11 +19,12 @@ const StyledStatCard = styled(Card)`
 `;
 
 
-export function StatCard({ title, value }) {
+export function StatCard({ title, value, unit }) {
+	const formattedValue = formatNumber(value, unit);
 	return (
 		<StyledStatCard>
 			<Typography.subheader>{title?.toUpperCase()}</Typography.subheader>
-			<Typography.displayL>{value}</Typography.displayL>
+			<Typography.displayL>{formattedValue}</Typography.displayL>
 		</StyledStatCard>
 	);
 }

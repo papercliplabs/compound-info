@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CoinButton from '../Button/coinButton'
 import { ScrollRow } from './index'
-import { formatPercent } from '../../utils'
+import { formatNumber } from 'utils'
 import { LINE_CHART_COLORS } from 'constants/index'
 
 
@@ -125,7 +125,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 				imgSrc={coinData.imgSrc}
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null} 
-				value={formatPercent(coinData.value ? coinData.value : 0)}
+				value={formatNumber(coinData.value ? coinData.value : 0, '%', true)}
 				onClick={() => handleClick(i)}
 				allowDeselect={allowDeselect}
 			/>
