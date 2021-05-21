@@ -17,9 +17,57 @@ export function formatDate(date, withTime) {
 	return formattedDate;
 }
 
-// Formats a number represented as percent (x%), includes this % symbol if includeUnit
-export function formatPercent(percent, includeUnit=true) {
-	return percent.toFixed(2).toString() + (includeUnit ? '%' : '')
+export function formatNumber(number, unit) {
+	const K = 1000;
+	const M = 1000000;
+	const B = 1000000000;
+	const T = 1000000000000;
+
+	let postFix = '';
+	let unitPostfix = false;
+	let formattedNum = number;
+	let isInt = false;
+
+	// If it is represented as a sting, convert to number first
+	if(typeof number === 'string') { 
+		formattedNum = parseFloat(formattedNum);	
+		if(isNaN(formattedNum)) {
+			return number; // It isn't a number
+		}
+	}
+
+	// Multiply by 100, and set so unit is postfixed
+	if(unit === '%') {
+		formattedNum *= 100;
+		unitPostfix = true;
+	}
+
+	// Converting to digestable format
+	if(formattedNum > T) {
+		formattedNum /= T;
+		postFix = 'T';
+	} else if(formattedNum > B) {
+		formattedNum /= B;
+		postFix = 'B';
+	} else if(formattedNum > M) {
+		formattedNum /= M;
+		postFix = 'M';
+	} else if(formattedNum > K) {
+		formattedNum /= K;
+		postFix = 'K';
+	}
+	
+	// If its an interger, flag to rount to whole number
+	if(formattedNum % 1 === 0) {
+		isInt = true;
+	}
+
+	// Applying configs
+	formattedNum = isInt ? formattedNum.toFixed(0).toString() : formattedNum.toFixed(2).toString();
+	formattedNum += postFix;
+	formattedNum = unit ? (unitPostfix ? formattedNum + unit : unit + formattedNum) : formattedNum;
+	
+	return formattedNum; 
 }
 
 export function getCoinInfo(coinName) {
@@ -40,3 +88,5 @@ export function shortAddress(address) {
 		return address.slice(0, 6) + '...' + address.slice(len-6, len)
 	}
 }
+
+
