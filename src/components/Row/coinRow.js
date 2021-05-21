@@ -34,12 +34,12 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		
 		const maxCoinsSelected = LINE_CHART_COLORS.length;
 		const currentPosition = newCoinStates[i].selectedPosition;
-		const numberSelected = getNumberSelected();
+		const allowDeselect = coinList.filter((coin) => coin.name === coinStates[i].name)[0].allowDeselect;
 
 		let nextPosition;
 		if(currentPosition === null) { // It is not selected, so select it
 			nextPosition = Math.min(numberSelected + 1, maxCoinsSelected);
-		} else if(!coinList[i].allowDeselect || numberSelected === 1) { // Can't deselect if not allowDeselect, or the last one
+		} else if(!allowDeselect || numberSelected === 1) { // Can't deselect if not allowDeselect, or the last one
 			return;
 		} else { // Deselect
 			nextPosition = null; 
