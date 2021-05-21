@@ -24,10 +24,10 @@ for coin in coins:
         contract_name = 'c{coin}'),'''
 
     select += f'''
-    {coin}.supply_apy * 100 as {coin}_supply_apy,
-    {coin}.borrow_apy * 100 as {coin}_borrow_apy,
-    {coin}.total_supply_apy * 100 as {coin}_total_supply_apy,
-    {coin}.total_borrow_apy * 100 as {coin}_total_borrow_apy,''' 
+    {coin}.supply_apy as {coin}_supply_apy,
+    {coin}.borrow_apy as {coin}_borrow_apy,
+    {coin}.total_supply_apy as {coin}_total_supply_apy,
+    {coin}.total_borrow_apy as {coin}_total_borrow_apy,''' 
 
     if coin != baseCoin:
         join += f'''\n   full outer join {coin} on {coin}.block_hour = {baseCoin}.block_hour'''
