@@ -89,4 +89,17 @@ export function shortAddress(address) {
 	}
 }
 
+export function getCoinImgSource(coinName) {
+	const coinInfo= getCoinInfo(coinName);
+	return coinInfo.imgSrc;	
+}
 
+export function getCoinList() {
+	return COINS.map((coin) => coin.name);
+}
+
+export function camelCaseToSentenceCase(camel) {
+	let sentenceCase = camel.replace( /([A-Z])/g, " $1" ); 
+	sentenceCase = sentenceCase.charAt(0).toUpperCase() + sentenceCase.slice(1);	
+	return sentenceCase;
+}

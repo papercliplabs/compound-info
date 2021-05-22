@@ -8,6 +8,7 @@ import usdcSvg from 'assets/coins/USDC.svg'
 import usdtSvg from 'assets/coins/USDT.svg'
 import wbtcSvg from 'assets/coins/WBTC.svg'
 
+
 export const COINS = [
 	{name: 'BAT',  imgSrc: batSvg},
 	{name: 'COMP', imgSrc: compSvg},

@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components'
 import OptionButton from './'
 import { Typography } from 'theme'
 import closeIcon from 'assets/closeIcon.svg'
+import CoinLogo from 'components/CoinLogo'
+
 
 
 const StyledCoinButton = styled(OptionButton)`
@@ -46,16 +48,9 @@ const SelectedIndicator = styled.div`
 const CoinLogoContainer = styled.div`
 	padding-left: 5px;
 	display: flex;
-	box-sizing: content-box;
+	flex-direction: column;
+	justify-content: center;
 	height: 100%;
-	width: 24px;
-`;
-
-const CoinLogo = styled.img`
-	width: 24px;
-	height: 24px;
-	float: left;
-	margin: auto;
 `;
 
 const CoinInfo = styled.div`
@@ -83,7 +78,6 @@ const CloseIndicator = styled.img`
 	margin: auto;
 `;
 
-
 function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
 	return (
 		<StyledCoinButton 
@@ -96,7 +90,7 @@ function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onCli
 				<SelectedIndicator selectedColor={color} />
 			</HidingContainer>
 			<CoinLogoContainer>
-				<CoinLogo src={imgSrc} />				
+				<CoinLogo name={name} />
 			</CoinLogoContainer>
 			<CoinInfo>
 				<CoinName><Typography.header>{name}</Typography.header></CoinName>

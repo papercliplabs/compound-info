@@ -1,4 +1,5 @@
-import { COINS, URLS } from 'constants/index'
+import { URLS } from 'constants/index'
+import { getCoinList } from 'utils'
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
@@ -20,7 +21,7 @@ export async function requestApyData() {
 		}
 	}
 
-	const coins = COINS.map(coin => coin.name).sort(compareFn)
+	const coins = getCoinList().sort(compareFn)
 	
 	// Sending parallel api requests, and manipulating it in an easy to consume manor
 	await Promise.all(([['shortTerm', shortTermUrl], ['longTerm', longTermUrl]]).map(([type, url]) => 
@@ -63,17 +64,18 @@ export async function requestApyData() {
 export async function requestSummaryData() {
 	console.log('fetching summary data');
 	const url = URLS.SUMMARY_DATA;
+	const coinList = getCoinList();
 
 	const params = {
-		'addresses': [], // All addresses
+		'addresses': [''], // All addresses
 		'block_timestamp': 0, // Most current timestamp
-		'meta': true,
+		'meta': true
 	}
 
 	const response = await fetch(url, {
 							method: 'POST', 
 							headers: { 'Content-type': 'application/json'},
-							body: params
+							body: JSON.stringify(params)
 							});
 
 	if(!response.ok) {
@@ -83,12 +85,20 @@ export async function requestSummaryData() {
 	}
 
 	let data = await response.json();
+	console.log(data);
 	const metaData = data.meta; // Holds unique suppliers and borrowers for all markets
 	data = data.cToken;
 
 	// Conversion factor using price of USD = USDC
 	const usdcData = data.filter((obj) => obj.underlying_symbol === 'USDC')[0];
 	const ethToUSD = 1/parseFloat(usdcData.underlying_price.value);
+
+	const totals = {
+		totalSupply: 0,
+		totalBorrow: 0,
+		totalReserves: 0,
+		maxBorrow: 0,
+	}
 
 	// Transform into more useful form
 	data = data.map((coinData) => {
@@ -113,25 +123,38 @@ export async function requestSummaryData() {
 			distributionBorrowApy: parseFloat(coinData.comp_borrow_apy.value) / 100,
 			collateralFactor: parseFloat(coinData.collateral_factor.value),
 			reserveFactor: parseFloat(coinData.reserve_factor.value),
+
+			supplyApy: parseFloat(coinData.supply_rate.value),
+			borrowApy: parseFloat(coinData.borrow_rate.value),
 		}
 
 		// Derived data
-		newData["marketSize"] = newData.totalSupply * newData.collateralFactor;
-		newData["maxBorrow"] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
-		newData["utilization"] = newData.totalBorrow / newData.maxBorrow;
-		newData["availableLiquidity"] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
-		newData["totalValueLocked"] = newData.totalSupply - newData.totalBorrow;
+		newData['marketSize'] = newData.totalSupply * newData.collateralFactor;
+		newData['maxBorrow'] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
+		newData['utilization'] = newData.totalBorrow / newData.maxBorrow;
+		newData['availableLiquidity'] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
+		newData['totalValueLocked'] = newData.totalSupply - newData.totalBorrow;
+
+		totals.totalSupply += newData.totalSupply;
+		totals.totalBorrow += newData.totalBorrow;
+		totals.totalReserves += newData.totalReserves;
+		totals.maxBorrow += newData.maxBorrow;
 
 		return newData;
 	});
 
-	let summaryData = {};
-
-	data.forEach((obj) => {
-		summaryData[obj.name] = obj;
+	// Filter out the unused coins
+	data = data.filter((coinData) => {
+		return coinList.includes(coinData.name);
 	});
-	
-	return summaryData;
+
+	totals['numberOfUniqueSuppliers'] = metaData.unique_suppliers;
+	totals['numberOfUniqueBorrowers'] = metaData.unique_borrowers;
+	totals['utilization'] = totals.totalBorrow / totals.maxBorrow;
+
+	data['ALL'] = totals;
+
+	return data;
 }
 
 // Example of response data on a single coin: (https://compound.finance/docs/api#CTokenService)
