@@ -2,20 +2,19 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CoinButton from '../Button/coinButton'
 import { ScrollRow } from './index'
 import { formatNumber } from 'utils'
-import { LINE_CHART_COLORS } from 'constants/index'
+import { COINS, LINE_CHART_COLORS } from 'constants/index'
 
 
-function defaultCoinStates(coinList) {
-	return coinList.map((coinData, i) => {
+function defaultCoinStates() {
+	return COINS.map((coinData, i) => {
 		return {name: coinData.name, color: null, selectedPosition: null}
 	});
 }
 
 export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	const [colorStack, setColorStack] = useState(LINE_CHART_COLORS.reverse());
-	const [coinStates, setCoinStates] = useState(defaultCoinStates(coinList));
+	const [coinStates, setCoinStates] = useState(defaultCoinStates());
 	const loaded = useRef(false);
-	const [reload, setReload] = useState(false);
 
 
 	// Helpers
@@ -35,6 +34,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		const maxCoinsSelected = LINE_CHART_COLORS.length;
 		const currentPosition = newCoinStates[i].selectedPosition;
 		const allowDeselect = coinList.filter((coin) => coin.name === coinStates[i].name)[0].allowDeselect;
+		const numberSelected = getNumberSelected();
 
 		let nextPosition;
 		if(currentPosition === null) { // It is not selected, so select it
@@ -96,7 +96,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 			}
 			loaded.current = true;
 		}
-	}, [handleClick, coinList, reload]);
+	}, [handleClick, coinList]);
 
 	// Callback to parent with new selected coins and colors
 	useEffect(() => {
@@ -108,7 +108,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	// When activeCoin changes, reset default selected
 	useEffect(() => {
 		setColorStack(LINE_CHART_COLORS.reverse());
-		setCoinStates(defaultCoinStates(coinList));
+		setCoinStates(defaultCoinStates());
 		loaded.current = false;
 	}, [activeCoin, setCoinStates]);
 
@@ -122,7 +122,6 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 			<CoinButton 
 				key={i}
 				name={coinState.name} 
-				imgSrc={coinData.imgSrc}
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null} 
 				value={formatNumber(coinData.value ? coinData.value : 0, '%', true)}

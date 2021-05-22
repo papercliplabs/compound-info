@@ -46,6 +46,7 @@ const theme = (darkMode) => ({
 	spacing: {
 		default: '5px',
 		card: '10px',
+		roomy: '30px',
 	}
 });
 
@@ -116,5 +117,9 @@ export const GlobalStyle = createGlobalStyle`
 	
 	.hidden {
 		opacity: 0;
+	}
+
+	a {
+		color: ${({ theme }) => theme.color.linkInternal}
 	}
 `;

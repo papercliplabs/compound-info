@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { formatDate, formatNumber } from 'utils'
+import { formatDate } from 'utils'
 import { SHORT_TERM_DAYS } from 'constants/index'
 import { Typography } from 'theme'
 
