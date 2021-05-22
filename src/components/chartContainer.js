@@ -19,7 +19,7 @@ function initialCoinValues() {
 
 export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
-	const [timeSelector, setTimeSelector] = useState(TIME_SELECTORS[0]);
+	const [timeSelector, setTimeSelector] = useState(TIME_SELECTORS.slice(-1)[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues());
@@ -87,7 +87,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 
 	const coinList = COINS.map((coin) => {
 		const value = coinValues.filter(obj => obj.name === coin.name)[0].value;
-		return {name: coin.name, imgSrc: coin.imgSrc, value: value, allowDeselect: coin.name !== activeCoin?.name}
+		return {name: coin.name, value: value, allowDeselect: coin.name !== activeCoin?.name}
 	});
 
 	return (
