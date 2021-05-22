@@ -1,26 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
-import styled, { useTheme } from 'styled-components'
+import { useTheme } from 'styled-components'
 import ChartContainer from 'components/chartContainer'
-import { COINS, TIME_SELECTORS, APY_CHART_TITLE, SELECTED_COIN_COLORS, APY_DATA_SELECTOR } from 'constants/index'
 import { useApyData, useSummaryData } from 'store/hooks'
 import Card, { StatCard } from 'components/Card'
 import Row, { ResponsiveRow } from 'components/Row'
 import { Typography } from 'theme'
 import { APY_DATA_SELECTORS } from 'constants/index'
 import { getCoinInfo, getEtherscanLink, shortAddress } from 'utils'
-import { StyledInternalLink, StyledExternalLink } from 'theme/components'
-
-
-const SectionTitle = styled.div`
-	width: 100%;
-	text-align: left;
-	padding-top: 20px;
-`;
-
-const CoinLogo = styled.img`
-	height: 100%;
-`;
+import { SectionTitle, StyledInternalLink, StyledExternalLink } from 'theme/components'
+import CoinLogo from 'components/CoinLogo'
 
 
 // Main content of the market page
@@ -53,22 +42,20 @@ export default function Market({ match }) {
 			</Row>
 
 			<Row height='40px' margin={'20px 0'}> 
-				<CoinLogo src={activeCoin.imgSrc} /> 
+				<CoinLogo name={activeCoinName} size='40px' /> 
 				<Typography.displayXL>{activeCoin.name}</Typography.displayXL>
 			</Row>
 
-			<SectionTitle>
-				<Typography.displayS paddingTop={'10px'}>Market Overview</Typography.displayS>
-			</SectionTitle>
+
+			<SectionTitle title='Market Overview' />
 			<ResponsiveRow gap={gap}>	
 				<StatCard title={'Total supplied'} value={coinData.totalSupply} unit='$' />
 				<StatCard title={'Utilization'} value={coinData.utilization} unit='%' />
 				<StatCard title={'Reserves'} value={coinData.totalReserves} unit='$' />
 			</ResponsiveRow>
 
-			<SectionTitle>
-				<Typography.displayS paddingTop={'10px'}>APY Performence</Typography.displayS>
-			</SectionTitle>
+
+			<SectionTitle title='APY Performence' />
 			<Card>
 				<ChartContainer 
 					dataSelectors={APY_DATA_SELECTORS} 
@@ -77,9 +64,8 @@ export default function Market({ match }) {
 				/>
 			</Card>
 
-			<SectionTitle>
-				<Typography.displayS paddingTop={'10px'}>Key Statistics</Typography.displayS>
-			</SectionTitle>
+
+			<SectionTitle title='Key Statistics' />
 			<ResponsiveRow gap={gap}>	
 				<StatCard title={'Token price'} value={coinData.underlyingPrice} unit='$' />
 				<StatCard title={'Reserve factor'} value={coinData.reserveFactor} unit='%' />
@@ -93,14 +79,12 @@ export default function Market({ match }) {
 				<StatCard title={'Available liquidity'} value={coinData.availableLiquidity} unit='$' />
 			</ResponsiveRow>
 
-			<SectionTitle>
-				<Typography.displayS paddingTop={'10px'}>Utilization</Typography.displayS>
-			</SectionTitle>
+
+			<SectionTitle title='Utilization' />
 			TODO: utilization chart, supply amount, borrow amount, and utilization over time
 
-			<SectionTitle>
-				<Typography.displayS paddingTop={'10px'}>Discover More</Typography.displayS>
-			</SectionTitle>
+
+			<SectionTitle title='Dicvoer More' />
 			TODO: cards of the other markets, click on it and it will swap to others
 		</>
 	);

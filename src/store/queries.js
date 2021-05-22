@@ -30,5 +30,10 @@ export function queryApyData(rawData, dataSelector, timeSelector) {
 
 // coinName: name of underlying asset (ex: USDC), coinName = ALL returns protocol summary data 
 export function querySummaryData(summaryData, coinName) {
-	return summaryData[coinName];
+	let data = summaryData;
+	if(coinName) {
+		data = summaryData.filter((obj) => obj.name === coinName)[0];
+	}
+	
+	return data;
 }
