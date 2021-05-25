@@ -1,11 +1,9 @@
-import React from 'react'
-import styled, { css } from 'styled-components'
-import OptionButton from './'
-import { Typography } from 'theme'
-import closeIcon from 'assets/closeIcon.svg'
-import CoinLogo from 'components/CoinLogo'
-
-
+import React from 'react';
+import styled, { css } from 'styled-components';
+import OptionButton from './';
+import { Typography } from 'theme';
+import closeIcon from 'assets/closeIcon.svg';
+import CoinLogo from 'components/CoinLogo';
 
 const StyledCoinButton = styled(OptionButton)`
 	background-color: ${({ theme }) => theme.color.bg1};
@@ -13,11 +11,13 @@ const StyledCoinButton = styled(OptionButton)`
 	height: 50px;
 	display: flex;
 
-	${({ active }) => active && css`
-		width: ${({ allowDeselect }) => allowDeselect ? '143px' : '120px'};
-		border-width: 2px;	
-		border-color: ${({ selectedColor }) => selectedColor};
-	`}
+	${({ active }) =>
+		active &&
+		css`
+			width: ${({ allowDeselect }) => (allowDeselect ? '143px' : '120px')};
+			border-width: 2px;
+			border-color: ${({ selectedColor }) => selectedColor};
+		`}
 `;
 
 const HidingContainer = styled.div`
@@ -30,15 +30,17 @@ const HidingContainer = styled.div`
 	padding-left: 4px;
 	padding-right: 4px;
 
-	${({ hidden }) => hidden && css`
-		opacity: 0;	
-		width: 0;
-		padding: 0;
-	`}
+	${({ hidden }) =>
+		hidden &&
+		css`
+			opacity: 0;
+			width: 0;
+			padding: 0;
+		`}
 `;
 
 const SelectedIndicator = styled.div`
-	background-color: ${({ selectedColor }) => selectedColor};	
+	background-color: ${({ selectedColor }) => selectedColor};
 	width: 12px;
 	height: 12px;
 	border-radius: 6px;
@@ -63,7 +65,7 @@ const CoinInfo = styled.div`
 
 const CoinName = styled.div`
 	display: flex;
-	height: 50%;	
+	height: 50%;
 	align-items: flex-end;
 `;
 
@@ -78,14 +80,9 @@ const CloseIndicator = styled.img`
 	margin: auto;
 `;
 
-function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
+function CoinButton({ name, value, color, selected, allowDeselect, onClick }) {
 	return (
-		<StyledCoinButton 
-			selectedColor={color} 
-			active={selected}
-			onClick={onClick}
-			allowDeselect={allowDeselect}	
-		>
+		<StyledCoinButton selectedColor={color} active={selected} onClick={onClick} allowDeselect={allowDeselect}>
 			<HidingContainer hidden={!selected}>
 				<SelectedIndicator selectedColor={color} />
 			</HidingContainer>
@@ -93,8 +90,12 @@ function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onCli
 				<CoinLogo name={name} />
 			</CoinLogoContainer>
 			<CoinInfo>
-				<CoinName><Typography.header>{name}</Typography.header></CoinName>
-				<CoinValue><Typography.subheader>{value}</Typography.subheader></CoinValue>
+				<CoinName>
+					<Typography.header>{name}</Typography.header>
+				</CoinName>
+				<CoinValue>
+					<Typography.subheader>{value}</Typography.subheader>
+				</CoinValue>
 			</CoinInfo>
 			<HidingContainer hidden={!selected || !allowDeselect}>
 				<CloseIndicator src={closeIcon} />
