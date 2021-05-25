@@ -31,9 +31,11 @@
 		}
 	},
 	"lint-staged": {
-		"*.js": [
-			"eslint --fix",
-			"git add"
+		"*.{js,ts,tsx}": [
+			"eslint --quiet --fix"
+		],
+		"*.{json,md,html}": [
+			"prettier --write"
 		]
 	},
 	"eslintConfig": {
