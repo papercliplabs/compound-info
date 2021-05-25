@@ -1,9 +1,10 @@
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
-import { Typography } from 'theme'
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { Typography } from 'theme';
 
 export const StyledLink = styled.a`
-	text-decoration: none;	
+	text-decoration: none;
 `;
 
 // React router Link with style
@@ -23,7 +24,6 @@ export const StyledLogo = styled.img`
 	margin-right: ${({ theme, marginRight }) => marginRight ?? theme.spacing.default};
 `;
 
-
 const StyledSectionTitle = styled.div`
 	width: 100%;
 	text-align: left;
@@ -37,5 +37,3 @@ export function SectionTitle({ title }) {
 		</StyledSectionTitle>
 	);
 }
-
-

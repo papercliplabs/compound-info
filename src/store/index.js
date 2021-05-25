@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, useCallback } from 'react'
+import React, { useState, createContext, useContext, useCallback } from 'react';
 
 const GlobalStoreContext = createContext();
 
@@ -7,16 +7,18 @@ export default function GlobalStoreProvider(props) {
 	const [store, setStore] = useState({});
 
 	// Interfaces used by hooks to update the store on first requests
-	const updateStore = useCallback((key, data) => {
-		let newStore = Object.assign({}, store); // Shallow copy
-		newStore[key] = data;
-		setStore(newStore);
-	}, [store]);
+	const updateStore = useCallback(
+		(key, data) => {
+			let newStore = Object.assign({}, store); // Shallow copy
+			newStore[key] = data;
+			setStore(newStore);
+		},
+		[store]
+	);
 
-	return <GlobalStoreContext.Provider value={[store, { updateStore }]} {...props} />
+	return <GlobalStoreContext.Provider value={[store, { updateStore }]} {...props} />;
 }
 
-export function useGlobalStore() { 
-	return useContext(GlobalStoreContext)
+export function useGlobalStore() {
+	return useContext(GlobalStoreContext);
 }
-
