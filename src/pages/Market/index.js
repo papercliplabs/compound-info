@@ -1,65 +1,65 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
-import { useTheme } from "styled-components";
-import ChartContainer from "components/chartContainer";
-import { useApyData, useSummaryData } from "store/hooks";
-import Card, { StatCard } from "components/Card";
-import Row, { ResponsiveRow } from "components/Row";
-import { Typography } from "theme";
-import { APY_DATA_SELECTORS } from "constants/index";
-import { getCoinInfo, getEtherscanLink, shortAddress } from "utils";
+import React from 'react'
+import { Redirect } from 'react-router-dom'
+import { useTheme } from 'styled-components'
+import ChartContainer from 'components/chartContainer'
+import { useApyData, useSummaryData } from 'store/hooks'
+import Card, { StatCard } from 'components/Card'
+import Row, { ResponsiveRow } from 'components/Row'
+import { Typography } from 'theme'
+import { APY_DATA_SELECTORS } from 'constants/index'
+import { getCoinInfo, getEtherscanLink, shortAddress } from 'utils'
 import {
 	SectionTitle,
 	StyledInternalLink,
 	StyledExternalLink,
-} from "theme/components";
-import CoinLogo from "components/CoinLogo";
+} from 'theme/components'
+import CoinLogo from 'components/CoinLogo'
 
 // Main content of the market page
 export default function Market({ match }) {
-	const theme = useTheme();
-	const gap = theme.spacing.card;
-	const activeCoinName = match.params.coin;
-	const activeCoin = getCoinInfo(activeCoinName);
-	const coinData = useSummaryData(activeCoinName);
+	const theme = useTheme()
+	const gap = theme.spacing.card
+	const activeCoinName = match.params.coin
+	const activeCoin = getCoinInfo(activeCoinName)
+	const coinData = useSummaryData(activeCoinName)
 
 	// Redirect to home if the param name doesn't match a coin
 	if (!activeCoin) {
-		return <Redirect to={"/"} />;
+		return <Redirect to={'/'} />
 	}
 
 	if (!coinData) {
-		return null; // Loading the summary data
+		return null // Loading the summary data
 	}
 
-	const etherscanLink = getEtherscanLink(coinData.cTokenAddress);
+	const etherscanLink = getEtherscanLink(coinData.cTokenAddress)
 
 	return (
 		<>
 			<Row>
 				<Typography.body>
-					<StyledInternalLink to={"/"}>Market </StyledInternalLink>
-					{" > "}
+					<StyledInternalLink to={'/'}>Market </StyledInternalLink>
+					{' > '}
 					<StyledExternalLink href={etherscanLink}>
 						c{activeCoin.name} ({shortAddress(coinData.cTokenAddress)})
 					</StyledExternalLink>
 				</Typography.body>
 			</Row>
-			<Row height="40px" margin={"20px 0"}>
-				<CoinLogo name={activeCoinName} size="40px" />
+			<Row height='40px' margin={'20px 0'}>
+				<CoinLogo name={activeCoinName} size='40px' />
 				<Typography.displayXL>{activeCoin.name}</Typography.displayXL>
 			</Row>
-			<SectionTitle title="Market Overview" />
+			<SectionTitle title='Market Overview' />
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={"Total supplied"}
+					title={'Total supplied'}
 					value={coinData.totalSupply}
-					unit="$"
+					unit='$'
 				/>
-				<StatCard title={"Utilization"} value={coinData.utilization} unit="%" />
-				<StatCard title={"Reserves"} value={coinData.totalReserves} unit="$" />
+				<StatCard title={'Utilization'} value={coinData.utilization} unit='%' />
+				<StatCard title={'Reserves'} value={coinData.totalReserves} unit='$' />
 			</ResponsiveRow>
-			<SectionTitle title="APY Performence" />
+			<SectionTitle title='APY Performence' />
 			<Card>
 				<ChartContainer
 					dataSelectors={APY_DATA_SELECTORS}
@@ -67,55 +67,55 @@ export default function Market({ match }) {
 					useData={useApyData}
 				/>
 			</Card>
-			<SectionTitle title="Key Statistics" />
+			<SectionTitle title='Key Statistics' />
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={"Token price"}
+					title={'Token price'}
 					value={coinData.underlyingPrice}
-					unit="$"
+					unit='$'
 				/>
 				<StatCard
-					title={"Reserve factor"}
+					title={'Reserve factor'}
 					value={coinData.reserveFactor}
-					unit="%"
+					unit='%'
 				/>
 				<StatCard
-					title={"Number of suppliers"}
+					title={'Number of suppliers'}
 					value={coinData.numberOfSuppliers}
 				/>
 				<StatCard
-					title={"Number of borrowers"}
+					title={'Number of borrowers'}
 					value={coinData.numberOfBorrowers}
 				/>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={"Collateral factor"}
+					title={'Collateral factor'}
 					value={coinData.collateralFactor}
-					unit="%"
+					unit='%'
 				/>
 				<StatCard
-					title={"Total borrow"}
+					title={'Total borrow'}
 					value={coinData.totalBorrow}
-					unit="$"
+					unit='$'
 				/>
 				<StatCard
-					title={"Borrow cap"}
-					value={coinData.borrowCap ? coinData.borrowCap : "No limit"}
+					title={'Borrow cap'}
+					value={coinData.borrowCap ? coinData.borrowCap : 'No limit'}
 				/>
 				<StatCard
-					title={"Available liquidity"}
+					title={'Available liquidity'}
 					value={coinData.availableLiquidity}
-					unit="$"
+					unit='$'
 				/>
 			</ResponsiveRow>
-			<SectionTitle title="Utilization" />
+			<SectionTitle title='Utilization' />
 			TODO: utilization chart, supply amount, borrow amount, and utilization
 			over time
-			<SectionTitle title="Dicvoer More" />
+			<SectionTitle title='Dicvoer More' />
 			TODO: cards of the other markets, click on it and it will swap to others
 		</>
-	);
+	)
 }
 
 // Example of coinData:
