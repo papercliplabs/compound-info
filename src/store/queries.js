@@ -4,11 +4,14 @@ import { SHORT_TERM_DAYS } from 'constants/index';
 
 export function queryApyData(rawData, dataSelector, timeSelector) {
 	if (!rawData) return null;
+
 	// Grab short term, or long term and create a copy
-	let data =
-		timeSelector.days !== null && timeSelector.days <= SHORT_TERM_DAYS
-			? rawData.shortTerm.slice()
-			: rawData.longTerm.slice();
+	let data;
+	if (timeSelector.days !== null && timeSelector.days <= SHORT_TERM_DAYS) {
+		data = rawData.shortTerm.slice();
+	} else {
+		data = rawData.longTerm.slice();
+	}
 
 	let startTime = new Date();
 	if (timeSelector.days === null) {
