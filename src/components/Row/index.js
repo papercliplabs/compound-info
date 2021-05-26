@@ -38,5 +38,13 @@ export const ResponsiveRow = styled(RowSpaced)`
 	`}
 `;
 
+// Changes justification of content upon resize
+export const ResponsiveJustifyRow = styled(Row)`
+	justify-content: ${({ justifyLarge }) => justifyLarge ?? 'flex-start'};
+	${({ theme }) => theme.mediaWidth.small`
+		justify-content: ${({ justifySmall }) => justifySmall ?? 'flex-start'};
+	`}
+`;
+
 export default Row;
 export { CoinRow } from './coinRow';
