@@ -2,7 +2,7 @@ import { SHORT_TERM_DAYS } from 'constants/index';
 
 //// Queries used by hooks to return useful data from the store (reducers)
 
-export function queryApyData(rawData, dataSelector, timeSelector) {
+export function queryApyData(rawData, dataSelectorKey, timeSelector) {
 	if (!rawData) return null;
 
 	// Grab short term, or long term and create a copy
@@ -22,7 +22,7 @@ export function queryApyData(rawData, dataSelector, timeSelector) {
 
 	// Filter on dataSelector
 	data = data.map((entry) => {
-		return Object.assign(entry.values[dataSelector.name.toLowerCase()], { blockTime: entry.blockTime });
+		return Object.assign(entry.values[dataSelectorKey], { blockTime: entry.blockTime });
 	});
 
 	// Filter on timeSelector
