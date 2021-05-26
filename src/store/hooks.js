@@ -5,7 +5,7 @@ import { queryApyData, querySummaryData } from './queries';
 
 // Custom hooks which are used by the app to interface with the store
 
-export function useApyData(dataSelector, timeSelector) {
+export function useApyData(dataSelectorKey, timeSelector) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
 	const key = 'apyData';
@@ -25,10 +25,10 @@ export function useApyData(dataSelector, timeSelector) {
 
 	useEffect(() => {
 		if (apyData) {
-			const newQueriedData = queryApyData(apyData, dataSelector, timeSelector);
+			const newQueriedData = queryApyData(apyData, dataSelectorKey, timeSelector);
 			setQueriedData(newQueriedData);
 		}
-	}, [dataSelector, timeSelector, apyData, setQueriedData]);
+	}, [dataSelectorKey, timeSelector, apyData, setQueriedData]);
 
 	return queriedData;
 }

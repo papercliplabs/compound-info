@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import OptionButton from './Button';
-import MultilineChart from './multilineChart';
-import Row, { ResponsiveRow, CoinRow } from './Row';
+import OptionButton from 'components/Button';
+import MultilineChart from 'components/multilineChart';
+import Row, { ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
+import Column from 'components/Column';
 import { Typography } from 'theme';
 import { COINS, TIME_SELECTORS } from 'constants/index';
+import { formatNumber } from 'utils';
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -25,7 +27,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues());
-	const data = useData(dataSelector, timeSelector);
+	const data = useData(dataSelector.key, timeSelector);
 
 	// Set coin values when hover date changes
 	useEffect(() => {
@@ -78,11 +80,33 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 		return { name: coin.name, value: value, allowDeselect: coin.name !== activeCoin?.name };
 	});
 
+	const currentApy = useMemo(() => {
+		if (!activeCoin || !data) return null;
+
+		return data.slice(-1)[0][activeCoin.name];
+	}, [data, activeCoin]);
+
 	return (
 		<StyledChartContainer>
 			<ResponsiveRow>
-				<Row>{dataSelectorButtons}</Row>
-				<Row justify="flex-end">{timeSelectorButtons}</Row>
+				<Column>
+					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
+						<Typography.header>
+							Current {activeCoin?.name} {dataSelector.name}
+						</Typography.header>
+					</ResponsiveJustifyRow>
+					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
+						<Typography.displayXL>{formatNumber(currentApy, '%')}</Typography.displayXL>
+					</ResponsiveJustifyRow>
+				</Column>
+				<Column>
+					<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
+						{dataSelectorButtons}
+					</ResponsiveJustifyRow>
+					<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
+						{timeSelectorButtons}
+					</ResponsiveJustifyRow>
+				</Column>
 			</ResponsiveRow>
 			<MultilineChart
 				data={data}

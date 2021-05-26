@@ -38,9 +38,9 @@ export const LINE_CHART_COLORS = ['#F9A234', '#FF7EA8', '#0095D5', '#00CDAF', '#
 //// APY Chart config
 // The active coin is always selected, if null there is no active coin (i.e non coin specific plot)
 export const APY_DATA_SELECTORS = [
-	// These must be consistent with the names for the data table
-	{ name: 'Supply' },
-	{ name: 'Borrow' },
+	// key must be consistent with the names for the data table from flipside query
+	{ name: 'Supply APY', key: 'supply' },
+	{ name: 'Borrow APY', key: 'borrow' },
 ];
 
 //// URL's for API calls
