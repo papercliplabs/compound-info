@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import { useGlobalStore } from './index'
-import { requestApyData, requestSummaryData } from './requests'
-import { queryApyData, querySummaryData } from './queries'
+import { useState, useEffect } from 'react';
+import { useGlobalStore } from './index';
+import { requestApyData, requestSummaryData } from './requests';
+import { queryApyData, querySummaryData } from './queries';
 
 // Custom hooks which are used by the app to interface with the store
 
@@ -14,7 +14,7 @@ export function useApyData(dataSelector, timeSelector) {
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already:
-			if(!apyData) {
+			if (!apyData) {
 				const data = await requestApyData();
 				updateStore(key, data);
 			}
@@ -24,7 +24,7 @@ export function useApyData(dataSelector, timeSelector) {
 	}, [apyData, updateStore]);
 
 	useEffect(() => {
-		if(apyData) {
+		if (apyData) {
 			const newQueriedData = queryApyData(apyData, dataSelector, timeSelector);
 			setQueriedData(newQueriedData);
 		}
@@ -32,7 +32,6 @@ export function useApyData(dataSelector, timeSelector) {
 
 	return queriedData;
 }
-
 
 export function useSummaryData(coinName) {
 	const [store, { updateStore }] = useGlobalStore();
@@ -43,7 +42,7 @@ export function useSummaryData(coinName) {
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already:
-			if(!summaryData) {
+			if (!summaryData) {
 				const data = await requestSummaryData();
 				updateStore(key, data);
 			}
@@ -53,7 +52,7 @@ export function useSummaryData(coinName) {
 	}, [summaryData, updateStore]);
 
 	useEffect(() => {
-		if(summaryData) {
+		if (summaryData) {
 			const newSummaryData = querySummaryData(summaryData, coinName);
 			setQueriedData(newSummaryData);
 		}

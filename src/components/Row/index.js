@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 const Row = styled.div`
 	display: flex;
@@ -14,7 +14,7 @@ const Row = styled.div`
 	margin: ${({ margin }) => margin ?? '0'};
 	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
 	row-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
-`
+`;
 
 export const ScrollRow = styled(Row)`
 	flex-wrap: nowrap;
@@ -38,5 +38,5 @@ export const ResponsiveRow = styled(RowSpaced)`
 	`}
 `
 
-export default Row
-export { CoinRow } from './coinRow'
+export default Row;
+export { CoinRow } from './coinRow';
