@@ -1,5 +1,5 @@
-import { URLS } from 'constants/index'
-import { getCoinList } from 'utils'
+import { URLS } from 'constants/index';
+import { getCoinList } from 'utils';
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
@@ -8,57 +8,61 @@ export async function requestApyData() {
 	console.log('fetching apy data');
 	const shortTermUrl = URLS.APY_SHORT;
 	const longTermUrl = URLS.APY_LONG;
-	let ret = {};	
+	let ret = {};
 
 	// Custom compare function for sorting to handle the case where one is a substring of the other, this is for WBTC and WBTC2
 	function compareFn(a, b) {
-		if(a.includes(b)) {
+		if (a.includes(b)) {
 			return -1;
-		} else if(b.includes(a)) {
+		} else if (b.includes(a)) {
 			return 1;
 		} else {
-			return [a, b].sort()[0] === a ? -1 : 1; // default sort 
+			return [a, b].sort()[0] === a ? -1 : 1; // default sort
 		}
 	}
 
-	const coins = getCoinList().sort(compareFn)
-	
+	const coins = getCoinList().sort(compareFn);
+
 	// Sending parallel api requests, and manipulating it in an easy to consume manor
-	await Promise.all(([['shortTerm', shortTermUrl], ['longTerm', longTermUrl]]).map(([type, url]) => 
-		fetch(url)
-			.then(response => response.json())
-			.then(data => {
-				let keys = Object.keys(data[0]).filter(key => key !== 'BLOCK_TIME') // Table keys without block time 
-				keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply 	
-				const max = keys.length + 1; // len: keys.len + 1
+	await Promise.all(
+		[
+			['shortTerm', shortTermUrl],
+			['longTerm', longTermUrl],
+		].map(([type, url]) =>
+			fetch(url)
+				.then((response) => response.json())
+				.then((data) => {
+					let keys = Object.keys(data[0]).filter((key) => key !== 'BLOCK_TIME'); // Table keys without block time
+					keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply
+					const max = keys.length + 1; // len: keys.len + 1
 
-				data = data.map(entry => {
-					let newEntry = {
-						'blockTime': entry.BLOCK_TIME,
-						'values': {
-							'borrow': {},
-							'supply': {},
-							'totalBorrow': {},
-							'totalSupply': {},
+					data = data.map((entry) => {
+						let newEntry = {
+							blockTime: entry.BLOCK_TIME,
+							values: {
+								borrow: {},
+								supply: {},
+								totalBorrow: {},
+								totalSupply: {},
+							},
+						};
+
+						for (let i = 0; i < max / 4 - 1; i++) {
+							newEntry.values['borrow'][coins[i]] = entry[keys[4 * i]];
+							newEntry.values['supply'][coins[i]] = entry[keys[4 * i + 1]];
+							newEntry.values['totalBorrow'][coins[i]] = entry[keys[4 * i + 2]];
+							newEntry.values['totalSupply'][coins[i]] = entry[keys[4 * i + 3]];
 						}
-					}
 
-					for(let i = 0; i < max / 4 - 1; i++) {
-						newEntry.values['borrow'][coins[i]] = entry[keys[4*i]];
-						newEntry.values['supply'][coins[i]] = entry[keys[4*i+1]];
-						newEntry.values['totalBorrow'][coins[i]] = entry[keys[4*i+2]];
-						newEntry.values['totalSupply'][coins[i]] = entry[keys[4*i+3]];
-					}
-
-					return newEntry;
+						return newEntry;
+					});
+					ret[type] = data;
 				})
-				ret[type] = data;
-			})
-			.catch(error => console.log(error))
-		))
-		.catch(error => console.log(error))
+				.catch((error) => console.log(error))
+		)
+	).catch((error) => console.log(error));
 
-	return ret 
+	return ret;
 }
 
 export async function requestSummaryData() {
@@ -67,20 +71,20 @@ export async function requestSummaryData() {
 	const coinList = getCoinList();
 
 	const params = {
-		'addresses': [''], // All addresses
-		'block_timestamp': 0, // Most current timestamp
-		'meta': true
-	}
+		addresses: [''], // All addresses
+		block_timestamp: 0, // Most current timestamp
+		meta: true,
+	};
 
 	const response = await fetch(url, {
-							method: 'POST', 
-							headers: { 'Content-type': 'application/json'},
-							body: JSON.stringify(params)
-							});
+		method: 'POST',
+		headers: { 'Content-type': 'application/json' },
+		body: JSON.stringify(params),
+	});
 
-	if(!response.ok) {
+	if (!response.ok) {
 		const error = await response.text();
-		console.log("Error requesting summary Data:" + error);
+		console.log('Error requesting summary Data:' + error);
 		return {};
 	}
 
@@ -91,14 +95,14 @@ export async function requestSummaryData() {
 
 	// Conversion factor using price of USD = USDC
 	const usdcData = data.filter((obj) => obj.underlying_symbol === 'USDC')[0];
-	const ethToUSD = 1/parseFloat(usdcData.underlying_price.value);
+	const ethToUSD = 1 / parseFloat(usdcData.underlying_price.value);
 
 	const totals = {
 		totalSupply: 0,
 		totalBorrow: 0,
 		totalReserves: 0,
 		maxBorrow: 0,
-	}
+	};
 
 	// Transform into more useful form
 	data = data.map((coinData) => {
@@ -126,7 +130,7 @@ export async function requestSummaryData() {
 
 			supplyApy: parseFloat(coinData.supply_rate.value),
 			borrowApy: parseFloat(coinData.borrow_rate.value),
-		}
+		};
 
 		// Derived data
 		newData['marketSize'] = newData.totalSupply * newData.collateralFactor;

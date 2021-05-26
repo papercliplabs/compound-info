@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import styled, { useTheme } from 'styled-components'
+import React, { useEffect } from 'react';
+import styled, { useTheme } from 'styled-components';
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { formatDate } from 'utils'
-import { SHORT_TERM_DAYS } from 'constants/index'
-import { Typography } from 'theme'
+import { formatDate } from 'utils';
+import { SHORT_TERM_DAYS } from 'constants/index';
+import { Typography } from 'theme';
 
 // Note: with ReChart, I am unable to use Typography to set the x and y axis tick styles
 
@@ -16,7 +16,7 @@ const cursorConfig = {
 const activeDotConfig = {
 	r: 5, // dot radius
 	strokeWidth: 0,
-}
+};
 
 const StyledTooltip = styled.div`
 	background-color: red;
@@ -37,18 +37,18 @@ function CustomTooltip({ coordinate, toolTipWidth, viewBox, setHoverDate, showTi
 		setHoverDate(hoverDate);
 	}, [hoverDate, setHoverDate]);
 
-	if(hoverDate) {
+	if (hoverDate) {
 		// Format the tooltip date
 		const date = new Date(hoverDate);
 		const formattedDate = formatDate(date, showTime);
 
 		// Bound the right side of tooltip
-		const rightX = coordinate.x + toolTipWidth/2;
+		const rightX = coordinate.x + toolTipWidth / 2;
 		const maxX = viewBox.width + viewBox.left;
-		const translationX = rightX > maxX ? maxX - rightX : 0; 
+		const translationX = rightX > maxX ? maxX - rightX : 0;
 
 		return (
-			<StyledTooltip toolTipWidth={toolTipWidth} translationX={translationX} >
+			<StyledTooltip toolTipWidth={toolTipWidth} translationX={translationX}>
 				<Typography.subheader>{formattedDate}</Typography.subheader>
 			</StyledTooltip>
 		);
@@ -61,7 +61,7 @@ function CustomXTick({ x, y, payload, showTime, fill }) {
 	const date = new Date(payload.value);
 	const formattedDate = formatDate(date, showTime);
 	return (
-		<text fill={fill} x={x} y={y+15} textAnchor='middle'>
+		<text fill={fill} x={x} y={y + 15} textAnchor="middle">
 			{formattedDate}
 		</text>
 	);
@@ -71,7 +71,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 	const theme = useTheme();
 
 	function shouldShowTime() {
-		if(!data) return false;
+		if (!data) return false;
 
 		const lastDate = new Date(data.slice(-1)[0].blockTime);
 		const firstDate = new Date(data[0].blockTime);
@@ -82,45 +82,45 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 	// Render
 	const lines = selectedCoinsAndColors.map((coin, i) => {
 		return (
-			<Line 
-			type='monotone' 
-			dataKey={coin.name} 
-			stroke={coin.color} 
-			strokeWidth={2}
-			key={i} 
-			dot={false} 
-			activeDot={activeDotConfig}
-			isAnimationActive={false}
-		/>
+			<Line
+				type="monotone"
+				dataKey={coin.name}
+				stroke={coin.color}
+				strokeWidth={2}
+				key={i}
+				dot={false}
+				activeDot={activeDotConfig}
+				isAnimationActive={false}
+			/>
 		);
 	});
 
 	const showTime = shouldShowTime();
 	const toolTipWidth = showTime ? 150 : 90;
-	const toolTipOffset = -toolTipWidth/2; // Center it on the cursor
+	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
 
 	return (
-		<ResponsiveContainer width='100%' height={300} >
-			<LineChart margin={{right: 20, left: 0, top: 0, bottom: 0}} data={data}>
+		<ResponsiveContainer width="100%" height={300}>
+			<LineChart margin={{ right: 20, left: 0, top: 0, bottom: 0 }} data={data}>
 				{lines}
-				<XAxis 
-					dataKey='blockTime' 
-					tick={<CustomXTick fill={theme.color.secondary1} showTime={showTime} />} 
+				<XAxis
+					dataKey="blockTime"
+					tick={<CustomXTick fill={theme.color.secondary1} showTime={showTime} />}
 					tickCount={3}
 				/>
-				<YAxis 
-					datekey='price' 
-					padding={{top: 30}} // Space for tooltip above the data
-					orientation='left'
-					tick={{fill: theme.color.secondary1}}
-					tickFormatter={(val) => val*100}
+				<YAxis
+					datekey="price"
+					padding={{ top: 30 }} // Space for tooltip above the data
+					orientation="left"
+					tick={{ fill: theme.color.secondary1 }}
+					tickFormatter={(val) => val * 100}
 				/>
-				<Tooltip 
-					cursor={cursorConfig} 
-					position={{y: 0}}  // Set to the top of chart
-					content={<CustomTooltip toolTipWidth={toolTipWidth} setHoverDate={setHoverDate} showTime={showTime} />} 
+				<Tooltip
+					cursor={cursorConfig}
+					position={{ y: 0 }} // Set to the top of chart
+					content={<CustomTooltip toolTipWidth={toolTipWidth} setHoverDate={setHoverDate} showTime={showTime} />}
 					isAnimationActive={false}
-					offset={toolTipOffset} 
+					offset={toolTipOffset}
 				/>
 			</LineChart>
 		</ResponsiveContainer>

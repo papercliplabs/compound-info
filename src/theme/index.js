@@ -1,5 +1,5 @@
-import React from 'react'
-import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components'
+import React from 'react';
+import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components';
 
 // Media queries
 const mediaQuerySizes = {
@@ -7,7 +7,7 @@ const mediaQuerySizes = {
 	small: 700,
 	medium: 960,
 	large: 1280,
-}
+};
 
 const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 	acc[key] = (...args) => css`
@@ -17,7 +17,6 @@ const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 	`;
 	return acc;
 }, {});
-
 
 // General theme
 const theme = (darkMode) => ({
@@ -37,7 +36,7 @@ const theme = (darkMode) => ({
 	},
 
 	border: {
-		thickness: '1px',	
+		thickness: '1px',
 		radius: '6px',
 	},
 
@@ -47,9 +46,8 @@ const theme = (darkMode) => ({
 		default: '5px',
 		card: '10px',
 		roomy: '30px',
-	}
+	},
 });
-
 
 // Typography theme
 const StyledText = styled.div`
@@ -59,40 +57,36 @@ const StyledText = styled.div`
 `;
 
 export const Typography = {
-	displayXL(props) { 
+	displayXL(props) {
 		return <StyledText fontSize={42} fontWeight={600} color={'primary1'} {...props} />;
 	},
-	displayL(props) { 
+	displayL(props) {
 		return <StyledText fontSize={28} fontWeight={600} color={'primary1'} {...props} />;
 	},
-	displayM(props) { 
+	displayM(props) {
 		return <StyledText fontSize={26} fontWeight={600} color={'primary1'} {...props} />;
 	},
-	displayS(props) { 
+	displayS(props) {
 		return <StyledText fontSize={20} fontWeight={600} color={'primary1'} {...props} />;
 	},
-	header(props) { 
+	header(props) {
 		return <StyledText fontSize={16} fontWeight={400} color={'primary1'} {...props} />;
 	},
-	subheader(props) { 
+	subheader(props) {
 		return <StyledText fontSize={14} fontWeight={400} color={'secondary1'} {...props} />;
 	},
-	body(props) { 
+	body(props) {
 		return <StyledText fontSize={16} fontWeight={400} color={'primary1'} {...props} />;
 	},
-	caption(props) { 
+	caption(props) {
 		return <StyledText fontSize={14} fontWeight={500} color={'primary1'} {...props} />;
 	},
-}
-
-
-
+};
 
 // Everything that is child of theme, gets theme as its props, so it can be used everywhere
 export default function Theme({ darkMode, children }) {
 	return <ThemeProvider theme={theme(darkMode)}>{children}</ThemeProvider>;
-};
-
+}
 
 // Fonts are imported in index.html
 export const GlobalStyle = createGlobalStyle`

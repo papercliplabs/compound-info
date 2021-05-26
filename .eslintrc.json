@@ -1,0 +1,19 @@
+{
+	"extends": ["plugin:react/recommended", "plugin:react-hooks/recommended", "plugin:prettier/recommended"],
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 12,
+		"sourceType": "module"
+	},
+	"rules": {
+		"prettier/prettier": "error",
+		"react/prop-types": 0
+	},
+	"settings": {
+		"react": {
+			"version": "detetect"
+		}
+	}
+}
