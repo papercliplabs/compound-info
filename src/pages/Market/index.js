@@ -13,11 +13,11 @@ import CoinLogo from 'components/CoinLogo';
 
 // Main content of the market page
 export default function Market({ match }) {
-	const theme = useTheme()
-	const gap = theme.spacing.card
-	const activeCoinName = match.params.coin
-	const activeCoin = getCoinInfo(activeCoinName)
-	const coinData = useSummaryData(activeCoinName)
+	const theme = useTheme();
+	const gap = theme.spacing.card;
+	const activeCoinName = match.params.coin;
+	const activeCoin = getCoinInfo(activeCoinName);
+	const coinData = useSummaryData(activeCoinName);
 
 	// Redirect to home if the param name doesn't match a coin
 	if (!activeCoin) {
@@ -28,7 +28,7 @@ export default function Market({ match }) {
 		return null; // Loading the summary data
 	}
 
-	const etherscanLink = getEtherscanLink(coinData.cTokenAddress)
+	const etherscanLink = getEtherscanLink(coinData.cTokenAddress);
 
 	return (
 		<>
@@ -73,7 +73,7 @@ export default function Market({ match }) {
 			<SectionTitle title="Dicvoer More" />
 			TODO: cards of the other markets, click on it and it will swap to others
 		</>
-	)
+	);
 }
 
 // Example of coinData:

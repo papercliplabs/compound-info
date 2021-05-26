@@ -18,7 +18,6 @@ const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 	return acc;
 }, {});
 
-
 // General theme
 const theme = (darkMode) => ({
 	color: {
@@ -49,7 +48,7 @@ const theme = (darkMode) => ({
 		card: '16px',
 		roomy: '24px',
 	},
-})
+});
 
 // Typography theme
 const StyledText = styled.div`
@@ -57,102 +56,38 @@ const StyledText = styled.div`
 	font-size: ${({ fontSize }) => fontSize}px;
 	font-weight: ${({ fontWeight }) => fontWeight};
 	line-height: ${({ lineHeight }) => lineHeight}px;
-`
+`;
 
 export const Typography = {
 	displayXL(props) {
-		return (
-			<StyledText
-				fontSize={42}
-				fontWeight={600}
-				color={'primary1'}
-				lineHeight={44}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={42} fontWeight={600} color={'primary1'} lineHeight={44} {...props} />;
 	},
 	displayL(props) {
-		return (
-			<StyledText
-				fontSize={28}
-				fontWeight={500}
-				color={'primary1'}
-				lineHeight={32}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={28} fontWeight={500} color={'primary1'} lineHeight={32} {...props} />;
 	},
 	displayM(props) {
-		return (
-			<StyledText
-				fontSize={26}
-				fontWeight={600}
-				color={'primary1'}
-				lineHeight={32}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={26} fontWeight={600} color={'primary1'} lineHeight={32} {...props} />;
 	},
 	displayS(props) {
-		return (
-			<StyledText
-				fontSize={20}
-				fontWeight={600}
-				color={'primary1'}
-				lineHeight={28}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={20} fontWeight={600} color={'primary1'} lineHeight={28} {...props} />;
 	},
 	header(props) {
-		return (
-			<StyledText
-				fontSize={16}
-				fontWeight={500}
-				color={'primary1'}
-				lineHeight={24}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={16} fontWeight={500} color={'primary1'} lineHeight={24} {...props} />;
 	},
 	subheader(props) {
-		return (
-			<StyledText
-				fontSize={14}
-				fontWeight={400}
-				color={'secondary1'}
-				lineHeight={28}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={14} fontWeight={400} color={'secondary1'} lineHeight={28} {...props} />;
 	},
 	body(props) {
-		return (
-			<StyledText
-				fontSize={16}
-				fontWeight={400}
-				color={'primary1'}
-				lineHeight={28}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={16} fontWeight={400} color={'primary1'} lineHeight={28} {...props} />;
 	},
 	caption(props) {
-		return (
-			<StyledText
-				fontSize={14}
-				fontWeight={500}
-				color={'primary1'}
-				lineHeight={28}
-				{...props}
-			/>
-		)
+		return <StyledText fontSize={14} fontWeight={500} color={'primary1'} lineHeight={28} {...props} />;
 	},
-}
+};
 
 // Everything that is child of theme, gets theme as its props, so it can be used everywhere
 export default function Theme({ darkMode, children }) {
-	return <ThemeProvider theme={theme(darkMode)}>{children}</ThemeProvider>
+	return <ThemeProvider theme={theme(darkMode)}>{children}</ThemeProvider>;
 }
 
 // Fonts are imported in index.html
@@ -188,4 +123,4 @@ export const GlobalStyle = createGlobalStyle`
 	a {
 		color: ${({ theme }) => theme.color.linkInternal}
 	}
-`
+`;
