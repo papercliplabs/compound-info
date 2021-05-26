@@ -23,20 +23,17 @@
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
-		"eject": "react-scripts eject"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
+		"eject": "react-scripts eject",
+		"prepare": "husky install"
 	},
 	"lint-staged": {
 		"*.{js,ts,tsx}": [
-			"eslint --quiet --fix"
+			"yarn eslint --quiet --fix"
 		],
 		"*.{json,md,html}": [
-			"prettier --write"
-		]
+			"yarn prettier --write"
+		],
+		"*.{js,css,md}": "prettier --write"
 	},
 	"eslintConfig": {
 		"extends": [
