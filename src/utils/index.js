@@ -1,16 +1,16 @@
-import { COINS } from 'constants/index'
+import { COINS } from 'constants/index';
 
 // Formats a javascript date object as the month and day.
 // If withTime, also adds the time of day
 export function formatDate(date, withTime) {
-	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	let formattedDate = months[date.getMonth()] + ' ' + date.getDate();
-	if(withTime) {
+	if (withTime) {
 		const timeOptions = {
-			hour: "numeric",
-			minute: "numeric",
-		}
-		const time = date.toLocaleTimeString("en-US", timeOptions);
+			hour: 'numeric',
+			minute: 'numeric',
+		};
+		const time = date.toLocaleTimeString('en-US', timeOptions);
 		formattedDate += ' ' + time;
 	}
 
@@ -29,36 +29,36 @@ export function formatNumber(number, unit) {
 	let isInt = false;
 
 	// If it is represented as a sting, convert to number first
-	if(typeof number === 'string') { 
-		formattedNum = parseFloat(formattedNum);	
-		if(isNaN(formattedNum)) {
+	if (typeof number === 'string') {
+		formattedNum = parseFloat(formattedNum);
+		if (isNaN(formattedNum)) {
 			return number; // It isn't a number
 		}
 	}
 
 	// Multiply by 100, and set so unit is postfixed
-	if(unit === '%') {
+	if (unit === '%') {
 		formattedNum *= 100;
 		unitPostfix = true;
 	}
 
 	// Converting to digestable format
-	if(formattedNum > T) {
+	if (formattedNum > T) {
 		formattedNum /= T;
 		postFix = 'T';
-	} else if(formattedNum > B) {
+	} else if (formattedNum > B) {
 		formattedNum /= B;
 		postFix = 'B';
-	} else if(formattedNum > M) {
+	} else if (formattedNum > M) {
 		formattedNum /= M;
 		postFix = 'M';
-	} else if(formattedNum > K) {
+	} else if (formattedNum > K) {
 		formattedNum /= K;
 		postFix = 'K';
 	}
-	
+
 	// If its an interger, flag to rount to whole number
-	if(formattedNum % 1 === 0) {
+	if (formattedNum % 1 === 0) {
 		isInt = true;
 	}
 
@@ -66,13 +66,13 @@ export function formatNumber(number, unit) {
 	formattedNum = isInt ? formattedNum.toFixed(0).toString() : formattedNum.toFixed(2).toString();
 	formattedNum += postFix;
 	formattedNum = unit ? (unitPostfix ? formattedNum + unit : unit + formattedNum) : formattedNum;
-	
-	return formattedNum; 
+
+	return formattedNum;
 }
 
 export function getCoinInfo(coinName) {
 	const coin = COINS.filter((coin) => coin.name === coinName);
-	return (!coin || coin.length !== 1) ? null : coin[0];
+	return !coin || coin.length !== 1 ? null : coin[0];
 }
 
 export function getEtherscanLink(address) {
@@ -81,17 +81,17 @@ export function getEtherscanLink(address) {
 
 export function shortAddress(address) {
 	const len = address.length;
-	if(len < 12) return address;
-	if(len < 12) {
+	if (len < 12) return address;
+	if (len < 12) {
 		return address;
 	} else {
-		return address.slice(0, 6) + '...' + address.slice(len-6, len)
+		return address.slice(0, 6) + '...' + address.slice(len - 6, len);
 	}
 }
 
 export function getCoinImgSource(coinName) {
-	const coinInfo= getCoinInfo(coinName);
-	return coinInfo.imgSrc;	
+	const coinInfo = getCoinInfo(coinName);
+	return coinInfo.imgSrc;
 }
 
 export function getCoinList() {
@@ -99,7 +99,7 @@ export function getCoinList() {
 }
 
 export function camelCaseToSentenceCase(camel) {
-	let sentenceCase = camel.replace( /([A-Z])/g, " $1" ); 
-	sentenceCase = sentenceCase.charAt(0).toUpperCase() + sentenceCase.slice(1);	
+	let sentenceCase = camel.replace(/([A-Z])/g, ' $1');
+	sentenceCase = sentenceCase.charAt(0).toUpperCase() + sentenceCase.slice(1);
 	return sentenceCase;
 }
