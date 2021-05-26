@@ -25,18 +25,18 @@ export const ScrollRow = styled(Row)`
 	&::-webkit-scrollbar {
 		display: none;
 	}
-`;
+`
 
 export const RowSpaced = styled(Row)`
 	justify-content: space-between;
-`;
+`
 
 export const ResponsiveRow = styled(RowSpaced)`
 	${({ theme }) => theme.mediaWidth.small`
 		flex-direction: column;
 		row-gap: 5px;
 	`}
-`;
+`
 
 export default Row;
 export { CoinRow } from './coinRow';

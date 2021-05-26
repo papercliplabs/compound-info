@@ -11,6 +11,13 @@ const Card = styled.div`
 	width: ${({ width }) => width ?? '100%'};
 	padding: ${({ padding, theme }) => padding ?? theme.spacing.roomy};
 	margin: 0;
+	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1),
+		inset 0px 1px 6px rgba(255, 255, 255, 0.05);
+	row-gap: 8px;
+`
+
+const StyledStatCard = styled(Card)`
+	flex-direction: column;
 `;
 
 const StyledStatCard = styled(Card)`
@@ -18,12 +25,12 @@ const StyledStatCard = styled(Card)`
 `;
 
 export function StatCard({ title, value, unit }) {
-	const formattedValue = formatNumber(value, unit);
+	const formattedValue = formatNumber(value, unit)
 	return (
 		<StyledStatCard>
-			<Typography.subheader>{title?.toUpperCase()}</Typography.subheader>
+			<Typography.header>{title}</Typography.header>
 			<Typography.displayL>{formattedValue}</Typography.displayL>
 		</StyledStatCard>
-	);
+	)
 }
-export default Card;
+export default Card
