@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
-import { formatDate } from 'utils';
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
+import { formatNumber, formatDate } from 'utils';
 import { SHORT_TERM_DAYS } from 'constants/index';
 import { Typography } from 'theme';
 
-// Note: with ReChart, I am unable to use Typography to set the x and y axis tick styles
+// Used in custom labels and ticks
+const foreignObjectWidth = 100;
+const foreignObjectHeight = 30;
+const numberOfXAxisTicks = 3;
 
 const cursorConfig = {
 	stroke: 'gray', // Can't use theme here
@@ -27,6 +30,22 @@ const StyledTooltip = styled.div`
 	border-radius: ${({ theme }) => theme.border.radius};
 	background-color: ${({ theme }) => theme.color.bg1};
 	transform: translate(${({ translationX }) => translationX}px);
+`;
+
+const StyledCustomXTick = styled.div`
+	text-align: center;
+`;
+
+const StyledCustomYTick = styled.div`
+	text-align: left;
+`;
+
+const StyledAvgLabel = styled.div`
+	display: inline-block;
+	padding: 0 8px;
+	border-radius: ${({ theme }) => theme.border.radius};
+	background-color: ${({ theme }) => theme.color.bg0};
+	text-align: left;
 `;
 
 function CustomTooltip({ coordinate, toolTipWidth, viewBox, setHoverDate, showTime, payload }) {
@@ -57,18 +76,58 @@ function CustomTooltip({ coordinate, toolTipWidth, viewBox, setHoverDate, showTi
 	}
 }
 
-function CustomXTick({ x, y, payload, showTime, fill }) {
+function CustomXTick({ x, y, payload, showTime }) {
 	const date = new Date(payload.value);
 	const formattedDate = formatDate(date, showTime);
+	// Render foreignObject first, as this allows us to render html and not just svg
 	return (
-		<text fill={fill} x={x} y={y + 15} textAnchor="middle">
-			{formattedDate}
-		</text>
+		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
+			<StyledCustomXTick>
+				<Typography.subheader>{formattedDate}</Typography.subheader>
+			</StyledCustomXTick>
+		</foreignObject>
+	);
+}
+
+function CustomYTick({ x, y, payload }) {
+	let formattedValue = formatNumber(payload.value, '%', 1); // TODO: make so it can take generic values
+	return (
+		<foreignObject x={x} y={y - 15} width={foreignObjectWidth} height={foreignObjectHeight}>
+			<StyledCustomYTick>
+				<Typography.subheader>{formattedValue}</Typography.subheader>
+			</StyledCustomYTick>
+		</foreignObject>
+	);
+}
+
+function AvgLabel({ viewBox, avg }) {
+	return (
+		<foreignObject
+			x={viewBox.x + viewBox.width}
+			y={viewBox.y - foreignObjectHeight / 2}
+			width={foreignObjectWidth}
+			height={foreignObjectHeight}
+		>
+			<StyledAvgLabel>
+				<Typography.subheader>{formatNumber(avg, '%')}</Typography.subheader>
+			</StyledAvgLabel>
+		</foreignObject>
 	);
 }
 
 export default function MultilineChart({ data, selectedCoinsAndColors, setHoverDate }) {
 	const theme = useTheme();
+	const [avg, setAvg] = useState(null);
+
+	useEffect(() => {
+		// Only display avg if 1 coin is selected
+		if (selectedCoinsAndColors.length !== 1) {
+			setAvg(null);
+		} else {
+			const avg = getAvg(data, selectedCoinsAndColors[0].name);
+			setAvg(avg);
+		}
+	}, [data, selectedCoinsAndColors]);
 
 	function shouldShowTime() {
 		if (!data) return false;
@@ -90,7 +149,8 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				key={i}
 				dot={false}
 				activeDot={activeDotConfig}
-				isAnimationActive={false}
+				isAnimationActive={true}
+				animationDuration={750}
 			/>
 		);
 	});
@@ -98,22 +158,21 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 	const showTime = shouldShowTime();
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
+	const xAxisTicks = getXTicks(data, numberOfXAxisTicks);
 
 	return (
 		<ResponsiveContainer width="100%" height={300}>
-			<LineChart margin={{ right: 20, left: 0, top: 0, bottom: 0 }} data={data}>
-				{lines}
-				<XAxis
-					dataKey="blockTime"
-					tick={<CustomXTick fill={theme.color.secondary1} showTime={showTime} />}
-					tickCount={3}
-				/>
+			<LineChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
+				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
+				<XAxis dataKey="blockTime" tick={<CustomXTick showTime={showTime} />} tickLine={false} ticks={xAxisTicks} />
 				<YAxis
 					datekey="price"
 					padding={{ top: 30 }} // Space for tooltip above the data
-					orientation="left"
-					tick={{ fill: theme.color.secondary1 }}
-					tickFormatter={(val) => val * 100}
+					orientation="right"
+					tick={<CustomYTick />}
+					width={55}
+					axisLine={false}
+					tickLine={false}
 				/>
 				<Tooltip
 					cursor={cursorConfig}
@@ -122,7 +181,35 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 					isAnimationActive={false}
 					offset={toolTipOffset}
 				/>
+				<ReferenceLine y={avg} stroke={theme.color.secondary1} strokeDasharray="3 3" label={<AvgLabel avg={avg} />} />
+				{lines}
 			</LineChart>
 		</ResponsiveContainer>
 	);
+}
+
+// Helpers
+function getAvg(data, coinName) {
+	if (!data || data.length === 0 || !coinName) return null;
+
+	let avg = data.reduce((acc, obj) => {
+		return acc + obj[coinName];
+	}, 0);
+	avg /= data.length;
+
+	return avg;
+}
+
+function getXTicks(data, num) {
+	if (!data) return [];
+
+	let ticks = Array(num);
+	const inc = data.length / num;
+	const offset = (data.length - inc * (num - 1)) / 2;
+	for (let i = 0; i < num; i++) {
+		const index = parseInt(inc * i + offset);
+		ticks[i] = data[index].blockTime;
+	}
+
+	return ticks;
 }
