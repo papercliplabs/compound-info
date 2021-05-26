@@ -34,7 +34,7 @@ export default function Market({ match }) {
 		<>
 			<Row>
 				<Typography.body>
-					<StyledInternalLink to={'/'}>Market </StyledInternalLink>
+					<StyledInternalLink to={'/'}>Market</StyledInternalLink>
 					{' > '}
 					<StyledExternalLink href={etherscanLink}>
 						c{activeCoin.name} ({shortAddress(coinData.cTokenAddress)})

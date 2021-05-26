@@ -129,7 +129,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 				name={coinState.name}
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null}
-				value={formatNumber(coinData.value ? coinData.value : 0, '%', true)}
+				value={formatNumber(coinData.value ? coinData.value : 0, '%')}
 				onClick={() => handleClick(i)}
 				allowDeselect={allowDeselect}
 			/>
