@@ -17,11 +17,12 @@ export function formatDate(date, withTime) {
 	return formattedDate;
 }
 
-export function formatNumber(number, unit) {
+export function formatNumber(number, unit, decimals = null) {
 	const K = 1000;
 	const M = 1000000;
 	const B = 1000000000;
 	const T = 1000000000000;
+	let defaultDecimals = 2;
 
 	let postFix = '';
 	let unitPostfix = false;
@@ -59,11 +60,15 @@ export function formatNumber(number, unit) {
 
 	// If its an interger, flag to rount to whole number
 	if (formattedNum % 1 === 0) {
-		isInt = true;
+		defaultDecimals = 0;
 	}
 
 	// Applying configs
-	formattedNum = isInt ? formattedNum.toFixed(0).toString() : formattedNum.toFixed(2).toString();
+	if (decimals !== null) {
+		formattedNum = formattedNum.toFixed(decimals).toString();
+	} else {
+		formattedNum = formattedNum.toFixed(defaultDecimals).toString();
+	}
 	formattedNum += postFix;
 	formattedNum = unit ? (unitPostfix ? formattedNum + unit : unit + formattedNum) : formattedNum;
 

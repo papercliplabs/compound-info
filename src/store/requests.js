@@ -89,7 +89,6 @@ export async function requestSummaryData() {
 	}
 
 	let data = await response.json();
-	console.log(data);
 	const metaData = data.meta; // Holds unique suppliers and borrowers for all markets
 	data = data.cToken;
 
