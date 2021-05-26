@@ -1,9 +1,5 @@
-import React from 'react'
-import styled, {
-	css,
-	createGlobalStyle,
-	ThemeProvider,
-} from 'styled-components'
+import React from 'react';
+import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components';
 
 // Media queries
 const mediaQuerySizes = {
@@ -11,16 +7,17 @@ const mediaQuerySizes = {
 	small: 700,
 	medium: 960,
 	large: 1280,
-}
+};
 
 const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 	acc[key] = (...args) => css`
 		@media (max-width: ${mediaQuerySizes[key]}px) {
 			${css(...args)};
 		}
-	`
-	return acc
-}, {})
+	`;
+	return acc;
+}, {});
+
 
 // General theme
 const theme = (darkMode) => ({
