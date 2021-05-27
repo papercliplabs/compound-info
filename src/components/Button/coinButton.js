@@ -10,6 +10,7 @@ const StyledCoinButton = styled(OptionButton)`
 	width: 104px;
 	height: 50px;
 	display: flex;
+	align-items: center;
 
 	${({ active }) =>
 		active &&
@@ -20,86 +21,38 @@ const StyledCoinButton = styled(OptionButton)`
 		`}
 `;
 
-const HidingContainer = styled.div`
-	display: flex;
-	box-sizing: content-box;
-	height: 100%;
-	float: left;
-	opacity: 1;
-	width: 12px;
-	padding-left: 4px;
-	padding-right: 4px;
-
-	${({ hidden }) =>
-		hidden &&
-		css`
-			opacity: 0;
-			width: 0;
-			padding: 0;
-		`}
-`;
-
 const SelectedIndicator = styled.div`
+	display: ${({ hidden }) => (hidden ? 'none' : 'flex')};
 	background-color: ${({ selectedColor }) => selectedColor};
 	width: 12px;
 	height: 12px;
 	border-radius: 6px;
-	margin: auto;
-`;
-
-const CoinLogoContainer = styled.div`
-	padding-left: 5px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	height: 100%;
+	margin-right: ${({ theme }) => theme.spacing.default};
 `;
 
 const CoinInfo = styled.div`
 	display: flex;
-	box-sizing: content-box;
 	flex-direction: column;
-	width: 50px;
-	padding-left: 5px;
-`;
-
-const CoinName = styled.div`
-	display: flex;
-	height: 50%;
-	align-items: flex-end;
-`;
-
-const CoinValue = styled.div`
-	height: 50%;
 	text-align: left;
 `;
 
 const CloseIndicator = styled.img`
+	display: ${({ hidden }) => (hidden ? 'none' : 'flex')};
 	height: 16px;
 	width: 16px;
-	margin: auto;
+	margin-left: ${({ theme }) => theme.spacing.default};
 `;
 
 function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
 	return (
 		<StyledCoinButton selectedColor={color} active={selected} onClick={onClick} allowDeselect={allowDeselect}>
-			<HidingContainer hidden={!selected}>
-				<SelectedIndicator selectedColor={color} />
-			</HidingContainer>
-			<CoinLogoContainer>
-				<CoinLogo name={name} />
-			</CoinLogoContainer>
+			<SelectedIndicator selectedColor={color} hidden={!selected} />
+			<CoinLogo name={name} />
 			<CoinInfo>
-				<CoinName>
-					<Typography.header>{name}</Typography.header>
-				</CoinName>
-				<CoinValue>
-					<Typography.subheader>{value}</Typography.subheader>
-				</CoinValue>
+				<Typography.header useDefaultLineHeight>{name}</Typography.header>
+				<Typography.subheader useDefaultLineHeight>{value}</Typography.subheader>
 			</CoinInfo>
-			<HidingContainer hidden={!selected || !allowDeselect}>
-				<CloseIndicator src={closeIcon} />
-			</HidingContainer>
+			<CloseIndicator src={closeIcon} hidden={!selected || !allowDeselect} />
 		</StyledCoinButton>
 	);
 }
