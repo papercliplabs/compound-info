@@ -45,8 +45,9 @@ const theme = (darkMode) => ({
 
 	spacing: {
 		default: '8px',
+		medium: '12px',
 		card: '16px',
-		roomy: '24px',
+		large: '24px',
 	},
 });
 
@@ -102,7 +103,6 @@ export const GlobalStyle = createGlobalStyle`
 		width: 100%;
 		height: 100%;
 		font-weight: 400;
-		overflow-x: hidden;
 		color: ${({ theme }) => theme.color.primary1};
 		-webkit-font-smoothing: antialiased;
   		-moz-osx-font-smoothing: grayscale;

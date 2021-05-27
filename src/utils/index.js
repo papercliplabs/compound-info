@@ -75,6 +75,10 @@ export function formatNumber(number, unit, decimals = null) {
 	return formattedNum;
 }
 
+export function weiToGwei(wei) {
+	return wei * 10 ** -9;
+}
+
 export function getCoinInfo(coinName) {
 	const coin = COINS.filter((coin) => coin.name === coinName);
 	return !coin || coin.length !== 1 ? null : coin[0];

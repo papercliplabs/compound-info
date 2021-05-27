@@ -7,14 +7,9 @@ export default function GlobalStoreProvider(props) {
 	const [store, setStore] = useState({});
 
 	// Interfaces used by hooks to update the store on first requests
-	const updateStore = useCallback(
-		(key, data) => {
-			let newStore = Object.assign({}, store); // Shallow copy
-			newStore[key] = data;
-			setStore(newStore);
-		},
-		[store]
-	);
+	const updateStore = useCallback((key, data) => {
+		setStore((prevStore) => ({ ...prevStore, [key]: data }));
+	}, []);
 
 	return <GlobalStoreContext.Provider value={[store, { updateStore }]} {...props} />;
 }

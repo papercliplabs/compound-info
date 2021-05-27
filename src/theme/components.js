@@ -21,6 +21,7 @@ export const StyledExternalLink = styled.a`
 export const StyledLogo = styled.img`
 	width: ${({ size }) => size ?? '24px'};
 	height: ${({ size }) => size ?? '24px'};
+	border-radius: ${({ borderRadius, size }) => borderRadius ?? 'calc(' + size + '/ 2)'};
 	margin-right: ${({ theme, marginRight }) => marginRight ?? theme.spacing.default};
 `;
 
@@ -37,3 +38,15 @@ export function SectionTitle({ title }) {
 		</StyledSectionTitle>
 	);
 }
+
+export const HideSmall = styled.div`
+	${({ theme }) => theme.mediaWidth.small`
+		display: none;
+	`}
+`;
+
+export const Break = styled.div`
+	height: ${({ theme }) => theme.border.thickness};
+	background-color: ${({ theme }) => theme.color.border1};
+	width: 100%;
+`;
