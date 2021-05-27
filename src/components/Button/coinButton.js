@@ -7,7 +7,6 @@ import CoinLogo from 'components/CoinLogo';
 
 const StyledCoinButton = styled(OptionButton)`
 	background-color: ${({ theme }) => theme.color.bg1};
-	width: 104px;
 	height: 50px;
 	display: flex;
 	align-items: center;
@@ -15,7 +14,6 @@ const StyledCoinButton = styled(OptionButton)`
 	${({ active }) =>
 		active &&
 		css`
-			width: ${({ allowDeselect }) => (allowDeselect ? '143px' : '120px')};
 			border-width: 2px;
 			border-color: ${({ selectedColor }) => selectedColor};
 		`}
@@ -31,6 +29,7 @@ const SelectedIndicator = styled.div`
 `;
 
 const CoinInfo = styled.div`
+	min-width: 50px;
 	display: flex;
 	flex-direction: column;
 	text-align: left;
