@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGlobalStore } from './index';
-import { requestApyData, requestSummaryData } from './requests';
+import { requestGasData, requestApyData, requestSummaryData } from './requests';
 import { queryApyData, querySummaryData } from './queries';
 
 // Custom hooks which are used by the app to interface with the store
+const retryTime = 2000; // Retry in 1000ms if there was an error
+const ethToUsdKey = 'ethToUsd';
 
 export function useApyData(dataSelectorKey, timeSelector) {
 	const [store, { updateStore }] = useGlobalStore();
@@ -36,15 +38,16 @@ export function useApyData(dataSelectorKey, timeSelector) {
 export function useSummaryData(coinName) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const key = 'summaryData';
-	const summaryData = store[key];
+	const summaryDataKey = 'summaryData';
+	const summaryData = store[summaryDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already:
 			if (!summaryData) {
-				const data = await requestSummaryData();
-				updateStore(key, data);
+				const [data, ethToUsd] = await requestSummaryData();
+				updateStore(summaryDataKey, data);
+				updateStore(ethToUsdKey, ethToUsd);
 			}
 		}
 
@@ -59,4 +62,32 @@ export function useSummaryData(coinName) {
 	}, [coinName, summaryData]);
 
 	return queriedData;
+}
+
+export function useEthToUsd() {
+	const [store, { updateStore }] = useGlobalStore();
+	const ethToUsd = store[ethToUsdKey];
+
+	return ethToUsd;
+}
+
+export function useGasData() {
+	const [store, { updateStore }] = useGlobalStore();
+	const key = 'gasData';
+	const gasData = store[key];
+
+	useEffect(() => {
+		let interval = null;
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already:
+			if (!gasData) {
+				const data = await requestGasData();
+				updateStore(key, data);
+			}
+		}
+
+		checkForData();
+	}, [gasData, updateStore]);
+
+	return gasData;
 }

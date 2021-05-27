@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import OptionButton from './';
+import { OptionButton } from './';
 import { Typography } from 'theme';
 import closeIcon from 'assets/closeIcon.svg';
 import CoinLogo from 'components/CoinLogo';

@@ -94,7 +94,7 @@ export async function requestSummaryData() {
 
 	// Conversion factor using price of USD = USDC
 	const usdcData = data.filter((obj) => obj.underlying_symbol === 'USDC')[0];
-	const ethToUSD = 1 / parseFloat(usdcData.underlying_price.value);
+	const ethToUsd = 1 / parseFloat(usdcData.underlying_price.value);
 
 	const totals = {
 		totalSupply: 0,
@@ -105,7 +105,7 @@ export async function requestSummaryData() {
 
 	// Transform into more useful form
 	data = data.map((coinData) => {
-		const underlyingToUsd = parseFloat(coinData.underlying_price.value) * ethToUSD;
+		const underlyingToUsd = parseFloat(coinData.underlying_price.value) * ethToUsd;
 		const cTokenToUnderlying = parseFloat(coinData.exchange_rate.value);
 		const cTokenToUsd = cTokenToUnderlying * underlyingToUsd;
 
@@ -157,7 +157,7 @@ export async function requestSummaryData() {
 
 	data['ALL'] = totals;
 
-	return data;
+	return [data, ethToUsd];
 }
 
 // Example of response data on a single coin: (https://compound.finance/docs/api#CTokenService)
@@ -185,3 +185,19 @@ export async function requestSummaryData() {
 //		underlying_price: {value: "0.207669553249863714"}
 //		underlying_symbol: "COMP"
 //	}
+
+export async function requestGasData() {
+	console.log('fetching gas data');
+	const response = await fetch(URLS.GAS_NOW);
+
+	if (!response.ok) {
+		const error = await response.text();
+		console.log('Error requesting gas Data:' + error);
+		return null;
+	}
+
+	let data = await response.json();
+	data = data.data;
+
+	return data;
+}
