@@ -48,6 +48,19 @@ export const URLS = {
 	APY_LONG: 'https://api.flipsidecrypto.com/api/v2/queries/ebad7f35-11e0-4561-9346-fa87c88d7598/data/latest',
 	APY_SHORT: 'https://api.flipsidecrypto.com/api/v2/queries/dc338ecd-cdce-4c0b-ae9e-ac7978c2469e/data/latest',
 	SUMMARY_DATA: 'https://api.compound.finance/api/v2/ctoken',
+	PAPERCLIP_HOME: 'https://papercliplabs.github.io/home/',
+	GAS_NOW: 'https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo',
 };
 
 export const SHORT_TERM_DAYS = 8; // For distinguising between short and long term data, based on the time selector
+
+// Gas Tracker constants
+export const SPEED_SELECTORS = [
+	{ name: 'Fast', key: 'fast' },
+	{ name: 'Standard', key: 'standard' },
+];
+
+export const GAS_USED = [
+	{ action: 'Supply USDC', gasUsed: 193404 },
+	{ action: 'Borrow USDC', gasUsed: 332745 },
+];

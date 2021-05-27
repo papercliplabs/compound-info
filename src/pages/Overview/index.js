@@ -9,7 +9,7 @@ import CoinTable from 'components/CoinTable';
 import { useSummaryData } from 'store/hooks';
 
 const TableCard = styled(Card)`
-	padding: 0 ${({ theme }) => theme.spacing.roomy};
+	padding: 0 ${({ theme }) => theme.spacing.large};
 `;
 
 const tableDataKeysAndUnits = [

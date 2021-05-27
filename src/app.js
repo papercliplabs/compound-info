@@ -1,8 +1,15 @@
 import React from 'react';
+import Header from 'components/Header';
 import Overview from 'pages/Overview';
 import Market from 'pages/Market';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
+
+const HeaderWrapper = styled.div`
+	position: fixed;
+	width: 100%;
+	z-index: 2;
+`;
 
 const StyledBody = styled.div`
 	display: flex;
@@ -11,6 +18,7 @@ const StyledBody = styled.div`
 	justify-content: center;
 	width: 100%;
 	padding: 40px;
+	padding-top: 100px;
 	column-gap: ${({ theme }) => theme.spacing.card};
 	row-gap: ${({ theme }) => theme.spacing.card};
 
@@ -19,13 +27,17 @@ const StyledBody = styled.div`
 	}
 
 	${({ theme }) => theme.mediaWidth.small`
-		padding: 40px 15px;
+		padding-left: 15px;
+		padding-right: 15px;
 	`}
 `;
 
 function App() {
 	return (
 		<HashRouter>
+			<HeaderWrapper>
+				<Header />
+			</HeaderWrapper>
 			<StyledBody>
 				<Switch>
 					<Route exact strict path="/" component={Overview} />
