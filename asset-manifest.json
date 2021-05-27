@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/compound-info/static/js/main.134673ba.chunk.js",
-    "main.js.map": "/compound-info/static/js/main.134673ba.chunk.js.map",
+    "main.js": "/compound-info/static/js/main.71f1f101.chunk.js",
+    "main.js.map": "/compound-info/static/js/main.71f1f101.chunk.js.map",
     "runtime-main.js": "/compound-info/static/js/runtime-main.803842cc.js",
     "runtime-main.js.map": "/compound-info/static/js/runtime-main.803842cc.js.map",
-    "static/js/2.f4b9fae0.chunk.js": "/compound-info/static/js/2.f4b9fae0.chunk.js",
-    "static/js/2.f4b9fae0.chunk.js.map": "/compound-info/static/js/2.f4b9fae0.chunk.js.map",
+    "static/js/2.21982c2a.chunk.js": "/compound-info/static/js/2.21982c2a.chunk.js",
+    "static/js/2.21982c2a.chunk.js.map": "/compound-info/static/js/2.21982c2a.chunk.js.map",
     "index.html": "/compound-info/index.html",
-    "static/js/2.f4b9fae0.chunk.js.LICENSE.txt": "/compound-info/static/js/2.f4b9fae0.chunk.js.LICENSE.txt",
+    "static/js/2.21982c2a.chunk.js.LICENSE.txt": "/compound-info/static/js/2.21982c2a.chunk.js.LICENSE.txt",
     "static/media/BAT.bfe40f59.svg": "/compound-info/static/media/BAT.bfe40f59.svg",
     "static/media/COMP.bfe40f59.svg": "/compound-info/static/media/COMP.bfe40f59.svg",
     "static/media/DAI.f2f3fc6b.svg": "/compound-info/static/media/DAI.f2f3fc6b.svg",
@@ -18,11 +18,14 @@
     "static/media/WBTC.eada7d98.svg": "/compound-info/static/media/WBTC.eada7d98.svg",
     "static/media/ZRX.04b93bc3.svg": "/compound-info/static/media/ZRX.04b93bc3.svg",
     "static/media/closeIcon.9cda8bed.svg": "/compound-info/static/media/closeIcon.9cda8bed.svg",
-    "static/media/compoundLogo.dfb35bbc.svg": "/compound-info/static/media/compoundLogo.dfb35bbc.svg"
+    "static/media/compoundLogo.dfb35bbc.svg": "/compound-info/static/media/compoundLogo.dfb35bbc.svg",
+    "static/media/dropDownIcon.f9ea52d8.svg": "/compound-info/static/media/dropDownIcon.f9ea52d8.svg",
+    "static/media/gas.a3c6fe90.svg": "/compound-info/static/media/gas.a3c6fe90.svg",
+    "static/media/headerLogo.64ee3556.svg": "/compound-info/static/media/headerLogo.64ee3556.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.803842cc.js",
-    "static/js/2.f4b9fae0.chunk.js",
-    "static/js/main.134673ba.chunk.js"
+    "static/js/2.21982c2a.chunk.js",
+    "static/js/main.71f1f101.chunk.js"
   ]
 }
