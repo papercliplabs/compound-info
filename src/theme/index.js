@@ -110,6 +110,7 @@ export const GlobalStyle = createGlobalStyle`
 			radial-gradient(100% 30% at 100% 0%, rgba(173, 0, 255, 0.1) 0%, rgba(27, 25, 29, 0) 100%), 
 			radial-gradient(100% 30% at 0% 0%, rgba(0, 255, 194, 0.1) 0%, rgba(27, 25, 29, 0) 100%);
 		background-color: ${({ theme }) => theme.color.bg0};
+		background-repeat: no-repeat;
 	}
 
 	* {
