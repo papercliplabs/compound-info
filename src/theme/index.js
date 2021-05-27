@@ -56,7 +56,7 @@ const StyledText = styled.div`
 	color: ${({ color, theme }) => theme.color[color]};
 	font-size: ${({ fontSize }) => fontSize}px;
 	font-weight: ${({ fontWeight }) => fontWeight};
-	line-height: ${({ lineHeight }) => lineHeight}px;
+	line-height: ${({ lineHeight, useDefaultLineHeight }) => (useDefaultLineHeight ? 'auto' : lineHeight + 'px')};
 `;
 
 export const Typography = {
