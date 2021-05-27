@@ -31,7 +31,8 @@ export const ResponsiveRow = styled(Row)`
 	justify-content: space-between;
 	${({ theme }) => theme.mediaWidth.small`
 		flex-direction: column;
-		row-gap: 5px;
+		row-gap: ${({ theme }) => theme.spacing.default};
+		column-gap: ${({ theme }) => theme.spacing.default};
 	`}
 `;
 

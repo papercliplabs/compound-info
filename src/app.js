@@ -29,6 +29,8 @@ const StyledBody = styled.div`
 	${({ theme }) => theme.mediaWidth.small`
 		padding-left: 15px;
 		padding-right: 15px;
+		column-gap: ${({ theme }) => theme.spacing.default};
+		row-gap: ${({ theme }) => theme.spacing.default};
 	`}
 `;
 
