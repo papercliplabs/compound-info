@@ -1,13 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import { RowSpaced } from 'components/Row';
+import Row from 'components/Row';
 import Column from 'components/Column';
 import { Link } from 'react-router-dom';
 import { Typography } from 'theme';
 import { formatNumber, camelCaseToSentenceCase } from 'utils';
 import CoinLogo from 'components/CoinLogo';
+import { Break } from 'theme/components';
 
-const StyledTableRow = styled(RowSpaced)`
+const StyledTableRow = styled(Row)`
+	justify-content: space-between;
 	padding: 20px 0;
 `;
 
@@ -26,12 +28,6 @@ const RowEntry = styled(Typography.body)`
 	flex-direction: row;
 	justify-content: ${({ left }) => (left ? 'flex-begin' : 'flex-end')};
 	align-items: center;
-	width: 100%;
-`;
-
-const Break = styled.div`
-	height: ${({ theme }) => theme.border.thickness};
-	background-color: ${({ theme }) => theme.color.border1};
 	width: 100%;
 `;
 

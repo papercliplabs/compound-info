@@ -27,11 +27,8 @@ export const ScrollRow = styled(Row)`
 	}
 `;
 
-export const RowSpaced = styled(Row)`
+export const ResponsiveRow = styled(Row)`
 	justify-content: space-between;
-`;
-
-export const ResponsiveRow = styled(RowSpaced)`
 	${({ theme }) => theme.mediaWidth.small`
 		flex-direction: column;
 		row-gap: 5px;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import OptionButton from 'components/Button';
+import { OptionButton } from 'components/Button';
 import MultilineChart from 'components/multilineChart';
 import Row, { ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
 import Column from 'components/Column';
