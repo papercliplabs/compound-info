@@ -167,7 +167,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				<XAxis dataKey="blockTime" tick={<CustomXTick showTime={showTime} />} tickLine={false} ticks={xAxisTicks} />
 				<YAxis
 					datekey="price"
-					padding={{ top: 30 }} // Space for tooltip above the data
+					padding={{ top: 40 }} // Space for tooltip above the data
 					orientation="right"
 					tick={<CustomYTick />}
 					width={55}
