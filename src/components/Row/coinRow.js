@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useTheme } from 'styled-components';
 import CoinButton from '../Button/coinButton';
 import { ScrollRow } from './index';
 import { formatNumber } from 'utils';
-import { COINS, LINE_CHART_COLORS } from 'constants/index';
+import { COINS } from 'constants/index';
 
 function defaultCoinStates() {
 	return COINS.map((coinData, i) => {
@@ -11,7 +12,8 @@ function defaultCoinStates() {
 }
 
 export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
-	const [colorStack, setColorStack] = useState(LINE_CHART_COLORS.reverse());
+	const theme = useTheme();
+	const [colorStack, setColorStack] = useState([...theme.color.lineChartColors].reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates());
 	const loaded = useRef(false);
 
@@ -29,7 +31,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 			let newColorStack = colorStack.slice();
 			let newCoinStates = JSON.parse(JSON.stringify(coinStates)); // deep copy
 
-			const maxCoinsSelected = LINE_CHART_COLORS.length;
+			const maxCoinsSelected = theme.color.lineChartColors.length;
 			const currentPosition = newCoinStates[i].selectedPosition;
 			const allowDeselect = coinList.filter((coin) => coin.name === coinStates[i].name)[0].allowDeselect;
 			const numberSelected = getNumberSelected();
@@ -80,7 +82,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 			setColorStack(newColorStack);
 			setCoinStates(newCoinStates);
 		},
-		[colorStack, coinStates, getNumberSelected, coinList]
+		[colorStack, coinStates, getNumberSelected, coinList, theme.color.lineChartColors.length]
 	);
 
 	// On mount, set up the default selected and colors
@@ -113,10 +115,10 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 
 	// When activeCoin changes, reset default selected
 	useEffect(() => {
-		setColorStack(LINE_CHART_COLORS.reverse());
+		setColorStack([...theme.color.lineChartColors].reverse()); // Array copy
 		setCoinStates(defaultCoinStates());
 		loaded.current = false;
-	}, [activeCoin, setCoinStates]);
+	}, [activeCoin, setCoinStates, theme.color.lineChartColors]);
 
 	// Render
 	const numberSelected = getNumberSelected();
