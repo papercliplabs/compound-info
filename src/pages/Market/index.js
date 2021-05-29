@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import ChartContainer from 'components/chartContainer';
 import { useApyData, useSummaryData } from 'store/hooks';
-import Card, { StatCard } from 'components/Card';
+import Card, { StatCard, ProgressCard } from 'components/Card';
 import Row, { ResponsiveRow } from 'components/Row';
 import { Typography } from 'theme';
 import { APY_DATA_SELECTORS } from 'constants/index';
@@ -48,7 +48,13 @@ export default function Market({ match }) {
 			<SectionTitle title="Market Overview" />
 			<ResponsiveRow gap={gap}>
 				<StatCard title={'Total supplied'} value={coinData.totalSupply} unit="$" />
-				<StatCard title={'Utilization'} value={coinData.utilization} unit="%" />
+				<ProgressCard
+					title={'Utilization'}
+					value={coinData.utilization}
+					unit="%"
+					size={60}
+					progressPercent={coinData.utilization}
+				/>
 				<StatCard title={'Reserves'} value={coinData.totalReserves} unit="$" />
 			</ResponsiveRow>
 			<SectionTitle title="APY Performence" />
