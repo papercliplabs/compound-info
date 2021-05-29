@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import ChartContainer from 'components/chartContainer';
@@ -18,6 +18,10 @@ export default function Market({ match }) {
 	const activeCoinName = match.params.coin;
 	const activeCoin = getCoinInfo(activeCoinName);
 	const coinData = useSummaryData(activeCoinName);
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [match]);
 
 	// Redirect to home if the param name doesn't match a coin
 	if (!activeCoin) {
