@@ -4,7 +4,7 @@ import { Typography } from 'theme';
 import { StyledLogo, SectionTitle } from 'theme/components';
 import Row, { ResponsiveRow } from 'components/Row';
 import compoundLogo from 'assets/compoundLogo.svg';
-import Card, { StatCard } from 'components/Card';
+import Card, { StatCard, ProgressCard } from 'components/Card';
 import CoinTable from 'components/CoinTable';
 import { useSummaryData } from 'store/hooks';
 
@@ -43,7 +43,13 @@ export default function Overview() {
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
 				<StatCard title={'Total reserves'} value={protocolData.totalReserves} unit="$" />
-				<StatCard title={'Utilization'} value={protocolData.utilization} unit="%" />
+				<ProgressCard
+					title={'Utilization'}
+					value={protocolData.utilization}
+					unit="%"
+					size={60}
+					progressPercent={protocolData.utilization}
+				/>
 				<StatCard title={'Total borrowed'} value={protocolData.totalBorrow} unit="$" />
 			</ResponsiveRow>
 			<SectionTitle title="All Markets" />

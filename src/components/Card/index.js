@@ -2,6 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { Typography } from 'theme';
 import { formatNumber } from 'utils';
+import ProgressRing from 'components/ProgressRing';
+import Row from 'components/Row';
+import Column from 'components/Column';
 
 const Card = styled.div`
 	display: flex;
@@ -17,6 +20,8 @@ const Card = styled.div`
 	row-gap: 8px;
 `;
 
+export default Card;
+
 const StyledStatCard = styled(Card)`
 	flex-direction: column;
 `;
@@ -30,4 +35,17 @@ export function StatCard({ title, value, unit }) {
 		</StyledStatCard>
 	);
 }
-export default Card;
+
+// progressValue is a number from 0 to 1
+export function ProgressCard({ title, value, unit, size, progressValue }) {
+	const formattedValue = formatNumber(value, unit);
+	return (
+		<Card>
+			<Column align="left">
+				<Typography.header>{title}</Typography.header>
+				<Typography.displayL>{formattedValue}</Typography.displayL>
+			</Column>
+			<ProgressRing value={progressValue ?? value} size={size} />
+		</Card>
+	);
+}

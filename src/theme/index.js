@@ -34,6 +34,11 @@ const theme = (darkMode) => ({
 
 		linkInternal: darkMode ? '#0095D5' : '#0095D5',
 		linkExternal: darkMode ? '#808994' : '#586069',
+
+		// The colors used for coin selection, and chart lines, these will only be this many allowed selected at a time, first is used as base color for charts and progress bar
+		lineChartColors: darkMode
+			? ['#0095D5', '#F9A234', '#FF7EA8', '#00CDAF', '#885FB1']
+			: ['#0095D5', '#F9A234', '#FF7EA8', '#00CDAF', '#885FB1'],
 	},
 
 	border: {

@@ -32,9 +32,6 @@ export const TIME_SELECTORS = [
 	{ name: 'All', days: null },
 ];
 
-// The colors used for coin selection, and lines, these will only be this many allowed selected at a time
-export const LINE_CHART_COLORS = ['#F9A234', '#FF7EA8', '#0095D5', '#00CDAF', '#885FB1'];
-
 //// APY Chart config
 // The active coin is always selected, if null there is no active coin (i.e non coin specific plot)
 export const APY_DATA_SELECTORS = [
