@@ -1,7 +1,7 @@
 import { COINS } from 'constants/index';
 
 // Formats a javascript date object as the month and day.
-// If withTime, also adds the time of day
+// If withTime, adds the time of day, otherwise adds the year (short term vs long term data)
 export function formatDate(date, withTime) {
 	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 	let formattedDate = months[date.getMonth()] + ' ' + date.getDate();
@@ -12,6 +12,8 @@ export function formatDate(date, withTime) {
 		};
 		const time = date.toLocaleTimeString('en-US', timeOptions);
 		formattedDate += ' ' + time;
+	} else {
+		formattedDate += ' ' + date.getFullYear().toString();
 	}
 
 	return formattedDate;
