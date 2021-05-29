@@ -4,6 +4,7 @@ import { OptionButton } from './';
 import { Typography } from 'theme';
 import closeIcon from 'assets/closeIcon.svg';
 import CoinLogo from 'components/CoinLogo';
+import { StyledInternalLink } from 'theme/components';
 
 const StyledCoinButton = styled(OptionButton)`
 	background-color: ${({ theme }) => theme.color.bg1};
@@ -40,18 +41,37 @@ const CloseIndicator = styled.img`
 	height: 16px;
 	width: 16px;
 	margin-left: ${({ theme }) => theme.spacing.default};
+
+	:hover {
+		cursor: pointer;
+	}
+`;
+
+const HoverText = styled.span`
+	:hover {
+		color: ${({ theme }) => theme.color.secondary1};
+	}
 `;
 
 function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
+	const open = selected ? null : onClick;
 	return (
-		<StyledCoinButton selectedColor={color} active={selected} onClick={onClick} allowDeselect={allowDeselect}>
+		<StyledCoinButton selectedColor={color} active={selected} onClick={open} allowDeselect={allowDeselect}>
 			<SelectedIndicator selectedColor={color} hidden={!selected} />
 			<CoinLogo name={name} />
 			<CoinInfo>
-				<Typography.header useDefaultLineHeight>{name}</Typography.header>
+				{selected && allowDeselect ? (
+					<StyledInternalLink to={'/' + name}>
+						<Typography.header useDefaultLineHeight>
+							<HoverText>{name}</HoverText>
+						</Typography.header>
+					</StyledInternalLink>
+				) : (
+					<Typography.header useDefaultLineHeight>{name}</Typography.header>
+				)}
 				<Typography.subheader useDefaultLineHeight>{value}</Typography.subheader>
 			</CoinInfo>
-			<CloseIndicator src={closeIcon} hidden={!selected || !allowDeselect} />
+			<CloseIndicator src={closeIcon} onClick={onClick} hidden={!selected || !allowDeselect} />
 		</StyledCoinButton>
 	);
 }

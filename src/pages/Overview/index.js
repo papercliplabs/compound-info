@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Typography } from 'theme';
 import { StyledLogo, SectionTitle } from 'theme/components';
@@ -23,6 +23,10 @@ export default function Overview() {
 	const theme = useTheme();
 	const gap = theme.spacing.card;
 	const summaryData = useSummaryData();
+
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 
 	if (!summaryData) {
 		return null; // Loading summary data
