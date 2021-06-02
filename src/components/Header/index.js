@@ -23,12 +23,7 @@ export default function Header() {
 	return (
 		<StyledHeader>
 			<Row padding={'0 ' + theme.spacing.large} justify="space-between">
-				<HideSmall>
-					<StyledExternalLink href={URLS.PAPERCLIP_HOME}>
-						<StyledLogo src={headerLogo} size="40px" />
-					</StyledExternalLink>
-				</HideSmall>
-				<Row justify="center">
+				<Row>
 					<StyledInternalLink to="/">
 						<Typography.displayL>Compound Info</Typography.displayL>
 					</StyledInternalLink>

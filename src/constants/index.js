@@ -47,6 +47,8 @@ export const URLS = {
 	SUMMARY_DATA: 'https://api.compound.finance/api/v2/ctoken',
 	PAPERCLIP_HOME: 'https://papercliplabs.github.io/home/',
 	GAS_NOW: 'https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo',
+	FLIPSIDE: 'https://www.flipsidecrypto.com/',
+	COMPOUND_DOCS: 'https://compound.finance/docs',
 };
 
 export const SHORT_TERM_DAYS = 8; // For distinguising between short and long term data, based on the time selector

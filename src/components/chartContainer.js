@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { OptionButton } from 'components/Button';
 import MultilineChart from 'components/multilineChart';
-import Row, { ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
+import Row, { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
 import Column from 'components/Column';
 import { Typography } from 'theme';
 import { COINS, TIME_SELECTORS } from 'constants/index';
@@ -28,6 +28,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues());
 	const data = useData(dataSelector.key, timeSelector);
+	const theme = useTheme();
 
 	// Set coin values when hover date changes
 	useEffect(() => {
@@ -58,9 +59,12 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const dataSelectorButtons = useMemo(() => {
 		return dataSelectors.map((selector, i) => {
 			return (
-				<OptionButton key={i} active={dataSelector === selector} onClick={() => setDataSelector(selector)}>
-					<Typography.subheader>{selector.name}</Typography.subheader>
-				</OptionButton>
+				<OptionButton
+					key={i}
+					buttonContent={selector.name}
+					active={dataSelector === selector}
+					onClick={() => setDataSelector(selector)}
+				/>
 			);
 		});
 	}, [dataSelector, dataSelectors, setDataSelector]);
@@ -68,9 +72,13 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 	const timeSelectorButtons = useMemo(() => {
 		return TIME_SELECTORS.map((selector, i) => {
 			return (
-				<OptionButton key={i} active={timeSelector === selector} onClick={() => setTimeSelector(selector)}>
-					<Typography.subheader>{selector.name}</Typography.subheader>
-				</OptionButton>
+				<OptionButton
+					key={i}
+					buttonContent={selector.name}
+					active={timeSelector === selector}
+					width="50px"
+					onClick={() => setTimeSelector(selector)}
+				/>
 			);
 		});
 	}, [timeSelector, setTimeSelector]);
@@ -88,32 +96,30 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 
 	return (
 		<StyledChartContainer>
-			<ResponsiveRow>
+			<ResponsiveRow align="flex-start">
 				<Column>
 					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
-						<Typography.header>
+						<Typography.headerSecondary>
 							Current {activeCoin?.name} {dataSelector.name}
-						</Typography.header>
+						</Typography.headerSecondary>
 					</ResponsiveJustifyRow>
 					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
 						<Typography.displayXL>{formatNumber(currentApy, '%')}</Typography.displayXL>
 					</ResponsiveJustifyRow>
 				</Column>
-				<Column>
-					<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
-						{dataSelectorButtons}
-					</ResponsiveJustifyRow>
-					<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
-						{timeSelectorButtons}
-					</ResponsiveJustifyRow>
-				</Column>
+				<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
+					{dataSelectorButtons}
+				</ResponsiveJustifyRow>
 			</ResponsiveRow>
 			<MultilineChart
 				data={data}
 				selectedCoinsAndColors={selectedCoinsAndColors}
 				setHoverDate={(date) => setHoverDate(date)}
 			/>
-			Compare to:
+			<ScrollRow justify="center" gap={theme.spacing.large}>
+				{timeSelectorButtons}
+			</ScrollRow>
+			<Typography.header>Compare to:</Typography.header>
 			<CoinRow activeCoin={activeCoin} coinList={coinList} updateSelectedCoins={handleSelectedCoinsAndColors} />
 		</StyledChartContainer>
 	);
