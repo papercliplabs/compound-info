@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.js": "/compound-info/static/js/main.5eb58f7a.chunk.js",
-    "main.js.map": "/compound-info/static/js/main.5eb58f7a.chunk.js.map",
+    "main.js": "/compound-info/static/js/main.0eae4810.chunk.js",
+    "main.js.map": "/compound-info/static/js/main.0eae4810.chunk.js.map",
     "runtime-main.js": "/compound-info/static/js/runtime-main.70296f4e.js",
     "runtime-main.js.map": "/compound-info/static/js/runtime-main.70296f4e.js.map",
-    "static/js/2.df471a86.chunk.js": "/compound-info/static/js/2.df471a86.chunk.js",
-    "static/js/2.df471a86.chunk.js.map": "/compound-info/static/js/2.df471a86.chunk.js.map",
+    "static/js/2.f4014472.chunk.js": "/compound-info/static/js/2.f4014472.chunk.js",
+    "static/js/2.f4014472.chunk.js.map": "/compound-info/static/js/2.f4014472.chunk.js.map",
     "index.html": "/compound-info/index.html",
-    "static/js/2.df471a86.chunk.js.LICENSE.txt": "/compound-info/static/js/2.df471a86.chunk.js.LICENSE.txt",
+    "static/js/2.f4014472.chunk.js.LICENSE.txt": "/compound-info/static/js/2.f4014472.chunk.js.LICENSE.txt",
     "static/media/BAT.bfe40f59.svg": "/compound-info/static/media/BAT.bfe40f59.svg",
     "static/media/COMP.bfe40f59.svg": "/compound-info/static/media/COMP.bfe40f59.svg",
     "static/media/DAI.f2f3fc6b.svg": "/compound-info/static/media/DAI.f2f3fc6b.svg",
@@ -25,7 +25,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.70296f4e.js",
-    "static/js/2.df471a86.chunk.js",
-    "static/js/main.5eb58f7a.chunk.js"
+    "static/js/2.f4014472.chunk.js",
+    "static/js/main.0eae4810.chunk.js"
   ]
 }
