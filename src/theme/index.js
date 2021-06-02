@@ -28,17 +28,19 @@ const theme = (darkMode) => ({
 		primary1: darkMode ? '#FFFFFF' : '#212B36',
 		secondary1: darkMode ? '#AAAAAA' : '#586069',
 
-		active1: darkMode ? '#000000' : '#0366D6',
+		bgActive: darkMode ? 'rgba(135, 249, 182, 0.1)' : '#0366D6',
+		active1: darkMode ? '#00CD8F' : '#0366D6',
 
 		border1: darkMode ? '#272B31' : '#DEDFE1',
+		border2: darkMode ? '#313131' : '#DEDFE1',
 
-		linkInternal: darkMode ? '#0095D5' : '#0095D5',
+		linkInternal: darkMode ? '#00CD8F' : '#0095D5',
 		linkExternal: darkMode ? '#808994' : '#586069',
 
 		// The colors used for coin selection, and chart lines, these will only be this many allowed selected at a time, first is used as base color for charts and progress bar
 		lineChartColors: darkMode
-			? ['#0095D5', '#F9A234', '#FF7EA8', '#00CDAF', '#885FB1']
-			: ['#0095D5', '#F9A234', '#FF7EA8', '#00CDAF', '#885FB1'],
+			? ['#00CD8F', '#0095D5', '#F9A234', '#FF7EA8', '#885FB1']
+			: ['#00CD8F', '#0095D5', '#F9A234', '#FF7EA8', '#885FB1'],
 	},
 
 	border: {
@@ -53,6 +55,7 @@ const theme = (darkMode) => ({
 		medium: '12px',
 		card: '16px',
 		large: '24px',
+		XL: '48px',
 	},
 });
 
@@ -79,6 +82,9 @@ export const Typography = {
 	},
 	header(props) {
 		return <StyledText fontSize={16} fontWeight={500} color={'primary1'} lineHeight={24} {...props} />;
+	},
+	headerSecondary(props) {
+		return <StyledText fontSize={16} fontWeight={500} color={'secondary1'} lineHeight={24} {...props} />;
 	},
 	subheader(props) {
 		return <StyledText fontSize={14} fontWeight={400} color={'secondary1'} lineHeight={28} {...props} />;

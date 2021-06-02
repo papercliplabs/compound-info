@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
 import { formatNumber, formatDate } from 'utils';
 import { SHORT_TERM_DAYS } from 'constants/index';
 import { Typography } from 'theme';
@@ -80,17 +80,20 @@ function CustomXTick({ x, y, payload, showTime }) {
 	const date = new Date(payload.value);
 	const formattedDate = formatDate(date, showTime);
 	// Render foreignObject first, as this allows us to render html and not just svg
-	return (
-		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
-			<StyledCustomXTick>
-				<Typography.subheader>{formattedDate}</Typography.subheader>
-			</StyledCustomXTick>
-		</foreignObject>
-	);
+
+	// Not rendering X-axis titles
+	//	return (
+	//		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
+	//			<StyledCustomXTick>
+	//				<Typography.subheader>{formattedDate}</Typography.subheader>
+	//			</StyledCustomXTick>
+	//		</foreignObject>
+	//	);
+	return null;
 }
 
 function CustomYTick({ x, y, payload }) {
-	let formattedValue = formatNumber(payload.value, '%', 1); // TODO: make so it can take generic values
+	let formattedValue = formatNumber(payload.value, '%', 2); // TODO: make so it can take generic values
 	return (
 		<foreignObject x={x} y={y - 15} width={foreignObjectWidth} height={foreignObjectHeight}>
 			<StyledCustomYTick>
@@ -141,7 +144,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 	// Render
 	const lines = selectedCoinsAndColors.map((coin, i) => {
 		return (
-			<Line
+			<Area
 				type="monotone"
 				dataKey={coin.name}
 				stroke={coin.color}
@@ -151,6 +154,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				activeDot={activeDotConfig}
 				isAnimationActive={true}
 				animationDuration={750}
+				fill={avg ? 'url(#areaGrad)' : '#00000000'}
 			/>
 		);
 	});
@@ -162,8 +166,14 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 
 	return (
 		<ResponsiveContainer width="100%" height={300}>
-			<LineChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
+			<AreaChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
 				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
+				<defs>
+					<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="5%" stopColor={theme.color.active1} stopOpacity={0.3} />
+						<stop offset="100%" stopColor={theme.color.active1} stopOpacity={0} />
+					</linearGradient>
+				</defs>
 				<XAxis dataKey="blockTime" tick={<CustomXTick showTime={showTime} />} tickLine={false} ticks={xAxisTicks} />
 				<YAxis
 					datekey="price"
@@ -183,7 +193,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				/>
 				<ReferenceLine y={avg} stroke={theme.color.secondary1} strokeDasharray="3 3" label={<AvgLabel avg={avg} />} />
 				{lines}
-			</LineChart>
+			</AreaChart>
 		</ResponsiveContainer>
 	);
 }

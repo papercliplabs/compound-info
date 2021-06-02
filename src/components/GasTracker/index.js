@@ -47,18 +47,20 @@ export default function GasTracker({}) {
 
 		const width = parseInt(100 / SPEED_SELECTORS.length).toString() + '%';
 		return SPEED_SELECTORS.map((selector, i) => {
+			const buttonContent = (
+				<Row justify="center">
+					<Typography.header>{selector.name}</Typography.header>
+					<Typography.subheader>({prettyGwei(gasData[selector.key])} gwei)</Typography.subheader>
+				</Row>
+			);
 			return (
 				<OptionButton
+					buttonContent={buttonContent}
 					width={width}
 					key={i}
 					active={selector === speedSelector}
 					onClick={() => setSpeedSelector(selector)}
-				>
-					<Row justify="center">
-						<Typography.header>{selector.name}</Typography.header>
-						<Typography.subheader>({prettyGwei(gasData[selector.key])} gwei)</Typography.subheader>
-					</Row>
-				</OptionButton>
+				/>
 			);
 		});
 	}, [gasData, speedSelector]);

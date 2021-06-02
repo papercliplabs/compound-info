@@ -1,5 +1,6 @@
 import React from 'react';
 import Header from 'components/Header';
+import Footer from 'components/Footer';
 import Overview from 'pages/Overview';
 import Market from 'pages/Market';
 import { HashRouter, Route, Switch } from 'react-router-dom';
@@ -9,6 +10,10 @@ const HeaderWrapper = styled.div`
 	position: fixed;
 	width: 100%;
 	z-index: 2;
+`;
+
+const FooterWrapper = styled(HeaderWrapper)`
+	width: 100%;
 `;
 
 const StyledBody = styled.div`
@@ -46,6 +51,9 @@ function App() {
 					<Route exact strict path="/:coin" component={Market} />
 				</Switch>
 			</StyledBody>
+			<FooterWrapper>
+				<Footer />
+			</FooterWrapper>
 		</HashRouter>
 	);
 }
