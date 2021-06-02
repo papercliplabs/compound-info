@@ -1,4 +1,6 @@
+import React from 'react';
 import styled, { css } from 'styled-components';
+import { Typography } from 'theme';
 
 const Button = styled.button`
 	background: none;
@@ -8,17 +10,27 @@ const Button = styled.button`
 
 export default Button;
 
-export const OptionButton = styled.button`
+export const OptionButtonStyle = styled.button`
 	padding: ${({ padding }) => padding ?? '6px'};
 	border-radius: ${({ theme }) => theme.border.radius};
-	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
-	background-color: ${({ active, theme }) => (active ? theme.color.active1 : theme.color.bg1)};
+	border: none;
+	background-color: ${({ active, theme }) => (active ? theme.color.bgActive : theme.color.bg1)};
 	width: ${({ width }) => width ?? 'auto'};
 	display: inline;
+`;
 
+const OptionButtonText = styled(Typography.subheader)`
 	${({ active }) =>
 		active &&
 		css`
-			color: ${({ theme }) => theme.color.active};
+			color: ${({ theme }) => theme.color.active1};
 		`}
 `;
+
+export function OptionButton({ buttonContent, padding, active, width, onClick }) {
+	return (
+		<OptionButtonStyle padding={padding} active={active} width={width} onClick={onClick}>
+			<OptionButtonText active={active}>{buttonContent}</OptionButtonText>
+		</OptionButtonStyle>
+	);
+}

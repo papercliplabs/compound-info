@@ -47,6 +47,6 @@ export const HideSmall = styled.div`
 
 export const Break = styled.div`
 	height: ${({ theme }) => theme.border.thickness};
-	background-color: ${({ theme }) => theme.color.border1};
+	background-color: ${({ theme }) => theme.color.border2};
 	width: 100%;
 `;

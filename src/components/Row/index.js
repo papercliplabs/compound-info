@@ -5,7 +5,7 @@ const Row = styled.div`
 	flex-direction: row;
 	flex-wrap: nowrap;
 	width: ${({ width }) => width ?? '100%'};
-	height: ${({ height }) => height ?? 'none'};
+	height: ${({ height }) => height ?? ''};
 	justify-content: ${({ justify }) => justify ?? 'flex-start'};
 	align-items: ${({ align }) => align ?? 'center'};
 	padding: ${({ padding }) => padding ?? '0'};
@@ -14,10 +14,12 @@ const Row = styled.div`
 	margin: ${({ margin }) => margin ?? '0'};
 	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
 	row-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
+	flex: ${({ flex }) => flex ?? 1};
+	overflow: hidden;
 `;
 
 export const ScrollRow = styled(Row)`
-	flex-wrap: nowrap;
+	width: 100%;
 	overflow-x: scroll;
 	overflow-y: hidden;
 
@@ -30,9 +32,9 @@ export const ScrollRow = styled(Row)`
 export const ResponsiveRow = styled(Row)`
 	justify-content: space-between;
 	${({ theme }) => theme.mediaWidth.small`
-		flex-direction: column;
-		row-gap: ${({ theme }) => theme.spacing.default};
-		column-gap: ${({ theme }) => theme.spacing.default};
+		flex-direction: ${({ reverse }) => (reverse ? 'column-reverse' : 'column')};
+		row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.default};
+		column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.default};
 	`}
 `;
 
