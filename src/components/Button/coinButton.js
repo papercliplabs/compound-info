@@ -1,20 +1,19 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { OptionButtonStyle } from './';
+import { OptionButtonStyle } from 'components/Button';
 import { Typography } from 'theme';
 import closeIcon from 'assets/closeIcon.svg';
 import CoinLogo from 'components/CoinLogo';
 import { StyledInternalLink } from 'theme/components';
-import Card from 'components/Card';
 
-const StyledCoinButton = styled(Card)`
+const StyledCoinButton = styled(OptionButtonStyle)`
 	background-color: ${({ theme }) => theme.color.bg1};
 	height: 50px;
 	display: flex;
 	align-items: center;
 	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
 	background-color: ${({ theme }) => theme.color.bg2};
-	padding: ${({ padding }) => padding ?? '6px'};
+	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
 
 	${({ active }) =>
 		active &&
