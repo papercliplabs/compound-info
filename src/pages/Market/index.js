@@ -5,11 +5,22 @@ import ChartContainer from 'components/chartContainer';
 import { useApyData, useSummaryData } from 'store/hooks';
 import Card, { StatCard, ProgressCard } from 'components/Card';
 import Row, { ResponsiveRow } from 'components/Row';
+import Column from 'components/Column';
 import { Typography } from 'theme';
 import { APY_DATA_SELECTORS } from 'constants/index';
-import { getCoinInfo, getEtherscanLink, shortAddress } from 'utils';
+import { formatNumber, getCoinInfo, getEtherscanLink, shortAddress } from 'utils';
 import { SectionTitle, StyledInternalLink, StyledExternalLink } from 'theme/components';
 import CoinLogo from 'components/CoinLogo';
+
+function StatRow({ title, value, unit }) {
+	const formattedValue = formatNumber(value, unit);
+	return (
+		<Row justify="space-between">
+			<Typography.headerSecondary>{title}</Typography.headerSecondary>
+			<Typography.header>{formattedValue}</Typography.header>
+		</Row>
+	);
+}
 
 // Main content of the market page
 export default function Market({ match }) {
@@ -49,39 +60,43 @@ export default function Market({ match }) {
 				<CoinLogo name={activeCoinName} size="40px" />
 				<Typography.displayXL>{activeCoin.name}</Typography.displayXL>
 			</Row>
-			<SectionTitle title="Market Overview" />
-			<ResponsiveRow gap={gap}>
-				<StatCard title={'Total supplied'} value={coinData.totalSupply} unit="$" />
-				<ProgressCard
-					title={'Utilization'}
-					value={coinData.utilization}
-					unit="%"
-					size={60}
-					progressPercent={coinData.utilization}
-				/>
-				<StatCard title={'Reserves'} value={coinData.totalReserves} unit="$" />
+			<ResponsiveRow reverse align="flex-start" gap={gap}>
+				<Column flex={2} gap={gap}>
+					<SectionTitle title="APY Performence" />
+					<Card>
+						<ChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} useData={useApyData} />
+					</Card>
+					<SectionTitle title="Key Statistics" />
+					<Card>
+						<ResponsiveRow gap={theme.spacing.XL} gapSmall={theme.spacing.large}>
+							<Column gap={theme.spacing.large}>
+								<StatRow title={'Token price'} value={coinData.underlyingPrice} unit="$" />
+								<StatRow title={'Reserve factor'} value={coinData.reserveFactor} unit="%" />
+								<StatRow title={'Number of suppliers'} value={coinData.numberOfSuppliers} />
+								<StatRow title={'Number of borrowers'} value={coinData.numberOfBorrowers} />
+							</Column>
+							<Column gap={theme.spacing.large}>
+								<StatRow title={'Collateral factor'} value={coinData.collateralFactor} unit="%" />
+								<StatRow title={'Total borrow'} value={coinData.totalBorrow} unit="$" />
+								<StatRow title={'Borrow cap'} value={coinData.borrowCap ? coinData.borrowCap : 'No limit'} />
+								<StatRow title={'Available liquidity'} value={coinData.availableLiquidity} unit="$" />
+							</Column>
+						</ResponsiveRow>
+					</Card>
+				</Column>
+				<Column gap={gap}>
+					<SectionTitle title="Market Overview" />
+					<StatCard title={'Total supplied'} value={coinData.totalSupply} unit="$" />
+					<ProgressCard
+						title={'Utilization'}
+						value={coinData.utilization}
+						unit="%"
+						size={60}
+						progressPercent={coinData.utilization}
+					/>
+					<StatCard title={'Reserves'} value={coinData.totalReserves} unit="$" />
+				</Column>
 			</ResponsiveRow>
-			<SectionTitle title="APY Performence" />
-			<Card>
-				<ChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} useData={useApyData} />
-			</Card>
-			<SectionTitle title="Key Statistics" />
-			<ResponsiveRow gap={gap}>
-				<StatCard title={'Token price'} value={coinData.underlyingPrice} unit="$" />
-				<StatCard title={'Reserve factor'} value={coinData.reserveFactor} unit="%" />
-				<StatCard title={'Number of suppliers'} value={coinData.numberOfSuppliers} />
-				<StatCard title={'Number of borrowers'} value={coinData.numberOfBorrowers} />
-			</ResponsiveRow>
-			<ResponsiveRow gap={gap}>
-				<StatCard title={'Collateral factor'} value={coinData.collateralFactor} unit="%" />
-				<StatCard title={'Total borrow'} value={coinData.totalBorrow} unit="$" />
-				<StatCard title={'Borrow cap'} value={coinData.borrowCap ? coinData.borrowCap : 'No limit'} />
-				<StatCard title={'Available liquidity'} value={coinData.availableLiquidity} unit="$" />
-			</ResponsiveRow>
-			<SectionTitle title="Utilization" />
-			TODO: utilization chart, supply amount, borrow amount, and utilization over time
-			<SectionTitle title="Dicvoer More" />
-			TODO: cards of the other markets, click on it and it will swap to others
 		</>
 	);
 }

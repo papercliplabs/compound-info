@@ -60,7 +60,6 @@ export default function Overview() {
 			<TableCard>
 				<CoinTable data={summaryData} keysAndUnits={tableDataKeysAndUnits} />
 			</TableCard>
-			TODO: media query the keys to change what is shown in table based on screen size
 		</>
 	);
 }

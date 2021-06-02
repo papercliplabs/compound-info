@@ -11,6 +11,12 @@ import { Break } from 'theme/components';
 const StyledTableRow = styled(Row)`
 	justify-content: space-between;
 	padding: 20px 0;
+
+	${({ theme }) => theme.mediaWidth.small`
+		> *:nth-child(2n) {
+			display: none;
+		}
+	`}
 `;
 
 const LinkWrapper = styled(Link)`
