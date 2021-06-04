@@ -4,8 +4,7 @@ import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components
 // Media queries
 const mediaQuerySizes = {
 	extraSmall: 500,
-	small: 700,
-	medium: 960,
+	small: 960,
 	large: 1280,
 };
 
@@ -21,15 +20,19 @@ const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 // General theme
 const theme = (darkMode) => ({
 	color: {
-		bg0: darkMode ? '#1B191D' : '#FFFFFF',
-		bg1: darkMode ? '#27272B' : '#FFFFFF',
-		bg2: darkMode ? '#333338' : '#FFFFFF',
+		bg0: darkMode ? '#171519' : '#FFFFFF',
+		bg1: darkMode ? '#212024' : '#FFFFFF',
+		bg2: darkMode ? '#302F36' : '#FFFFFF',
+		bg3: darkMode ? '#4E4B57' : '#FFFFFF',
+		bg4: darkMode ? '#A8A7AD' : '#FFFFFF',
+		bg5: darkMode ? '#FFFFFF' : '#FFFFFF',
 
-		primary1: darkMode ? '#FFFFFF' : '#212B36',
-		secondary1: darkMode ? '#AAAAAA' : '#586069',
+		text1: darkMode ? '#FFFFFF' : '#212B36',
+		text2: darkMode ? '#A8A7AD' : '#586069',
+		text3: darkMode ? '#4E4B57' : '#586069',
 
-		bgActive: darkMode ? 'rgba(135, 249, 182, 0.1)' : '#0366D6',
-		active1: darkMode ? '#00CD8F' : '#0366D6',
+		primary1: darkMode ? '#00CD9C' : '#0366D6',
+		secondary1: darkMode ? 'rgba(0, 205, 156, 0.15)' : '#0366D6',
 
 		border1: darkMode ? '#272B31' : '#DEDFE1',
 		border2: darkMode ? '#313131' : '#DEDFE1',
@@ -45,17 +48,24 @@ const theme = (darkMode) => ({
 
 	border: {
 		thickness: '1px',
-		radius: '16px',
+	},
+
+	radius: {
+		sm: '8px',
+		md: '12px',
+		lg: '16px',
 	},
 
 	mediaWidth: mediaQueries,
 
 	spacing: {
-		default: '8px',
-		medium: '12px',
-		card: '16px',
-		large: '24px',
-		XL: '48px',
+		none: 'none',
+		xxs: '4px',
+		xs: '8px',
+		sm: '12px',
+		md: '16px',
+		lg: '24px',
+		xl: '40px',
 	},
 });
 
@@ -69,31 +79,31 @@ const StyledText = styled.div`
 
 export const Typography = {
 	displayXL(props) {
-		return <StyledText fontSize={42} fontWeight={600} color={'primary1'} lineHeight={44} {...props} />;
+		return <StyledText fontSize={42} fontWeight={600} color={'text1'} lineHeight={44} {...props} />;
 	},
 	displayL(props) {
-		return <StyledText fontSize={28} fontWeight={500} color={'primary1'} lineHeight={32} {...props} />;
+		return <StyledText fontSize={28} fontWeight={500} color={'text1'} lineHeight={32} {...props} />;
 	},
 	displayM(props) {
-		return <StyledText fontSize={26} fontWeight={600} color={'primary1'} lineHeight={32} {...props} />;
+		return <StyledText fontSize={26} fontWeight={600} color={'text1'} lineHeight={32} {...props} />;
 	},
 	displayS(props) {
-		return <StyledText fontSize={20} fontWeight={600} color={'primary1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={20} fontWeight={600} color={'text1'} lineHeight={28} {...props} />;
 	},
 	header(props) {
-		return <StyledText fontSize={16} fontWeight={500} color={'primary1'} lineHeight={24} {...props} />;
+		return <StyledText fontSize={16} fontWeight={500} color={'text1'} lineHeight={24} {...props} />;
 	},
 	headerSecondary(props) {
-		return <StyledText fontSize={16} fontWeight={500} color={'secondary1'} lineHeight={24} {...props} />;
+		return <StyledText fontSize={16} fontWeight={500} color={'text2'} lineHeight={24} {...props} />;
 	},
 	subheader(props) {
-		return <StyledText fontSize={14} fontWeight={400} color={'secondary1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={14} fontWeight={400} color={'text2'} lineHeight={28} {...props} />;
 	},
 	body(props) {
-		return <StyledText fontSize={16} fontWeight={400} color={'primary1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={16} fontWeight={400} color={'text1'} lineHeight={28} {...props} />;
 	},
 	caption(props) {
-		return <StyledText fontSize={14} fontWeight={500} color={'primary1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={14} fontWeight={500} color={'text1'} lineHeight={28} {...props} />;
 	},
 };
 
@@ -114,7 +124,7 @@ export const GlobalStyle = createGlobalStyle`
 		width: 100%;
 		height: 100%;
 		font-weight: 400;
-		color: ${({ theme }) => theme.color.primary1};
+		color: ${({ theme }) => theme.color.text1};
 		-webkit-font-smoothing: antialiased;
   		-moz-osx-font-smoothing: grayscale;
 		background: 

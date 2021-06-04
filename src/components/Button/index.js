@@ -12,9 +12,9 @@ export default Button;
 
 export const OptionButtonStyle = styled.button`
 	padding: ${({ padding }) => padding ?? '6px'};
-	border-radius: ${({ theme }) => theme.border.radius};
+	border-radius: ${({ theme }) => theme.radius.lg};
 	border: none;
-	background-color: ${({ active, theme }) => (active ? theme.color.bgActive : theme.color.bg1)};
+	background-color: ${({ active, theme }) => (active ? theme.color.secondary1 : theme.color.bg1)};
 	width: ${({ width }) => width ?? 'auto'};
 	display: inline;
 `;
@@ -23,7 +23,7 @@ const OptionButtonText = styled(Typography.subheader)`
 	${({ active }) =>
 		active &&
 		css`
-			color: ${({ theme }) => theme.color.active1};
+			color: ${({ theme }) => theme.color.primary1};
 		`}
 `;
 

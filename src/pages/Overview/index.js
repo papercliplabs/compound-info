@@ -9,7 +9,7 @@ import CoinTable from 'components/CoinTable';
 import { useSummaryData } from 'store/hooks';
 
 const TableCard = styled(Card)`
-	padding: 0 ${({ theme }) => theme.spacing.large};
+	padding: 0 ${({ theme }) => theme.spacing.lg};
 `;
 
 const tableDataKeysAndUnits = [
@@ -21,7 +21,7 @@ const tableDataKeysAndUnits = [
 
 export default function Overview() {
 	const theme = useTheme();
-	const gap = theme.spacing.card;
+	const gap = theme.spacing.md;
 	const summaryData = useSummaryData();
 
 	useEffect(() => {

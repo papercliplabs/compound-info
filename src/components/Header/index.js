@@ -22,7 +22,7 @@ export default function Header() {
 
 	return (
 		<StyledHeader>
-			<Row padding={'0 ' + theme.spacing.large} justify="space-between">
+			<Row padding={'0 ' + theme.spacing.lg} justify="space-between">
 				<Row>
 					<StyledInternalLink to="/">
 						<Typography.displayL>Compound Info</Typography.displayL>

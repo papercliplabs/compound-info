@@ -23,7 +23,7 @@ export default function Footer() {
 		<StyledFooter>
 			<Column>
 				<Break />
-				<Row padding={'0 ' + theme.spacing.large} justify="space-between">
+				<Row padding={'0 ' + theme.spacing.lg} justify="space-between">
 					<Typography.subheader>
 						Made by <StyledExternalLink href={URLS.PAPERCLIP_HOME}>Paperclip Labs</StyledExternalLink>
 					</Typography.subheader>
