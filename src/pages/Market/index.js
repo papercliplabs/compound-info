@@ -25,7 +25,7 @@ function StatRow({ title, value, unit }) {
 // Main content of the market page
 export default function Market({ match }) {
 	const theme = useTheme();
-	const gap = theme.spacing.card;
+	const gap = theme.spacing.md;
 	const activeCoinName = match.params.coin;
 	const activeCoin = getCoinInfo(activeCoinName);
 	const coinData = useSummaryData(activeCoinName);
@@ -68,14 +68,14 @@ export default function Market({ match }) {
 					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
-						<ResponsiveRow gap={theme.spacing.XL} gapSmall={theme.spacing.large}>
-							<Column gap={theme.spacing.large}>
+						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
+							<Column gap={theme.spacing.lg}>
 								<StatRow title={'Token price'} value={coinData.underlyingPrice} unit="$" />
 								<StatRow title={'Reserve factor'} value={coinData.reserveFactor} unit="%" />
 								<StatRow title={'Number of suppliers'} value={coinData.numberOfSuppliers} />
 								<StatRow title={'Number of borrowers'} value={coinData.numberOfBorrowers} />
 							</Column>
-							<Column gap={theme.spacing.large}>
+							<Column gap={theme.spacing.lg}>
 								<StatRow title={'Collateral factor'} value={coinData.collateralFactor} unit="%" />
 								<StatRow title={'Total borrow'} value={coinData.totalBorrow} unit="$" />
 								<StatRow title={'Borrow cap'} value={coinData.borrowCap ? coinData.borrowCap : 'No limit'} />
