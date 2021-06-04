@@ -4,8 +4,7 @@ import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components
 // Media queries
 const mediaQuerySizes = {
 	extraSmall: 500,
-	small: 700,
-	medium: 960,
+	small: 960,
 	large: 1280,
 };
 
