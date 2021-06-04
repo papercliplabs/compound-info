@@ -29,7 +29,7 @@ const SelectedIndicator = styled.div`
 	width: 12px;
 	height: 12px;
 	border-radius: 6px;
-	margin-right: ${({ theme }) => theme.spacing.default};
+	margin-right: ${({ theme }) => theme.spacing.xs};
 `;
 
 const CoinInfo = styled.div`
@@ -43,7 +43,7 @@ const CloseIndicator = styled.img`
 	display: ${({ hidden }) => (hidden ? 'none' : 'flex')};
 	height: 16px;
 	width: 16px;
-	margin-left: ${({ theme }) => theme.spacing.default};
+	margin-left: ${({ theme }) => theme.spacing.xs};
 
 	:hover {
 		cursor: pointer;
@@ -52,7 +52,7 @@ const CloseIndicator = styled.img`
 
 const HoverText = styled.span`
 	:hover {
-		color: ${({ theme }) => theme.color.secondary1};
+		color: ${({ theme }) => theme.color.text2};
 	}
 `;
 

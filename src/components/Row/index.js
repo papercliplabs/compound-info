@@ -12,8 +12,8 @@ const Row = styled.div`
 	border: ${({ border }) => border};
 	border-radius: ${({ borderRadius }) => borderRadius};
 	margin: ${({ margin }) => margin ?? '0'};
-	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
-	row-gap: ${({ gap, theme }) => gap ?? theme.spacing.default};
+	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.xs};
+	row-gap: ${({ gap, theme }) => gap ?? theme.spacing.xs};
 	flex: ${({ flex }) => flex ?? 1};
 	overflow: hidden;
 `;
@@ -33,8 +33,8 @@ export const ResponsiveRow = styled(Row)`
 	justify-content: space-between;
 	${({ theme }) => theme.mediaWidth.small`
 		flex-direction: ${({ reverse }) => (reverse ? 'column-reverse' : 'column')};
-		row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.default};
-		column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.default};
+		row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
+		column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
 	`}
 `;
 

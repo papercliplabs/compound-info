@@ -12,7 +12,7 @@ const StyledChartContainer = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	row-gap: ${({ theme }) => theme.spacing.default};
+	row-gap: ${({ theme }) => theme.spacing.xs};
 `;
 
 function initialCoinValues() {
@@ -116,7 +116,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 				selectedCoinsAndColors={selectedCoinsAndColors}
 				setHoverDate={(date) => setHoverDate(date)}
 			/>
-			<ScrollRow justify="center" gap={theme.spacing.large}>
+			<ScrollRow justify="center" gap={theme.spacing.lg}>
 				{timeSelectorButtons}
 			</ScrollRow>
 			<Typography.header>Compare to:</Typography.header>
