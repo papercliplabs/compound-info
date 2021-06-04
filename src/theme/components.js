@@ -22,7 +22,7 @@ export const StyledLogo = styled.img`
 	width: ${({ size }) => size ?? '24px'};
 	height: ${({ size }) => size ?? '24px'};
 	border-radius: ${({ borderRadius, size }) => borderRadius ?? 'calc(' + size + '/ 2)'};
-	margin-right: ${({ theme, marginRight }) => marginRight ?? theme.spacing.default};
+	margin-right: ${({ theme, marginRight }) => marginRight ?? theme.spacing.xs};
 `;
 
 const StyledSectionTitle = styled.div`

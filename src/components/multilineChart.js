@@ -27,7 +27,7 @@ const StyledTooltip = styled.div`
 	padding: 5px 0;
 	width: ${({ toolTipWidth }) => toolTipWidth}px;
 	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
-	border-radius: ${({ theme }) => theme.border.radius};
+	border-radius: ${({ theme }) => theme.radius.lg};
 	background-color: ${({ theme }) => theme.color.bg1};
 	transform: translate(${({ translationX }) => translationX}px);
 `;
@@ -43,7 +43,7 @@ const StyledCustomYTick = styled.div`
 const StyledAvgLabel = styled.div`
 	display: inline-block;
 	padding: 0 8px;
-	border-radius: ${({ theme }) => theme.border.radius};
+	border-radius: ${({ theme }) => theme.radius.lg};
 	background-color: ${({ theme }) => theme.color.bg0};
 	text-align: left;
 `;
@@ -170,8 +170,8 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
 				<defs>
 					<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-						<stop offset="5%" stopColor={theme.color.active1} stopOpacity={0.3} />
-						<stop offset="100%" stopColor={theme.color.active1} stopOpacity={0} />
+						<stop offset="5%" stopColor={theme.color.primary1} stopOpacity={0.3} />
+						<stop offset="100%" stopColor={theme.color.primary1} stopOpacity={0} />
 					</linearGradient>
 				</defs>
 				<XAxis dataKey="blockTime" tick={<CustomXTick showTime={showTime} />} tickLine={false} ticks={xAxisTicks} />
@@ -191,7 +191,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 					isAnimationActive={false}
 					offset={toolTipOffset}
 				/>
-				<ReferenceLine y={avg} stroke={theme.color.secondary1} strokeDasharray="3 3" label={<AvgLabel avg={avg} />} />
+				<ReferenceLine y={avg} stroke={theme.color.text2} strokeDasharray="3 3" label={<AvgLabel avg={avg} />} />
 				{lines}
 			</AreaChart>
 		</ResponsiveContainer>
