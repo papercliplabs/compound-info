@@ -61,8 +61,8 @@ function TableRow({ rowData, keysAndUnits }) {
 
 export default function CoinTable({ data, keysAndUnits }) {
 	let keys = keysAndUnits.map((obj) => obj.key);
-	keys = ['name', ...keys];
 	const [sortKey, setSortKey] = useState(keys[0]);
+	keys = ['name', ...keys];
 	const [asc, setAsc] = useState(false); // If the sort is asc of desc
 	const sortedData = sortData(data, sortKey, asc); // Sorting based on totalSupply, desc
 
