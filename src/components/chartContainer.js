@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { OptionButton } from 'components/Button';
+import { OptionButton, OptionButtonVariantBackdrop } from 'components/Button';
 import MultilineChart from 'components/multilineChart';
 import Row, { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
 import Column from 'components/Column';
@@ -64,6 +64,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 					buttonContent={selector.name}
 					active={dataSelector === selector}
 					onClick={() => setDataSelector(selector)}
+					variant
 				/>
 			);
 		});
@@ -108,7 +109,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 					</ResponsiveJustifyRow>
 				</Column>
 				<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
-					{dataSelectorButtons}
+					<OptionButtonVariantBackdrop>{dataSelectorButtons}</OptionButtonVariantBackdrop>
 				</ResponsiveJustifyRow>
 			</ResponsiveRow>
 			<MultilineChart

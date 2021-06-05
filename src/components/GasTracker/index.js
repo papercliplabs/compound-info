@@ -7,7 +7,7 @@ import { useGasData, useEthToUsd } from 'store/hooks';
 import { formatNumber, weiToGwei } from 'utils';
 import gasLogo from 'assets/gas.svg';
 import dropDownIcon from 'assets/dropDownIcon.svg';
-import Button, { OptionButton } from 'components/Button';
+import Button, { OptionButton, OptionButtonVariantBackdrop } from 'components/Button';
 import { Typography } from 'theme';
 import { URLS, SPEED_SELECTORS, GAS_USED } from 'constants/index';
 import { useClickOutside } from 'hooks/useClickOutside';
@@ -60,6 +60,7 @@ export default function GasTracker({}) {
 					key={i}
 					active={selector === speedSelector}
 					onClick={() => setSpeedSelector(selector)}
+					variant
 				/>
 			);
 		});
@@ -103,7 +104,7 @@ export default function GasTracker({}) {
 						<Typography.subheader>These values change based on how busy the Ethereum network is.</Typography.subheader>
 					</Row>
 					<Row justify="space-between" padding="10px 0">
-						{speedSelectorButtons}
+						<OptionButtonVariantBackdrop width="100%">{speedSelectorButtons}</OptionButtonVariantBackdrop>
 					</Row>
 					<Row justify="space-between">
 						<RowEntry left>
