@@ -5,6 +5,7 @@ import { formatNumber } from 'utils';
 import ProgressRing from 'components/ProgressRing';
 import Row from 'components/Row';
 import Column from 'components/Column';
+import TooltipText from 'components/TooltipText';
 
 const Card = styled.div`
 	display: flex;
@@ -24,25 +25,36 @@ export default Card;
 
 const StyledStatCard = styled(Card)`
 	flex-direction: column;
+	justify-content: flex-start;
 `;
 
-export function StatCard({ title, value, unit }) {
+const CardHeader = styled(Typography.header)`
+	color: ${({ theme }) => theme.color.bg4};
+`;
+
+export function StatCard({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<StyledStatCard>
-			<Typography.header>{title}</Typography.header>
-			<Typography.displayL>{formattedValue}</Typography.displayL>
+			<Row>
+				<TooltipText baseText={<CardHeader>{title}</CardHeader>} tooltipContent={tooltipContent} />
+			</Row>
+			<Row>
+				<Typography.displayL>{formattedValue}</Typography.displayL>
+			</Row>
 		</StyledStatCard>
 	);
 }
 
 // progressValue is a number from 0 to 1
-export function ProgressCard({ title, value, unit, size, progressValue }) {
+export function ProgressCard({ title, value, unit, size, progressValue, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<Card>
 			<Column align="left">
-				<Typography.header>{title}</Typography.header>
+				<Row>
+					<TooltipText baseText={<CardHeader>{title}</CardHeader>} tooltipContent={tooltipContent} />
+				</Row>
 				<Typography.displayL>{formattedValue}</Typography.displayL>
 			</Column>
 			<ProgressRing value={progressValue ?? value} size={size} />
