@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Row from 'components/Row';
 import Column from 'components/Column';
@@ -7,10 +7,11 @@ import { Typography } from 'theme';
 import { formatNumber, camelCaseToSentenceCase } from 'utils';
 import CoinLogo from 'components/CoinLogo';
 import { Break } from 'theme/components';
+import { SortButton } from 'components/Button';
 
 const StyledTableRow = styled(Row)`
 	justify-content: space-between;
-	padding: 20px 0;
+	padding: ${({ theme }) => theme.spacing.md} 0;
 
 	${({ theme }) => theme.mediaWidth.small`
 		> *:nth-child(2n) {
@@ -59,13 +60,29 @@ function TableRow({ rowData, keysAndUnits }) {
 }
 
 export default function CoinTable({ data, keysAndUnits }) {
-	const sortedData = sortData(data, 'totalSupply', false); // Sorting based on totalSupply, desc
-	const keys = keysAndUnits.map((obj) => obj.key);
+	let keys = keysAndUnits.map((obj) => obj.key);
+	keys = ['name', ...keys];
+	const [sortKey, setSortKey] = useState(keys[0]);
+	const [asc, setAsc] = useState(false); // If the sort is asc of desc
+	const sortedData = sortData(data, sortKey, asc); // Sorting based on totalSupply, desc
 
-	const keyTitles = keys.map((keyName, i) => {
+	const sortButtons = keys.map((keyName, i) => {
+		const buttonName = keyName === 'name' ? 'asset' : keyName; // Alias name as asset for displaying on the table
 		return (
-			<RowEntry key={i}>
-				<Typography.header>{camelCaseToSentenceCase(keyName)}</Typography.header>
+			<RowEntry key={i} left={i === 0}>
+				<SortButton
+					name={camelCaseToSentenceCase(buttonName)}
+					isActive={keyName === sortKey}
+					handleClick={() => {
+						if (sortKey === keyName) {
+							setAsc(!asc);
+						} else {
+							setAsc(false);
+							setSortKey(keyName);
+						}
+					}}
+					isAsc={asc}
+				/>
 			</RowEntry>
 		);
 	});
@@ -76,13 +93,7 @@ export default function CoinTable({ data, keysAndUnits }) {
 
 	return (
 		<Column>
-			<StyledTableRow>
-				<RowEntry left>
-					<Typography.header>Asset</Typography.header>
-				</RowEntry>
-				{keyTitles}
-			</StyledTableRow>
-
+			<StyledTableRow>{sortButtons}</StyledTableRow>
 			{rows}
 		</Column>
 	);
