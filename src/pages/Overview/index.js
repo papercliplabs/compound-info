@@ -42,19 +42,24 @@ export default function Overview() {
 			</Row>
 			<SectionTitle title="Compound Overview" />
 			<ResponsiveRow gap={gap}>
-				<StatCard title={'Total supplied'} value={protocolData.totalSupply} unit="$" />
-				<StatCard title={'Total unique active users'} value={protocolData.numberOfUniqueSuppliers} />
+				<StatCard title={'Total supplied'} tooltipContent="temp" value={protocolData.totalSupply} unit="$" />
+				<StatCard
+					title={'Total unique active users'}
+					tooltipContent="temp"
+					value={protocolData.numberOfUniqueSuppliers}
+				/>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
-				<StatCard title={'Total reserves'} value={protocolData.totalReserves} unit="$" />
+				<StatCard title={'Total reserves'} tooltipContent="temp" value={protocolData.totalReserves} unit="$" />
 				<ProgressCard
 					title={'Utilization'}
+					tooltipContent="temp"
 					value={protocolData.utilization}
 					unit="%"
 					size={60}
 					progressPercent={protocolData.utilization}
 				/>
-				<StatCard title={'Total borrowed'} value={protocolData.totalBorrow} unit="$" />
+				<StatCard title={'Total borrowed'} tooltipContent="temp" value={protocolData.totalBorrow} unit="$" />
 			</ResponsiveRow>
 			<SectionTitle title="All Markets" />
 			<TableCard>
