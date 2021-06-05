@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTheme } from 'styled-components';
-import CoinButton from '../Button/coinButton';
+import { CoinButton } from 'components/Button';
 import { ScrollRow } from './index';
 import { formatNumber } from 'utils';
 import { COINS } from 'constants/index';
