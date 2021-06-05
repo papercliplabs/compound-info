@@ -1,23 +1,27 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { OptionButtonStyle } from 'components/Button';
+import Button from './';
 import { Typography } from 'theme';
 import closeIcon from 'assets/closeIcon.svg';
 import CoinLogo from 'components/CoinLogo';
 import { StyledInternalLink } from 'theme/components';
 
-const StyledCoinButton = styled(OptionButtonStyle)`
+const StyledCoinButton = styled.button`
 	background-color: ${({ theme }) => theme.color.bg1};
 
 	display: flex;
 	align-items: center;
 	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
 	background-color: ${({ theme }) => theme.color.bg2};
+	padding: ${({ padding }) => padding ?? '6px'};
+	border-radius: ${({ theme }) => theme.radius.lg};
 	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
+
 	:hover {
 		cursor: pointer;
 		background-color: ${({ theme }) => theme.color.bg3};
 	}
+
 	${({ active }) =>
 		active &&
 		css`
@@ -66,7 +70,7 @@ const HoverText = styled.span`
 	}
 `;
 
-function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
+export function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
 	const open = selected ? null : onClick;
 	return (
 		<StyledCoinButton selectedColor={color} active={selected} onClick={open} allowDeselect={allowDeselect}>
@@ -88,5 +92,3 @@ function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onCli
 		</StyledCoinButton>
 	);
 }
-
-export default CoinButton;
