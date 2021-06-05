@@ -20,6 +20,9 @@ const mediaQueries = Object.keys(mediaQuerySizes).reduce((acc, key) => {
 // General theme
 const theme = (darkMode) => ({
 	color: {
+		white: '#FFFFFF',
+		black: '#000000',
+
 		bg0: darkMode ? '#171519' : '#FFFFFF',
 		bg1: darkMode ? '#212024' : '#FFFFFF',
 		bg2: darkMode ? '#302F36' : '#FFFFFF',

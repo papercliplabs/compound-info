@@ -11,12 +11,16 @@ import { APY_DATA_SELECTORS } from 'constants/index';
 import { formatNumber, getCoinInfo, getEtherscanLink, shortAddress } from 'utils';
 import { SectionTitle, StyledInternalLink, StyledExternalLink } from 'theme/components';
 import CoinLogo from 'components/CoinLogo';
+import TooltipText from 'components/TooltipText';
 
-function StatRow({ title, value, unit }) {
+function StatRow({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<Row justify="space-between">
-			<Typography.headerSecondary>{title}</Typography.headerSecondary>
+			<TooltipText
+				baseText={<Typography.headerSecondary>{title}</Typography.headerSecondary>}
+				tooltipContent={tooltipContent}
+			></TooltipText>
 			<Typography.header>{formattedValue}</Typography.header>
 		</Row>
 	);
@@ -70,31 +74,41 @@ export default function Market({ match }) {
 					<Card>
 						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
 							<Column gap={theme.spacing.lg}>
-								<StatRow title={'Token price'} value={coinData.underlyingPrice} unit="$" />
-								<StatRow title={'Reserve factor'} value={coinData.reserveFactor} unit="%" />
-								<StatRow title={'Number of suppliers'} value={coinData.numberOfSuppliers} />
-								<StatRow title={'Number of borrowers'} value={coinData.numberOfBorrowers} />
+								<StatRow title={'Token price'} tooltipContent="temp" value={coinData.underlyingPrice} unit="$" />
+								<StatRow title={'Reserve factor'} tooltipContent="temp" value={coinData.reserveFactor} unit="%" />
+								<StatRow title={'Number of suppliers'} tooltipContent="temp" value={coinData.numberOfSuppliers} />
+								<StatRow title={'Number of borrowers'} tooltipContent="temp" value={coinData.numberOfBorrowers} />
 							</Column>
 							<Column gap={theme.spacing.lg}>
-								<StatRow title={'Collateral factor'} value={coinData.collateralFactor} unit="%" />
-								<StatRow title={'Total borrow'} value={coinData.totalBorrow} unit="$" />
-								<StatRow title={'Borrow cap'} value={coinData.borrowCap ? coinData.borrowCap : 'No limit'} />
-								<StatRow title={'Available liquidity'} value={coinData.availableLiquidity} unit="$" />
+								<StatRow title={'Collateral factor'} tooltipContent="temp" value={coinData.collateralFactor} unit="%" />
+								<StatRow title={'Total borrow'} tooltipContent="temp" value={coinData.totalBorrow} unit="$" />
+								<StatRow
+									title={'Borrow cap'}
+									tooltipContent="temp"
+									value={coinData.borrowCap ? coinData.borrowCap : 'No limit'}
+								/>
+								<StatRow
+									title={'Available liquidity'}
+									tooltipContent="temp"
+									value={coinData.availableLiquidity}
+									unit="$"
+								/>
 							</Column>
 						</ResponsiveRow>
 					</Card>
 				</Column>
 				<Column gap={gap}>
 					<SectionTitle title="Market Overview" />
-					<StatCard title={'Total supplied'} value={coinData.totalSupply} unit="$" />
+					<StatCard title={'Total supplied'} tooltipContent="temp" value={coinData.totalSupply} unit="$" />
 					<ProgressCard
 						title={'Utilization'}
+						tooltipContent="temp"
 						value={coinData.utilization}
 						unit="%"
 						size={60}
 						progressPercent={coinData.utilization}
 					/>
-					<StatCard title={'Reserves'} value={coinData.totalReserves} unit="$" />
+					<StatCard title={'Reserves'} tooltipContent="temp" value={coinData.totalReserves} unit="$" />
 				</Column>
 			</ResponsiveRow>
 		</>
