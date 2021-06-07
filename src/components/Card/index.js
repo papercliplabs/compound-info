@@ -19,6 +19,10 @@ const Card = styled.div`
 	margin: 0;
 	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
 	row-gap: 8px;
+
+	${({ theme }) => theme.mediaWidth.small`
+		padding: ${({ theme }) => theme.spacing.md};
+	`}
 `;
 
 export default Card;
