@@ -15,6 +15,22 @@ const StyledChartContainer = styled.div`
 	row-gap: ${({ theme }) => theme.spacing.xs};
 `;
 
+const TimeSelectorRow = styled(ScrollRow)`
+	justify-content: center;
+	column-gap: ${({ theme }) => theme.spacing.lg};
+
+	${({ theme }) => theme.mediaWidth.extraSmall`
+		column-gap: ${({ theme }) => theme.spacing.md};
+	`}
+`;
+
+const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
+	flex: 1;
+	${({ theme }) => theme.mediaWidth.extraSmall`
+		width: 100%;
+	`}
+`;
+
 function initialCoinValues() {
 	return COINS.map((coin) => {
 		return { name: coin.name, value: 0 };
@@ -64,6 +80,7 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 					buttonContent={selector.name}
 					active={dataSelector === selector}
 					onClick={() => setDataSelector(selector)}
+					width="50%"
 					variant
 				/>
 			);
@@ -77,7 +94,6 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 					key={i}
 					buttonContent={selector.name}
 					active={timeSelector === selector}
-					width="50px"
 					onClick={() => setTimeSelector(selector)}
 				/>
 			);
@@ -97,29 +113,19 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 
 	return (
 		<StyledChartContainer>
-			<ResponsiveRow align="flex-start">
-				<Column>
-					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
-						<Typography.headerSecondary>
-							Current {activeCoin?.name} {dataSelector.name}
-						</Typography.headerSecondary>
-					</ResponsiveJustifyRow>
-					<ResponsiveJustifyRow justifyLarge="flex-start" justifySmall="center">
-						<Typography.displayXL>{formatNumber(currentApy, '%')}</Typography.displayXL>
-					</ResponsiveJustifyRow>
+			<ResponsiveRow align="flex-start" reverse xs>
+				<Column align="flex-start">
+					<Typography.headerSecondary>Current {dataSelector.name}</Typography.headerSecondary>
+					<Typography.displayL>{formatNumber(currentApy, '%')}</Typography.displayL>
 				</Column>
-				<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="center">
-					<OptionButtonVariantBackdrop>{dataSelectorButtons}</OptionButtonVariantBackdrop>
-				</ResponsiveJustifyRow>
+				<DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>
 			</ResponsiveRow>
 			<MultilineChart
 				data={data}
 				selectedCoinsAndColors={selectedCoinsAndColors}
 				setHoverDate={(date) => setHoverDate(date)}
 			/>
-			<ScrollRow justify="center" gap={theme.spacing.lg}>
-				{timeSelectorButtons}
-			</ScrollRow>
+			<TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>
 			<Typography.header>Compare to:</Typography.header>
 			<CoinRow activeCoin={activeCoin} coinList={coinList} updateSelectedCoins={handleSelectedCoinsAndColors} />
 		</StyledChartContainer>
