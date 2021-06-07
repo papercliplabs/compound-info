@@ -3,18 +3,27 @@ import styled, { css } from 'styled-components';
 import { Typography } from 'theme';
 
 const StyledOptionButton = styled.button`
-	padding: ${({ padding, theme }) => padding ?? theme.spacing.xs};
+	padding: ${({ padding, theme }) => padding ?? theme.spacing.xs + ' ' + theme.spacing.md};
 	border-radius: ${({ theme }) => theme.radius.md};
 	border: none;
 	background-color: ${({ theme, variant }) => (variant ? 'transparent' : theme.color.bg1)};
-	width: ${({ width }) => width ?? 'auto'};
 	display: inline;
+	width: ${({ width }) => width ?? 'auto'};
 
 	${({ active }) =>
-		active &&
-		css`
-			background-color: ${({ theme, variant }) => (variant ? theme.color.bg1 : theme.color.secondary1)};
-		`}
+		active
+			? css`
+					background-color: ${({ theme, variant }) => (variant ? theme.color.bg1 : theme.color.secondary1)};
+			  `
+			: css`
+					:hover {
+						background-color: ${({ theme }) => theme.color.bg2};
+					}
+			  `}
+
+	${({ theme }) => theme.mediaWidth.extraSmall`
+		padding: ${({ theme }) => theme.spacing.xs};
+	`}
 `;
 
 const OptionButtonText = styled(Typography.headerSecondary)`
@@ -23,6 +32,10 @@ const OptionButtonText = styled(Typography.headerSecondary)`
 		css`
 			color: ${({ theme, variant }) => (variant ? theme.color.text1 : theme.color.primary1)};
 		`}
+
+	${({ theme }) => theme.mediaWidth.extraSmall`
+		font-size: 14px;
+	`}
 `;
 
 export const OptionButtonVariantBackdrop = styled.div`
