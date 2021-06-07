@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const Row = styled.div`
 	display: flex;
@@ -31,11 +31,18 @@ export const ScrollRow = styled(Row)`
 
 export const ResponsiveRow = styled(Row)`
 	justify-content: space-between;
-	${({ theme }) => theme.mediaWidth.small`
-		flex-direction: ${({ reverse }) => (reverse ? 'column-reverse' : 'column')};
-		row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
-		column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
-	`}
+	${({ theme, xs }) =>
+		xs
+			? theme.mediaWidth.extraSmall`
+				flex-direction: ${({ reverse }) => (reverse ? 'column-reverse' : 'column')};
+				row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
+				column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
+			`
+			: theme.mediaWidth.small`
+				flex-direction: ${({ reverse }) => (reverse ? 'column-reverse' : 'column')};
+				row-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
+				column-gap: ${({ gapSmall, theme }) => gapSmall ?? theme.spacing.xs};
+			`}
 `;
 
 // Changes justification of content upon resize

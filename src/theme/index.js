@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components';
 
 // Media queries
-const mediaQuerySizes = {
+export const mediaQuerySizes = {
 	extraSmall: 500,
 	small: 960,
 	large: 1280,
@@ -85,7 +85,7 @@ export const Typography = {
 		return <StyledText fontSize={42} fontWeight={600} color={'text1'} lineHeight={44} {...props} />;
 	},
 	displayL(props) {
-		return <StyledText fontSize={28} fontWeight={500} color={'text1'} lineHeight={32} {...props} />;
+		return <StyledText fontSize={28} fontWeight={600} color={'text1'} lineHeight={32} {...props} />;
 	},
 	displayM(props) {
 		return <StyledText fontSize={26} fontWeight={600} color={'text1'} lineHeight={32} {...props} />;

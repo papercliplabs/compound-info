@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
 import { formatNumber, formatDate } from 'utils';
 import { SHORT_TERM_DAYS } from 'constants/index';
-import { Typography } from 'theme';
+import { Typography, mediaQuerySizes } from 'theme';
 
 // Used in custom labels and ticks
 const foreignObjectWidth = 100;
@@ -163,9 +163,10 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
 	const xAxisTicks = getXTicks(data, numberOfXAxisTicks);
+	const chartHeight = window.innerWidth < mediaQuerySizes.small ? 200 : 300;
 
 	return (
-		<ResponsiveContainer width="100%" height={300}>
+		<ResponsiveContainer width="100%" height={chartHeight}>
 			<AreaChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
 				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
 				<defs>
