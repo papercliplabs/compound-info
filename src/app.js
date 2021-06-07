@@ -10,10 +10,12 @@ const HeaderWrapper = styled.div`
 	position: fixed;
 	width: 100%;
 	z-index: 2;
+	top: 0;
 `;
 
-const FooterWrapper = styled(HeaderWrapper)`
+const FooterWrapper = styled.div`
 	width: 100%;
+	z-index: 2;
 `;
 
 const StyledBody = styled.div`
