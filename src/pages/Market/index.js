@@ -52,9 +52,9 @@ export default function Market({ match }) {
 	return (
 		<>
 			<Row>
-				<Typography.body>
+				<Typography.body color="text2">
 					<StyledInternalLink to={'/'}>Market</StyledInternalLink>
-					{' > '}
+					{' / '}
 					<StyledExternalLink href={etherscanLink}>
 						c{activeCoin.name} ({shortAddress(coinData.cTokenAddress)})
 					</StyledExternalLink>
