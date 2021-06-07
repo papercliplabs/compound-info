@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { useTheme } from 'styled-components';
 import { StyledLogo, StyledExternalLink, StyledInternalLink } from 'theme/components';
-import Row from 'components/Row';
+import { ResponsiveRow } from 'components/Row';
 import Column from 'components/Column';
 import { URLS } from 'constants/index';
 import { Typography } from 'theme';
@@ -13,7 +13,12 @@ const StyledFooter = styled.div`
 	width: 100%;
 	background-color: ${({ theme }) => theme.color.bg0};
 	align-items: center;
-	margin-top: 60px;
+	padding-bottom: 30px;
+	padding-top: 50px;
+
+	${({ theme }) => theme.mediaWidth.small`
+		padding-bottom: 180px;
+	`}
 `;
 
 export default function Footer() {
@@ -23,7 +28,7 @@ export default function Footer() {
 		<StyledFooter>
 			<Column>
 				<Break />
-				<Row padding={'0 ' + theme.spacing.lg} justify="space-between">
+				<ResponsiveRow padding={theme.spacing.lg} justify="space-between">
 					<Typography.subheader>
 						Made by <StyledExternalLink href={URLS.PAPERCLIP_HOME}>Paperclip Labs</StyledExternalLink>
 					</Typography.subheader>
@@ -31,7 +36,7 @@ export default function Footer() {
 						Powered by <StyledExternalLink href={URLS.FLIPSIDE}>Flipside Crypto</StyledExternalLink> and{' '}
 						<StyledExternalLink href={URLS.COMPOUND_DOCS}> Compound API </StyledExternalLink>
 					</Typography.subheader>
-				</Row>
+				</ResponsiveRow>
 			</Column>
 		</StyledFooter>
 	);
