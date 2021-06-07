@@ -22,12 +22,9 @@ const activeDotConfig = {
 };
 
 const StyledTooltip = styled.div`
-	background-color: red;
 	text-align: center;
 	padding: 5px 0;
 	width: ${({ toolTipWidth }) => toolTipWidth}px;
-	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
-	border-radius: ${({ theme }) => theme.radius.lg};
 	background-color: ${({ theme }) => theme.color.bg1};
 	transform: translate(${({ translationX }) => translationX}px);
 `;
