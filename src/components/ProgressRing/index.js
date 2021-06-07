@@ -9,7 +9,7 @@ const SvgContainer = styled.svg`
 `;
 
 const BackCircle = styled.circle`
-	stroke: ${({ theme }) => theme.color.bg0};
+	stroke: ${({ theme }) => theme.color.secondary1};
 	r: ${({ r }) => r}px;
 	cx: 50%;
 	cy: 50%;
