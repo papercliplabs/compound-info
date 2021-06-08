@@ -10,6 +10,9 @@ const Button = styled.button`
 	background: none;
 	border: none;
 	padding: 0;
+	:hover {
+		cursor: pointer;
+	}
 `;
 
 export default Button;
