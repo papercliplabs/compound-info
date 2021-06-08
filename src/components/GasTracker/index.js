@@ -86,15 +86,15 @@ export default function GasTracker({}) {
 
 	return (
 		<GasTrackerWrapper ref={node}>
-			<Card height="48px" width="" padding={theme.spacing.sm}>
-				<Row justify="space-between">
-					<StyledLogo src={gasLogo} size="20px" borderRadius="0" marginRight="0" />
-					{prettyGwei(fastPrice)}
-					<Button onClick={() => setOverlayIsOpen(!overlayIsOpen)}>
+			<Button onClick={() => setOverlayIsOpen(!overlayIsOpen)}>
+				<Card height="48px" width="" padding={theme.spacing.sm}>
+					<Row justify="space-between">
+						<StyledLogo src={gasLogo} size="20px" borderRadius="0" marginRight="0" />
+						{prettyGwei(fastPrice)}
 						<StyledLogo src={dropDownIcon} size="10px" borderRadius="0" marginRight="0" />
-					</Button>
-				</Row>
-			</Card>
+					</Row>
+				</Card>
+			</Button>
 			<Overlay open={overlayIsOpen}>
 				<Card column>
 					<Row>
