@@ -35,7 +35,7 @@ const theme = (darkMode) => ({
 		text3: darkMode ? '#4E4B57' : '#586069',
 
 		primary1: darkMode ? '#00CD9C' : '#0366D6',
-		secondary1: darkMode ? 'rgba(0, 205, 156, 0.15)' : '#0366D6',
+		secondary1: darkMode ? 'rgba(0, 205, 156, 0.10)' : '#0366D6',
 
 		border1: darkMode ? '#272B31' : '#DEDFE1',
 		border2: darkMode ? '#313131' : '#DEDFE1',
@@ -69,6 +69,11 @@ const theme = (darkMode) => ({
 		md: '16px',
 		lg: '24px',
 		xl: '40px',
+	},
+
+	shadow: {
+		none: 'none',
+		card: '0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);',
 	},
 });
 
