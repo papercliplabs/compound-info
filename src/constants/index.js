@@ -36,8 +36,8 @@ export const TIME_SELECTORS = [
 // The active coin is always selected, if null there is no active coin (i.e non coin specific plot)
 export const APY_DATA_SELECTORS = [
 	// key must be consistent with the names for the data table from flipside query
-	{ name: 'Supply APY', key: 'supply' },
-	{ name: 'Borrow APY', key: 'borrow' },
+	{ name: 'Supply', key: 'supply' },
+	{ name: 'Borrow', key: 'borrow' },
 ];
 
 //// URL's for API calls
