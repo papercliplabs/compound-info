@@ -16,7 +16,7 @@ const Card = styled.div`
 	width: ${({ width }) => width ?? '100%'};
 	padding: ${({ padding, theme }) => padding ?? theme.spacing.lg};
 	margin: 0;
-	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.05), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
+	box-shadow: ${({ theme }) => theme.shadow.card};
 	row-gap: 8px;
 
 	${({ theme }) => theme.mediaWidth.small`

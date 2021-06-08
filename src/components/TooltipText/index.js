@@ -11,7 +11,7 @@ const Tooltip = styled.div`
 	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.bg3};
 	border-radius: ${({ theme }) => theme.radius.lg};
 	padding: ${({ theme }) => theme.spacing.md};
-	box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
+	box-shadow: ${({ theme }) => theme.shadow.card};
 	z-index: 9999;
 `;
 
