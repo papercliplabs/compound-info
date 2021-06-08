@@ -17,7 +17,7 @@ const StyledOptionButton = styled.button`
 		active
 			? css`
 					background-color: ${({ theme, variant }) => (variant ? theme.color.bg1 : theme.color.secondary1)};
-					box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);
+					box-shadow: ${({ theme, variant }) => (variant ? theme.shadow.card : theme.shadow.none)};
 			  `
 			: css`
 					:hover {
