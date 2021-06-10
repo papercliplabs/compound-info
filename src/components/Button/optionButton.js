@@ -9,6 +9,7 @@ const StyledOptionButton = styled.button`
 	background-color: ${({ theme, variant }) => (variant ? 'transparent' : theme.color.bg1)};
 	display: inline;
 	width: ${({ width }) => width ?? 'auto'};
+	height: ${({ height }) => height ?? 'auto'};
 	:hover {
 		cursor: pointer;
 	}

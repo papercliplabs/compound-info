@@ -15,6 +15,7 @@ const StyledCoinButton = styled.button`
 	background-color: ${({ theme }) => theme.color.bg2};
 	padding: ${({ padding }) => padding ?? '6px'};
 	border-radius: ${({ theme }) => theme.radius.lg};
+	height: 100%;
 	box-shadow: ${({ theme }) => theme.shadow.card};
 
 	:hover {

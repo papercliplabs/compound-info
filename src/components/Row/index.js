@@ -15,7 +15,7 @@ const Row = styled.div`
 	column-gap: ${({ gap, theme }) => gap ?? theme.spacing.xs};
 	row-gap: ${({ gap, theme }) => gap ?? theme.spacing.xs};
 	flex: ${({ flex }) => flex ?? 1};
-	overflow: hidden;
+	overflow: ${({ overflow }) => overflow ?? 'hidden'};
 `;
 
 export const ScrollRow = styled(Row)`
