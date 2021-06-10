@@ -90,7 +90,8 @@ export default function GasTracker({}) {
 				<Card height="48px" width="" padding={theme.spacing.sm}>
 					<Row justify="space-between">
 						<StyledLogo src={gasLogo} size="20px" borderRadius="0" marginRight="0" />
-						{prettyGwei(fastPrice)}
+
+						<Typography.header>{prettyGwei(fastPrice)}</Typography.header>
 						<StyledLogo src={dropDownIcon} size="10px" borderRadius="0" marginRight="0" />
 					</Row>
 				</Card>
