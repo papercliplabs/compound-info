@@ -10,11 +10,15 @@ const StyledOptionButton = styled.button`
 	display: inline;
 	width: ${({ width }) => width ?? 'auto'};
 	height: ${({ height }) => height ?? 'auto'};
+	:hover {
+		cursor: pointer;
+	}
 
 	${({ active }) =>
 		active
 			? css`
 					background-color: ${({ theme, variant }) => (variant ? theme.color.bg1 : theme.color.secondary1)};
+					box-shadow: ${({ theme, variant }) => (variant ? theme.shadow.card : theme.shadow.none)};
 			  `
 			: css`
 					:hover {

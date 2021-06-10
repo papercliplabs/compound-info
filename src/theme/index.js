@@ -35,7 +35,7 @@ const theme = (darkMode) => ({
 		text3: darkMode ? '#4E4B57' : '#586069',
 
 		primary1: darkMode ? '#00CD9C' : '#0366D6',
-		secondary1: darkMode ? 'rgba(0, 205, 156, 0.15)' : '#0366D6',
+		secondary1: darkMode ? 'rgba(0, 205, 156, 0.10)' : '#0366D6',
 
 		border1: darkMode ? '#272B31' : '#DEDFE1',
 		border2: darkMode ? '#313131' : '#DEDFE1',
@@ -70,6 +70,11 @@ const theme = (darkMode) => ({
 		lg: '24px',
 		xl: '40px',
 	},
+
+	shadow: {
+		none: 'none',
+		card: '0px 10px 10px rgba(0, 0, 0, 0.1), inset 0px 1px 6px rgba(255, 255, 255, 0.05);',
+	},
 });
 
 // Typography theme
@@ -103,10 +108,10 @@ export const Typography = {
 		return <StyledText fontSize={14} fontWeight={400} color={'text2'} lineHeight={28} {...props} />;
 	},
 	body(props) {
-		return <StyledText fontSize={16} fontWeight={400} color={'text1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={16} fontWeight={400} color={'text1'} lineHeight={24} {...props} />;
 	},
 	caption(props) {
-		return <StyledText fontSize={14} fontWeight={500} color={'text1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={14} fontWeight={400} color={'text1'} lineHeight={20} {...props} />;
 	},
 };
 
