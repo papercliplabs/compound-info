@@ -108,10 +108,10 @@ export const Typography = {
 		return <StyledText fontSize={14} fontWeight={400} color={'text2'} lineHeight={28} {...props} />;
 	},
 	body(props) {
-		return <StyledText fontSize={16} fontWeight={400} color={'text1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={16} fontWeight={400} color={'text1'} lineHeight={24} {...props} />;
 	},
 	caption(props) {
-		return <StyledText fontSize={14} fontWeight={500} color={'text1'} lineHeight={28} {...props} />;
+		return <StyledText fontSize={14} fontWeight={400} color={'text1'} lineHeight={20} {...props} />;
 	},
 };
 

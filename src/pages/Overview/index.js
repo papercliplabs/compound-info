@@ -48,7 +48,12 @@ export default function Overview() {
 			</Row>
 			<SectionTitle title="Compound Overview" />
 			<ResponsiveRow gap={gap}>
-				<StatCard title={'Total supplied'} tooltipContent="temp" value={protocolData.totalSupply} unit="$" />
+				<StatCard
+					title={'Total supplied'}
+					tooltipContent="The total amount of funds supplied to Compound. (USD)"
+					value={protocolData.totalSupply}
+					unit="$"
+				/>
 				<StatCard
 					title={'Total unique active users'}
 					tooltipContent="temp"
@@ -56,7 +61,12 @@ export default function Overview() {
 				/>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
-				<StatCard title={'Total reserves'} tooltipContent="temp" value={protocolData.totalReserves} unit="$" />
+				<StatCard
+					title={'Total reserves'}
+					tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders. (USD)"
+					value={protocolData.totalReserves}
+					unit="$"
+				/>
 				<ProgressCard
 					title={'Utilization'}
 					tooltipContent="temp"
