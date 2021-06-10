@@ -111,10 +111,11 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 		return data.slice(-1)[0][activeCoin.name];
 	}, [data, activeCoin]);
 
+	// Weird bug with rechart tooltip, hence the overflow params below
 	return (
 		<StyledChartContainer>
-			<ResponsiveRow align="flex-start" reverse xs>
-				<Column align="flex-start">
+			<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
+				<Column align="flex-start" overflow="visible">
 					<Typography.headerSecondary>Current {dataSelector.name}</Typography.headerSecondary>
 					<Typography.displayL>{formatNumber(currentApy, '%')}</Typography.displayL>
 				</Column>
