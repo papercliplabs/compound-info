@@ -10,13 +10,36 @@ import { Break } from 'theme/components';
 import { SortButton } from 'components/Button';
 
 const StyledTableRow = styled(Row)`
-	justify-content: space-between;
-	padding: ${({ theme }) => theme.spacing.md} 0;
+	padding: ${({ theme }) => theme.spacing.md};
+	background-color: ${({ theme }) => theme.color.bg2};
+	border-radius: ${({ theme }) => theme.radius.md};
+	box-shadow: ${({ theme }) => theme.shadow.card};
+	:hover {
+		cursor: pointer;
+		background-color: ${({ theme }) => theme.color.bg3};
+	}
 
 	${({ theme }) => theme.mediaWidth.small`
+		padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.sm};
 		> *:nth-child(2n) {
 			display: none;
 		}
+	`}
+`;
+
+const StyledTableHeader = styled(Row)`
+	justify-content: space-between;
+	padding: ${({ theme }) => theme.spacing.md};
+	background-color: ${({ theme }) => theme.color.bg1};
+	${({ theme }) => theme.mediaWidth.small`
+		justify-content: space-between;
+		font-size: 14px !important;
+		padding: ${({ theme }) => theme.spacing.sm};
+		background-color: ${({ theme }) => theme.color.bg1};
+			> *:nth-child(2n) {
+				display: none;
+				font-size: 14px;
+			}
 	`}
 `;
 
@@ -26,7 +49,6 @@ const LinkWrapper = styled(Link)`
 	width: 100%;
 	:hover {
 		cursor: pointer;
-		opacity: 0.7;
 	}
 `;
 
@@ -45,7 +67,6 @@ function TableRow({ rowData, keysAndUnits }) {
 
 	return (
 		<>
-			<Break />
 			<LinkWrapper to={'/' + rowData.name}>
 				<StyledTableRow>
 					<RowEntry left>
@@ -93,7 +114,7 @@ export default function CoinTable({ data, keysAndUnits }) {
 
 	return (
 		<Column>
-			<StyledTableRow>{sortButtons}</StyledTableRow>
+			<StyledTableHeader>{sortButtons}</StyledTableHeader>
 			{rows}
 		</Column>
 	);
