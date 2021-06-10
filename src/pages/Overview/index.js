@@ -10,6 +10,10 @@ import { useSummaryData } from 'store/hooks';
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.lg};
+	${({ theme }) => theme.mediaWidth.small`
+	padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.md};
+		
+	`}
 `;
 
 const tableDataKeysAndUnits = [
