@@ -167,7 +167,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			<AreaChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
+			<AreaChart margin={{ left: 0, top: -1, bottom: -25 }} data={data}>
 				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
 				<defs>
 					<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
