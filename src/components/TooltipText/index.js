@@ -17,6 +17,7 @@ const Tooltip = styled.div`
 
 const TooltipContainer = styled(Typography.caption)`
 	color: ${({ theme }) => theme.color.text2};
+	max-width: 320px;
 `;
 
 const ReferenceElement = styled.div`
