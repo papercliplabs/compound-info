@@ -67,7 +67,7 @@ export default function Market({ match }) {
 			</Row>
 			<ResponsiveRow reverse align="flex-start" gap={gap}>
 				<Column flex={2} gap={gap}>
-					<SectionTitle title="APY Performence" />
+					<SectionTitle title="APY Performance" />
 					<Card>
 						<ChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} useData={useApyData} />
 					</Card>
