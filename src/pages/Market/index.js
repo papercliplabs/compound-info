@@ -9,7 +9,7 @@ import Column from 'components/Column';
 import { Typography } from 'theme';
 import { APY_DATA_SELECTORS } from 'constants/index';
 import { formatNumber, getCoinInfo, getEtherscanLink, shortAddress } from 'utils';
-import { SectionTitle, StyledInternalLink, StyledExternalLink } from 'theme/components';
+import { SectionTitle, StyledInternalLink, StyledExternalLink, StyledDisclaimer } from 'theme/components';
 import CoinLogo from 'components/CoinLogo';
 import TooltipText from 'components/TooltipText';
 
@@ -71,6 +71,7 @@ export default function Market({ match }) {
 					<Card>
 						<ChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} useData={useApyData} />
 					</Card>
+					<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
 					<SectionTitle title="Key Statistics" />
 					<Card>
 						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
