@@ -14,6 +14,7 @@ const StyledFooter = styled.div`
 	align-items: center;
 	padding-bottom: 30px;
 	padding-top: 50px;
+	margin-top: ${({ theme }) => theme.spacing.xl};
 
 	${({ theme }) => theme.mediaWidth.small`
 		padding-bottom: 180px;
