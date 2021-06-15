@@ -90,7 +90,7 @@ export default function Market({ match }) {
 								/>
 								<StatRow
 									title={'Number of suppliers'}
-									tooltipContent="The number of wallets currently supplying this asset."
+									tooltipContent="The number of wallets currently supplying this market."
 									value={coinData.numberOfSuppliers}
 								/>
 								<StatRow
@@ -108,18 +108,18 @@ export default function Market({ match }) {
 								/>
 								<StatRow
 									title={'Total borrow'}
-									tooltipContent="The total amount of funds borrowed from the protocol. (USD)"
+									tooltipContent="The total amount of funds borrowed from the market. (USD)"
 									value={coinData.totalBorrow}
 									unit="$"
 								/>
 								<StatRow
 									title={'Borrow cap'}
-									tooltipContent="The maximum amount of an asset that can be borrowed from the protocol. The borrow cap is controlled by COMP token holders."
+									tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
 									value={coinData.borrowCap ? coinData.borrowCap : 'No limit'}
 								/>
 								<StatRow
 									title={'Available liquidity'}
-									tooltipContent="The amount of assets that are currently available to be borrowed from the protocol. "
+									tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
 									value={coinData.availableLiquidity}
 									unit="$"
 								/>
@@ -131,7 +131,7 @@ export default function Market({ match }) {
 					<SectionTitle title="Market Overview" />
 					<StatCard
 						title={'Total supplied'}
-						tooltipContent="The total value (USD) of tokens supplied to the protocol ."
+						tooltipContent="The total value (USD) of tokens supplied to the market."
 						value={coinData.totalSupply}
 						unit="$"
 					/>

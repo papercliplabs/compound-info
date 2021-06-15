@@ -51,6 +51,7 @@ export const URLS = {
 	COMPOUND_DOCS: 'https://compound.finance/docs',
 	COMPOUND_FINANCE: 'https://compound.finance',
 	COMPOUND_GRANTS: 'https://twitter.com/compoundgrants',
+	GITHUB: 'https://github.com/papercliplabs/compound-info',
 };
 
 export const SHORT_TERM_DAYS = 8; // For distinguising between short and long term data, based on the time selector
