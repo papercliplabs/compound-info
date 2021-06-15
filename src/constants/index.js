@@ -50,6 +50,7 @@ export const URLS = {
 	FLIPSIDE: 'https://www.flipsidecrypto.com/',
 	COMPOUND_DOCS: 'https://compound.finance/docs',
 	COMPOUND_FINANCE: 'https://compound.finance',
+	GITHUB: 'https://github.com/papercliplabs/compound-info',
 };
 
 export const SHORT_TERM_DAYS = 8; // For distinguising between short and long term data, based on the time selector
