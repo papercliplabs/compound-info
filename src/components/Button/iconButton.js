@@ -39,7 +39,7 @@ export function IconButton({}) {
 	useClickOutside(node, open ? () => setOverlayIsOpen(false) : undefined);
 
 	return (
-		<IconButtonWrapper>
+		<IconButtonWrapper ref={node}>
 			<Button onClick={() => setOverlayIsOpen(!overlayIsOpen)}>
 				<StyledIconButton src={questionIcon} />
 			</Button>
@@ -47,13 +47,14 @@ export function IconButton({}) {
 				<Card column>
 					<Row>
 						<Typography.caption>
-							This app is an open-source standalone dashboard for the
-							<StyledExternalLink href={URLS.COMPOUND_FINANCE} content="Compound protocol" /> It was built to provide
+							This app is an open-source standalone dashboard for the{' '}
+							<StyledExternalLink href={URLS.COMPOUND_FINANCE} content="Compound protocol" />. It was built to provide
 							transparency on historical market APYs to borrowers and lenders in hopes of improving investment
 							decisions.
 							<br />
 							<br />
-							Have a question? Want to improve the dashboard? Feel free to open an issue on GitHub.
+							Have a question? Want to improve the dashboard? Feel free to open an issue on{' '}
+							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />.
 						</Typography.caption>
 					</Row>
 					<Break />
