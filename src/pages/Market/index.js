@@ -65,7 +65,7 @@ export default function Market({ match }) {
 				<CoinLogo name={activeCoinName} size="40px" />
 				<Typography.displayXL>{activeCoin.name}</Typography.displayXL>
 			</Row>
-			<ResponsiveRow reverse align="flex-start" gap={gap}>
+			<ResponsiveRow reverse align="flex-start" gap={'32px'}>
 				<Column flex={2} gap={gap}>
 					<SectionTitle title="APY Performance" />
 					<Card>

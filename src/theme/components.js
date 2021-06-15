@@ -40,6 +40,7 @@ const StyledSectionTitle = styled.div`
 	width: 100%;
 	text-align: left;
 	padding-top: 20px;
+	margin-bottom: 8px;
 `;
 
 export function SectionTitle({ title }) {
