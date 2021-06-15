@@ -13,10 +13,18 @@ export const StyledInternalLink = styled(Link)`
 	color: ${({ theme }) => theme.color.linkInternal};
 `;
 
-export const StyledExternalLink = styled.a`
+const StyledExternalLinkWrapper = styled.a`
 	text-decoration: none;
 	color: ${({ theme }) => theme.color.linkExternal};
 `;
+
+export function StyledExternalLink({ href, content }) {
+	return (
+		<StyledExternalLinkWrapper target="_blank" href={href}>
+			{content}
+		</StyledExternalLinkWrapper>
+	);
+}
 
 export const StyledLogo = styled.img`
 	width: ${({ size }) => size ?? '24px'};
