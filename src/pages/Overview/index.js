@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Typography } from 'theme';
-import { StyledLogo, SectionTitle } from 'theme/components';
+import { StyledLogo, SectionTitle, StyledDisclaimer } from 'theme/components';
 import Row, { ResponsiveRow } from 'components/Row';
 import compoundLogo from 'assets/compoundLogo.svg';
 import Card, { StatCard, ProgressCard } from 'components/Card';
@@ -81,6 +81,7 @@ export default function Overview() {
 			<TableCard>
 				<CoinTable data={summaryData} keysAndUnits={tableDataKeysAndUnits} />
 			</TableCard>
+			<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
 		</>
 	);
 }
