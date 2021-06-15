@@ -7,6 +7,7 @@ import GasTracker from 'components/GasTracker';
 import { URLS } from 'constants/index';
 import { Typography } from 'theme';
 import { HideSmall } from 'theme/components';
+import { IconButton } from 'components/Button/iconButton';
 
 // 'BF' on the background color uses RRGGBBAA, giving 75% alpha on the background color
 const StyledHeader = styled.div`
@@ -29,7 +30,10 @@ export default function Header() {
 					</StyledInternalLink>
 				</Row>
 				<HideSmall>
-					<GasTracker />
+					<Row>
+						<IconButton />
+						<GasTracker />
+					</Row>
 				</HideSmall>
 			</Row>
 		</StyledHeader>
