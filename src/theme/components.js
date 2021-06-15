@@ -16,8 +16,6 @@ export const StyledInternalLink = styled(Link)`
 const StyledExternalLinkWrapper = styled.a`
 	text-decoration: none;
 	color: ${({ theme }) => theme.color.linkExternal};
-	target-name: new;
-	target-new: tab;
 `;
 
 export function StyledExternalLink({ href, content }) {
