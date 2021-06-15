@@ -14,6 +14,7 @@ const StyledFooter = styled.div`
 	align-items: center;
 	padding-bottom: 30px;
 	padding-top: 50px;
+	margin-top: ${({ theme }) => theme.spacing.xl};
 
 	${({ theme }) => theme.mediaWidth.small`
 		padding-bottom: 180px;
@@ -34,7 +35,7 @@ export default function Footer() {
 					<Typography.subheader>
 						<ResponsiveRow gap={'32px'}>
 							<StyledExternalLink href={URLS.COMPOUND_GRANTS} content="Compound Grants Batch 2" />
-							<StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Github" />
+							<StyledExternalLink href={URLS.PAPERCLIP_HOME} content="GitHub" />
 						</ResponsiveRow>
 					</Typography.subheader>
 				</ResponsiveRow>

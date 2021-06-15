@@ -86,7 +86,9 @@ export default function Overview() {
 			<TableCard>
 				<CoinTable data={summaryData} keysAndUnits={tableDataKeysAndUnits} />
 			</TableCard>
-			<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
+			<Row>
+				<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
+			</Row>
 		</>
 	);
 }
