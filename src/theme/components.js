@@ -16,6 +16,9 @@ export const StyledInternalLink = styled(Link)`
 const StyledExternalLinkWrapper = styled.a`
 	text-decoration: none;
 	color: ${({ theme }) => theme.color.linkExternal};
+	:hover {
+		color: ${({ theme }) => theme.color.primary1};
+	}
 `;
 
 export function StyledExternalLink({ href, content }) {

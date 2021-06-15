@@ -32,7 +32,7 @@ const theme = (darkMode) => ({
 
 		text1: darkMode ? '#FFFFFF' : '#212B36',
 		text2: darkMode ? '#A8A7AD' : '#586069',
-		text3: darkMode ? '#4E4B57' : '#586069',
+		text3: darkMode ? '#605C6C' : '#586069',
 
 		primary1: darkMode ? '#00CD9C' : '#0366D6',
 		secondary1: darkMode ? 'rgba(0, 205, 156, 0.10)' : '#0366D6',

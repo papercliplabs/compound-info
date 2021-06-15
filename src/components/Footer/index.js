@@ -11,7 +11,6 @@ const StyledFooter = styled.div`
 	display: flex;
 	height: 72px;
 	width: 100%;
-	background-color: ${({ theme }) => theme.color.bg0};
 	align-items: center;
 	padding-bottom: 30px;
 	padding-top: 50px;
@@ -28,13 +27,15 @@ export default function Footer() {
 		<StyledFooter>
 			<Column>
 				<Break />
-				<ResponsiveRow padding={theme.spacing.lg} justify="space-between">
+				<ResponsiveRow padding={theme.spacing.lg + ' 0'} justify="space-between">
 					<Typography.subheader>
-						Made by <StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Paperclip Labs" />
+						© 2021 <StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Paperclip Labs" />
 					</Typography.subheader>
 					<Typography.subheader>
-						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{' '}
-						<StyledExternalLink href={URLS.COMPOUND_DOCS} content="Compound API" />
+						<ResponsiveRow gap={'32px'}>
+							<StyledExternalLink href={URLS.COMPOUND_GRANTS} content="Compound Grants Batch 2" />
+							<StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Github" />
+						</ResponsiveRow>
 					</Typography.subheader>
 				</ResponsiveRow>
 			</Column>
