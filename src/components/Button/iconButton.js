@@ -48,8 +48,8 @@ export function IconButton({}) {
 					<Row>
 						<Typography.caption>
 							This app is an open-source standalone dashboard for the
-							<StyledExternalLink href={URLS.COMPOUND_FINANCE}> Compound protocol</StyledExternalLink>. It was built to
-							provide transparency on historical market APYs to borrowers and lenders in hopes of improving investment
+							<StyledExternalLink href={URLS.COMPOUND_FINANCE} content="Compound protocol" /> It was built to provide
+							transparency on historical market APYs to borrowers and lenders in hopes of improving investment
 							decisions.
 							<br />
 							<br />
@@ -58,8 +58,8 @@ export function IconButton({}) {
 					</Row>
 					<Break />
 					<Typography.caption>
-						Powered by <StyledExternalLink href={URLS.FLIPSIDE}>Flipside Crypto</StyledExternalLink> and{' '}
-						<StyledExternalLink href={URLS.COMPOUND_DOCS}> Compound API </StyledExternalLink>
+						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{' '}
+						<StyledExternalLink href={URLS.COMPOUND_DOCS} content="Compound API" />
 					</Typography.caption>
 				</Card>
 			</Overlay>

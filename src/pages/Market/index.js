@@ -55,9 +55,10 @@ export default function Market({ match }) {
 				<Typography.body color="text2">
 					<StyledInternalLink to={'/'}>Market</StyledInternalLink>
 					{' / '}
-					<StyledExternalLink href={etherscanLink}>
-						c{activeCoin.name} ({shortAddress(coinData.cTokenAddress)})
-					</StyledExternalLink>
+					<StyledExternalLink
+						href={etherscanLink}
+						content={'c' + activeCoin.name + ' (' + shortAddress(coinData.cTokenAddress) + ')'}
+					/>
 				</Typography.body>
 			</Row>
 			<Row height="40px" margin={'20px 0'}>

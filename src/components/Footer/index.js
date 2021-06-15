@@ -30,11 +30,11 @@ export default function Footer() {
 				<Break />
 				<ResponsiveRow padding={theme.spacing.lg} justify="space-between">
 					<Typography.subheader>
-						Made by <StyledExternalLink href={URLS.PAPERCLIP_HOME}>Paperclip Labs</StyledExternalLink>
+						Made by <StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Paperclip Labs" />
 					</Typography.subheader>
 					<Typography.subheader>
-						Powered by <StyledExternalLink href={URLS.FLIPSIDE}>Flipside Crypto</StyledExternalLink> and{' '}
-						<StyledExternalLink href={URLS.COMPOUND_DOCS}> Compound API </StyledExternalLink>
+						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{' '}
+						<StyledExternalLink href={URLS.COMPOUND_DOCS} content="Compound API" />
 					</Typography.subheader>
 				</ResponsiveRow>
 			</Column>
