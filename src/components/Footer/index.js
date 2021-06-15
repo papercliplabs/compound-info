@@ -35,7 +35,7 @@ export default function Footer() {
 					<Typography.subheader>
 						<ResponsiveRow gap={'32px'}>
 							<StyledExternalLink href={URLS.COMPOUND_GRANTS} content="Compound Grants Batch 2" />
-							<StyledExternalLink href={URLS.PAPERCLIP_HOME} content="GitHub" />
+							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />
 						</ResponsiveRow>
 					</Typography.subheader>
 				</ResponsiveRow>
