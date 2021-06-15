@@ -49,6 +49,7 @@ export const URLS = {
 	GAS_NOW: 'https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo',
 	FLIPSIDE: 'https://www.flipsidecrypto.com/',
 	COMPOUND_DOCS: 'https://compound.finance/docs',
+	COMPOUND_FINANCE: 'https://compound.finance',
 };
 
 export const SHORT_TERM_DAYS = 8; // For distinguising between short and long term data, based on the time selector
