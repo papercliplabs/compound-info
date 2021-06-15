@@ -134,7 +134,7 @@ export async function requestSummaryData() {
 		// Derived data
 		newData['marketSize'] = newData.totalSupply * newData.collateralFactor;
 		newData['maxBorrow'] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
-		newData['utilization'] = newData.totalBorrow / newData.maxBorrow;
+		newData['utilization'] = newData.totalBorrow / newData.totalSupply;
 		newData['availableLiquidity'] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
 		newData['totalValueLocked'] = newData.totalSupply - newData.totalBorrow;
 
