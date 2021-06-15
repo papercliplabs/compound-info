@@ -58,3 +58,8 @@ export const Break = styled.div`
 	background-color: ${({ theme }) => theme.color.border2};
 	width: 100%;
 `;
+
+export const StyledDisclaimer = styled(Typography.caption)`
+	color: ${({ theme }) => theme.color.text3};
+	align-self: flex-start;
+`;
