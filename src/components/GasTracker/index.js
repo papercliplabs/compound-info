@@ -121,8 +121,7 @@ export default function GasTracker({}) {
 					{tableRows}
 					<Break />
 					<Typography.caption>
-						Provided by
-						<StyledExternalLink href="https://www.gasnow.org"> gasnow.org</StyledExternalLink>
+						Provided by <StyledExternalLink href="https://www.gasnow.org" content="gasnow.org" />
 					</Typography.caption>
 				</Card>
 			</Overlay>
