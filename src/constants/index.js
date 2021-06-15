@@ -50,6 +50,7 @@ export const URLS = {
 	FLIPSIDE: 'https://www.flipsidecrypto.com/',
 	COMPOUND_DOCS: 'https://compound.finance/docs',
 	COMPOUND_FINANCE: 'https://compound.finance',
+	COMPOUND_GRANTS: 'https://twitter.com/compoundgrants',
 	GITHUB: 'https://github.com/papercliplabs/compound-info',
 };
 
