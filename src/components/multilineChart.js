@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
 import { formatNumber, formatDate } from 'utils';
@@ -6,15 +6,9 @@ import { SHORT_TERM_DAYS } from 'constants/index';
 import { Typography, mediaQuerySizes } from 'theme';
 
 // Used in custom labels and ticks
-const foreignObjectWidth = 100;
-const foreignObjectHeight = 30;
+const foreignObjectWidth = 150;
+const foreignObjectHeight = 25;
 const numberOfXAxisTicks = 3;
-
-const cursorConfig = {
-	stroke: 'gray', // Can't use theme here
-	strokeWidth: 2,
-	strokeDasharray: '5,5',
-};
 
 const activeDotConfig = {
 	r: 5, // dot radius
@@ -39,9 +33,9 @@ const StyledCustomYTick = styled.div`
 
 const StyledAvgLabel = styled.div`
 	display: inline-block;
-	padding: 0 8px;
-	border-radius: ${({ theme }) => theme.radius.lg};
-	background-color: ${({ theme }) => theme.color.bg0};
+	padding: 2px 8px;
+	background-color: ${({ theme }) => theme.color.bg0 + 'A0'};
+	backdrop-filter: blur(2px);
 	text-align: left;
 `;
 
@@ -103,13 +97,13 @@ function CustomYTick({ x, y, payload }) {
 function AvgLabel({ viewBox, avg }) {
 	return (
 		<foreignObject
-			x={viewBox.x + viewBox.width}
-			y={viewBox.y - foreignObjectHeight / 2}
+			x={viewBox.x}
+			y={viewBox.y - foreignObjectHeight}
 			width={foreignObjectWidth}
 			height={foreignObjectHeight}
 		>
 			<StyledAvgLabel>
-				<Typography.subheader>{formatNumber(avg, '%')}</Typography.subheader>
+				<Typography.caption>{formatNumber(avg, '%')} average</Typography.caption>
 			</StyledAvgLabel>
 		</foreignObject>
 	);
@@ -137,6 +131,14 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 		const dayDiff = (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24); // ms diff converted to days
 		return dayDiff < SHORT_TERM_DAYS;
 	}
+
+	const cursorConfig = useMemo(() => {
+		return {
+			stroke: theme.color.bg4, // Can't use theme here
+			strokeWidth: 2,
+			strokeDasharray: '5,5',
+		};
+	}, [theme]);
 
 	// Render
 	const lines = selectedCoinsAndColors.map((coin, i) => {
@@ -189,8 +191,8 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 					isAnimationActive={false}
 					offset={toolTipOffset}
 				/>
-				<ReferenceLine y={avg} stroke={theme.color.text2} strokeDasharray="3 3" label={<AvgLabel avg={avg} />} />
 				{lines}
+				<ReferenceLine y={avg} stroke={theme.color.bg5} strokeDasharray="5 5" label={<AvgLabel avg={avg} />} />
 			</AreaChart>
 		</ResponsiveContainer>
 	);
