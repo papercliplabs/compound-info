@@ -56,7 +56,7 @@ export default function Overview() {
 				/>
 				<StatCard
 					title={'Total unique active users'}
-					tooltipContent="temp"
+					tooltipContent="Number of non-duplicate users between all markets"
 					value={protocolData.numberOfUniqueSuppliers}
 				/>
 			</ResponsiveRow>
@@ -69,13 +69,18 @@ export default function Overview() {
 				/>
 				<ProgressCard
 					title={'Utilization'}
-					tooltipContent="temp"
+					tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
 					value={protocolData.utilization}
 					unit="%"
 					size={60}
 					progressPercent={protocolData.utilization}
 				/>
-				<StatCard title={'Total borrowed'} tooltipContent="temp" value={protocolData.totalBorrow} unit="$" />
+				<StatCard
+					title={'Total borrowed'}
+					tooltipContent="The total amount of funds borrowed from Compound. (USD)"
+					value={protocolData.totalBorrow}
+					unit="$"
+				/>
 			</ResponsiveRow>
 			<SectionTitle title="All Markets" />
 			<TableCard>
