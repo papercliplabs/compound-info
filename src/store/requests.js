@@ -50,8 +50,8 @@ export async function requestApyData() {
 						for (let i = 0; i < max / 4 - 1; i++) {
 							newEntry.values['borrow'][coins[i]] = entry[keys[4 * i]];
 							newEntry.values['supply'][coins[i]] = entry[keys[4 * i + 1]];
-							newEntry.values['totalBorrow'][coins[i]] = entry[keys[4 * i + 2]];
-							newEntry.values['totalSupply'][coins[i]] = entry[keys[4 * i + 3]];
+							newEntry.values['totalBorrow'][coins[i]] = entry[keys[4 * i + 2]]; // Including COMP
+							newEntry.values['totalSupply'][coins[i]] = entry[keys[4 * i + 3]]; // Including COMP
 						}
 
 						return newEntry;
@@ -137,6 +137,9 @@ export async function requestSummaryData() {
 		newData['utilization'] = newData.totalBorrow / newData.totalSupply;
 		newData['availableLiquidity'] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
 		newData['totalValueLocked'] = newData.totalSupply - newData.totalBorrow;
+
+		newData['totalSupplyApy'] = newData.supplyApy + newData.distributionSupplyApy;
+		newData['totalBorrowApy'] = newData.borrowApy - newData.distributionBorrowApy;
 
 		totals.totalSupply += newData.totalSupply;
 		totals.totalBorrow += newData.totalBorrow;
