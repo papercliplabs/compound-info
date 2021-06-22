@@ -3,7 +3,7 @@ import styled, { css, createGlobalStyle, ThemeProvider } from 'styled-components
 
 // Media queries
 export const mediaQuerySizes = {
-	extraSmall: 500,
+	extraSmall: 575,
 	small: 960,
 	large: 1280,
 };

@@ -88,11 +88,11 @@ export default function CoinTable({ data, keysAndUnits }) {
 	const sortedData = sortData(data, sortKey, asc); // Sorting based on totalSupply, desc
 
 	const sortButtons = keys.map((keyName, i) => {
-		const buttonName = keyName === 'name' ? 'asset' : keyName; // Alias name as asset for displaying on the table
+		const buttonName = keyName === 'name' ? 'Asset' : keysAndUnits.filter((keyItem) => keyItem.key === keyName)[0].name; // Alias name as asset for displaying on the table
 		return (
 			<RowEntry key={i} left={i === 0}>
 				<SortButton
-					name={camelCaseToSentenceCase(buttonName)}
+					name={buttonName}
 					isActive={keyName === sortKey}
 					handleClick={() => {
 						if (sortKey === keyName) {

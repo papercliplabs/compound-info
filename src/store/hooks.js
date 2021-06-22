@@ -7,7 +7,7 @@ import { queryApyData, querySummaryData } from './queries';
 const retryTime = 2000; // Retry in 1000ms if there was an error
 const ethToUsdKey = 'ethToUsd';
 
-export function useApyData(dataSelectorKey, timeSelector) {
+export function useApyData(dataSelectorKey, timeSelector, includeComp = false) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
 	const key = 'apyData';
@@ -25,12 +25,21 @@ export function useApyData(dataSelectorKey, timeSelector) {
 		checkForData();
 	}, [apyData, updateStore]);
 
+	let selectorKey = dataSelectorKey;
+	if (includeComp) {
+		if (selectorKey === 'borrow') {
+			selectorKey = 'totalBorrow';
+		} else if (selectorKey === 'supply') {
+			selectorKey = 'totalSupply';
+		}
+	}
+
 	useEffect(() => {
 		if (apyData) {
-			const newQueriedData = queryApyData(apyData, dataSelectorKey, timeSelector);
+			const newQueriedData = queryApyData(apyData, selectorKey, timeSelector);
 			setQueriedData(newQueriedData);
 		}
-	}, [dataSelectorKey, timeSelector, apyData, setQueriedData]);
+	}, [selectorKey, timeSelector, apyData, setQueriedData, includeComp]);
 
 	return queriedData;
 }

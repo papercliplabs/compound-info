@@ -37,15 +37,15 @@ export const StyledLogo = styled.img`
 `;
 
 const StyledSectionTitle = styled.div`
-	width: 100%;
+	width: ${({ width }) => width ?? '100%'};
 	text-align: left;
 	padding-top: 20px;
 	margin-bottom: 8px;
 `;
 
-export function SectionTitle({ title }) {
+export function SectionTitle({ title, width }) {
 	return (
-		<StyledSectionTitle>
+		<StyledSectionTitle width={width}>
 			<Typography.displayS paddingTop={'10px'}>{title}</Typography.displayS>
 		</StyledSectionTitle>
 	);

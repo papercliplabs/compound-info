@@ -17,7 +17,7 @@ for coin in coins:
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -27,7 +27,7 @@ for coin in coins:
     {coin}.supply_apy as {coin}_supply_apy,
     {coin}.borrow_apy as {coin}_borrow_apy,
     {coin}.total_supply_apy as {coin}_total_supply_apy,
-    {coin}.total_borrow_apy as {coin}_total_borrow_apy,''' 
+    {coin}.total_borrow_apy as {coin}_total_borrow_apy,'''
 
     if coin != baseCoin:
         join += f'''\n   full outer join {coin} on {coin}.block_hour = {baseCoin}.block_hour'''
@@ -38,8 +38,8 @@ subtables = subtables[:-1]
 select = select[:-1]
 
 
-sql = subtables 
-sql += select 
+sql = subtables
+sql += select
 sql += join
 
 
@@ -47,7 +47,7 @@ sql += join
 sqlLongTerm = sql + f'\nWHERE\n    hour(block_time) = {longTermHour}'
 sqlLongTerm += '\nORDER BY block_time ASC'
 
-sqlShortTerm = sql + f"\nWHERE\n    block_time >= getdate() - interval '{shortTermDays} days'"  
+sqlShortTerm = sql + f"\nWHERE\n    block_time >= getdate() - interval '{shortTermDays} days'"
 sqlShortTerm += '\nORDER BY block_time ASC'
 
 

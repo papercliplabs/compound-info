@@ -4,7 +4,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -14,7 +14,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -24,7 +24,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -34,7 +34,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -44,7 +44,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -54,7 +54,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -64,7 +64,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -74,7 +74,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -84,7 +84,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE
@@ -94,7 +94,7 @@ WITH
         supply_apy,
         borrow_apy,
         supply_apy + comp_apy_supply as total_supply_apy,
-        borrow_apy + comp_apy_borrow as total_borrow_apy
+        borrow_apy - comp_apy_borrow as total_borrow_apy
     FROM
         compound.market_stats
     WHERE

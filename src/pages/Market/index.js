@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import ChartContainer from 'components/chartContainer';
@@ -12,6 +12,7 @@ import { formatNumber, getCoinInfo, getEtherscanLink, shortAddress } from 'utils
 import { SectionTitle, StyledInternalLink, StyledExternalLink, StyledDisclaimer } from 'theme/components';
 import CoinLogo from 'components/CoinLogo';
 import TooltipText from 'components/TooltipText';
+import { ToggleButton } from 'components/Button';
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
@@ -33,6 +34,7 @@ export default function Market({ match }) {
 	const activeCoinName = match.params.coin;
 	const activeCoin = getCoinInfo(activeCoinName);
 	const coinData = useSummaryData(activeCoinName);
+	const [includeComp, setIncludeComp] = useState(false);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -67,11 +69,24 @@ export default function Market({ match }) {
 			</Row>
 			<ResponsiveRow reverse align="flex-start" gap={'32px'}>
 				<Column flex={2} gap={gap}>
-					<SectionTitle title="APY Performance" />
+					<Row>
+						<SectionTitle width="auto" title="APY Performance" />
+						<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
+							<TooltipText
+								baseText={<Typography.body color="text2">Include COMP</Typography.body>}
+								tooltipContent="Toggle to include the COMP token distribution in the APY chart data. Note that a negative borrow rate means that the Compound protocol pays you."
+							/>
+							<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
+						</Row>
+					</Row>
 					<Card>
-						<ChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} useData={useApyData} />
+						<ChartContainer
+							dataSelectors={APY_DATA_SELECTORS}
+							activeCoin={activeCoin}
+							useData={useApyData}
+							includeComp={includeComp}
+						/>
 					</Card>
-					<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
 					<SectionTitle title="Key Statistics" />
 					<Card>
 						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
