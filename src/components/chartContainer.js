@@ -37,13 +37,13 @@ function initialCoinValues() {
 	});
 }
 
-export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
+export default function ChartContainer({ activeCoin, dataSelectors, useData, includeComp }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
 	const [timeSelector, setTimeSelector] = useState(TIME_SELECTORS.slice(-1)[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues());
-	const data = useData(dataSelector.key, timeSelector);
+	const data = useData(dataSelector.key, timeSelector, includeComp);
 	const theme = useTheme();
 
 	// Set coin values when hover date changes
@@ -116,7 +116,9 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData }) {
 		<StyledChartContainer>
 			<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 				<Column align="flex-start" overflow="visible">
-					<Typography.headerSecondary>Current {dataSelector.name}</Typography.headerSecondary>
+					<Typography.headerSecondary>
+						Current {dataSelector.name} {includeComp ? 'with COMP' : 'without COMP'}
+					</Typography.headerSecondary>
 					<Typography.displayL>{formatNumber(currentApy, '%')}</Typography.displayL>
 				</Column>
 				<DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>

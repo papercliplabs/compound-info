@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Typography } from 'theme';
 import { StyledLogo, SectionTitle, StyledDisclaimer } from 'theme/components';
@@ -7,32 +7,41 @@ import compoundLogo from 'assets/compoundLogo.svg';
 import Card, { StatCard, ProgressCard } from 'components/Card';
 import CoinTable from 'components/CoinTable';
 import { useSummaryData } from 'store/hooks';
+import { ToggleButton } from 'components/Button';
+import TooltipText from 'components/TooltipText';
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.lg};
 	${({ theme }) => theme.mediaWidth.small`
-	padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.md};
-		
+		padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.md};
 	`}
 `;
-
-const tableDataKeysAndUnits = [
-	{ key: 'totalSupply', unit: '$' },
-	{ key: 'supplyApy', unit: '%' },
-	{ key: 'totalBorrow', unit: '$' },
-	{ key: 'borrowApy', unit: '%' },
-];
 
 export default function Overview() {
 	const theme = useTheme();
 	const gap = theme.spacing.md;
 	const summaryData = useSummaryData();
-
-	console.log(summaryData);
+	const [includeComp, setIncludeComp] = useState(false);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	const tableDataKeysAndUnits = useMemo(() => {
+		return includeComp
+			? [
+					{ name: 'Total Supply', key: 'totalSupply', unit: '$' },
+					{ name: 'Supply APY', key: 'totalSupplyApy', unit: '%' },
+					{ name: 'Total Borrow', key: 'totalBorrow', unit: '$' },
+					{ name: 'Borrow APY', key: 'totalBorrowApy', unit: '%' },
+			  ]
+			: [
+					{ name: 'Total Supply', key: 'totalSupply', unit: '$' },
+					{ name: 'Supply APY', key: 'supplyApy', unit: '%' },
+					{ name: 'Total Borrow', key: 'totalBorrow', unit: '$' },
+					{ name: 'Borrow APY', key: 'borrowApy', unit: '%' },
+			  ];
+	}, [includeComp]);
 
 	if (!summaryData) {
 		return null; // Loading summary data
@@ -82,13 +91,19 @@ export default function Overview() {
 					unit="$"
 				/>
 			</ResponsiveRow>
-			<SectionTitle title="All Markets" />
+			<Row>
+				<SectionTitle title="All Markets" width="auto" />
+				<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
+					<TooltipText
+						baseText={<Typography.body color="text2">Include COMP</Typography.body>}
+						tooltipContent="Toggle to include the COMP token distribution in the APY's. Note that a negative borrow rate means that the Compound protocol pays you."
+					/>
+					<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
+				</Row>
+			</Row>
 			<TableCard>
 				<CoinTable data={summaryData} keysAndUnits={tableDataKeysAndUnits} />
 			</TableCard>
-			<Row>
-				<StyledDisclaimer>APY does not include the COMP rewards</StyledDisclaimer>
-			</Row>
 		</>
 	);
 }
