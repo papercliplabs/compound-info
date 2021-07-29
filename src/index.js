@@ -1,29 +1,28 @@
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
+import { isMobile } from 'react-device-detect';
 import App from 'app';
 import Theme, { GlobalStyle } from 'theme';
 import GlobalStoreProvider from 'store';
 import ReactGA from 'react-ga';
 import { withRouter } from 'react-router-dom';
 
+// Google Analytics
 const trackingId = 'UA-199555486-1';
 
-// Google Analytics
 ReactGA.initialize(trackingId);
-
-const RouteChangeTracker = ({ history }) => {
-	history.listen((location, action) => {
-		ReactGA.set({ page: location.pathname });
-		ReactGA.pageview(location.pathname);
-	});
-	return <div></div>;
-};
-
-ReactGA.exception({
-	description: 'An error ocurred',
-	fatal: true,
+ReactGA.set({
+	customBrowserType: !isMobile ? 'desktop' : 'web3' in window || 'ethereum' in window ? 'mobileWeb3' : 'mobileRegular',
 });
 
+window.addEventListener('error', (error) => {
+	ReactGA.exception({
+		description: `${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`,
+		fatal: true,
+	});
+});
+
+// Render app
 ReactDOM.render(
 	<StrictMode>
 		<GlobalStoreProvider>
@@ -35,5 +34,3 @@ ReactDOM.render(
 	</StrictMode>,
 	document.getElementById('root')
 );
-
-export default withRouter(RouteChangeTracker);
