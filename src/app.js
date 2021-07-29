@@ -5,6 +5,7 @@ import Overview from 'pages/Overview';
 import Market from 'pages/Market';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
+import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter';
 
 const HeaderWrapper = styled.div`
 	position: fixed;
@@ -50,6 +51,7 @@ const StyledBody = styled.div`
 function App() {
 	return (
 		<HashRouter>
+			<Route component={GoogleAnalyticsReporter} />
 			<HeaderWrapper>
 				<Header />
 			</HeaderWrapper>
