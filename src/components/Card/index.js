@@ -49,6 +49,19 @@ export function StatCard({ title, value, unit, tooltipContent }) {
 	);
 }
 
+export function CoinInfoCard({ title, value }) {
+	return (
+		<StyledStatCard>
+			<Row>
+				<CardHeader>{title}</CardHeader>
+			</Row>
+			<Row>
+				<Typography.body>{value}</Typography.body>
+			</Row>
+		</StyledStatCard>
+	);
+}
+
 // progressValue is a number from 0 to 1
 export function ProgressCard({ title, value, unit, size, progressValue, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);

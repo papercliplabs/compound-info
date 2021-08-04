@@ -9,16 +9,86 @@ import usdtSvg from 'assets/coins/USDT.svg';
 import wbtcSvg from 'assets/coins/WBTC.svg';
 
 export const COINS = [
-	{ name: 'BAT', imgSrc: batSvg },
-	{ name: 'COMP', imgSrc: compSvg },
-	{ name: 'DAI', imgSrc: daiSvg },
-	{ name: 'ETH', imgSrc: ethSvg },
-	{ name: 'UNI', imgSrc: uniSvg },
-	{ name: 'ZRX', imgSrc: zrxSvg },
-	{ name: 'USDC', imgSrc: usdcSvg },
-	{ name: 'USDT', imgSrc: usdtSvg },
-	{ name: 'WBTC', imgSrc: wbtcSvg },
-	{ name: 'WBTC2', imgSrc: wbtcSvg },
+	{
+		name: 'BAT',
+		imgSrc: batSvg,
+		desc: `Basic Attention Token (BAT) is a token that powers Brave's blockchain-based digital 
+		advertising platform.
+		`,
+	},
+	{
+		name: 'COMP',
+		imgSrc: compSvg,
+		desc: `Compound (COMP) is a token that enables community governance of the
+		Compound protocol. COMP token holders and their delegates can also debate,
+		propose, and vote on changes to the protocol.
+		`,
+	},
+	{
+		name: 'DAI',
+		imgSrc: daiSvg,
+		desc: `Dai (DAI) is a decentralized stablecoin that attempts to maintain a
+		value of $1.00 USD. Unlike centralized stablecoins, Dai isn't backed by US
+		dollars in a bank account. Instead, it’s backed by collateral on the Maker
+		platform.`,
+	},
+	{
+		name: 'ETH',
+		imgSrc: ethSvg,
+		desc: `Ethereum is a decentralized computing platform that uses ETH
+		(also called Ether) to pay transaction fees (or “gas”). Developers can use
+		Ethereum to run decentralized applications (like Compound) and issue new
+		crypto assets, known as Ethereum tokens (ERC-20).
+		`,
+	},
+	{
+		name: 'UNI',
+		imgSrc: uniSvg,
+		desc: `Uniswap (UNI) is a token that powers governance on Uniswap, an
+		automated liquidity provider that’s designed to make it easy to exchange
+		Ethereum (ERC-20) tokens.
+		`,
+	},
+	{
+		name: 'ZRX',
+		imgSrc: zrxSvg,
+		desc: `ZRX is a token that is used to power the 0x protocol.
+		The protocol itself is designed to allow Ethereum tokens to be traded at a
+		low cost directly from your wallet.
+		`,
+	},
+	{
+		name: 'USDC',
+		imgSrc: usdcSvg,
+		desc: `USD Coin (USDC) is a stablecoin fully backed by the US dollar and
+		developed by the CENTRE consortium. USDC can be exchanged for dollars
+		1:1 on Coinbase and other exchanges`,
+	},
+	{
+		name: 'USDT',
+		imgSrc: usdtSvg,
+		desc: `Tether (USDT) is a stablecoin that is pegged to the value of a U.S.
+		dollar. Tether’s issuer claims that USDT is backed by bank reserves and
+		loans which match or exceed the value of USDT in circulation.
+		`,
+	},
+	{
+		name: 'WBTC',
+		imgSrc: wbtcSvg,
+		desc: `Wrapped Bitcoin (WBTC) is an Ethereum token that is intended to 
+		represent Bitcoin (BTC) on the Ethereum blockchain. This version of WBTC on 
+		Compound is no longer being supported, with the community migrating 
+		to WBTC2.
+		`,
+	},
+	{
+		name: 'WBTC2',
+		imgSrc: wbtcSvg,
+		desc: `Wrapped Bitcoin (WBTC2) is an Ethereum token that is intended to 
+		represent Bitcoin (BTC) on the Ethereum blockchain. 
+		This version of WBTC is still being actively supported on Compound.
+		`,
+	},
 ];
 
 //// General chart config
