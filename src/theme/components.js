@@ -29,6 +29,23 @@ export function StyledExternalLink({ href, content }) {
 	);
 }
 
+const StyledExternalInfoLinkWrapper = styled.a`
+	text-decoration: none;
+	color: ${({ theme }) => theme.color.linkInternal};
+	padding-right: ${({ theme }) => theme.spacing.lg};
+	a:active {
+		text-decoration: none;
+	}
+`;
+
+export function StyledExternalInfoLink({ href, content }) {
+	return (
+		<StyledExternalInfoLinkWrapper target="_blank" href={href}>
+			{content}
+		</StyledExternalInfoLinkWrapper>
+	);
+}
+
 export const StyledLogo = styled.img`
 	width: ${({ size }) => size ?? '24px'};
 	height: ${({ size }) => size ?? '24px'};
