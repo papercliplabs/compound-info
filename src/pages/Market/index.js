@@ -141,10 +141,17 @@ export default function Market({ match }) {
 							</Column>
 						</ResponsiveRow>
 					</Card>
+					<SectionTitle title={'About ' + activeCoinName} />
+					<CoinInfoCard
+						value={activeCoin.desc}
+						whitepaper={activeCoin.whitepaper}
+						website={activeCoin.website}
+						twitter={activeCoin.twitter}
+						coingecko={activeCoin.coingecko}
+					/>
 				</Column>
 				<Column gap={gap}>
 					<SectionTitle title="Market Overview" />
-					<CoinInfoCard title={'Coin info'} value={activeCoin.desc} />
 					<StatCard
 						title={'Total supplied'}
 						tooltipContent="The total value (USD) of tokens supplied to the market."
