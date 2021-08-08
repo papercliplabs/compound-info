@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Typography } from 'theme';
 import { formatNumber } from 'utils';
 import ProgressRing from 'components/ProgressRing';
-import Row from 'components/Row';
+import Row, { ResponsiveRow, ResponsiveJustifyRow } from 'components/Row';
 import Column from 'components/Column';
 import TooltipText from 'components/TooltipText';
 import { StyledExternalInfoLink } from 'theme/components';
@@ -57,12 +57,12 @@ export function CoinInfoCard({ value, whitepaper, website, twitter, coingecko })
 				<Typography.body>{value}</Typography.body>
 			</Row>
 			<br />
-			<Row>
+			<ResponsiveRow align="flex-start" xs>
 				<StyledExternalInfoLink href={whitepaper} content={'Whitepaper ↗'} />
 				<StyledExternalInfoLink href={website} content={'Website ↗'} />
 				<StyledExternalInfoLink href={twitter} content={'Twitter ↗'} />
 				<StyledExternalInfoLink href={coingecko} content={'Coingecko ↗'} />
-			</Row>
+			</ResponsiveRow>
 		</StyledStatCard>
 	);
 }
