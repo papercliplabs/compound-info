@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import ChartContainer from 'components/chartContainer';
 import { useApyData, useSummaryData } from 'store/hooks';
-import Card, { StatCard, ProgressCard } from 'components/Card';
+import Card, { StatCard, ProgressCard, CoinInfoCard } from 'components/Card';
 import Row, { ResponsiveRow } from 'components/Row';
 import Column from 'components/Column';
 import { Typography } from 'theme';
@@ -141,6 +141,14 @@ export default function Market({ match }) {
 							</Column>
 						</ResponsiveRow>
 					</Card>
+					<SectionTitle title={'About ' + activeCoinName} />
+					<CoinInfoCard
+						value={activeCoin.desc}
+						whitepaper={activeCoin.whitepaper}
+						website={activeCoin.website}
+						twitter={activeCoin.twitter}
+						coingecko={activeCoin.coingecko}
+					/>
 				</Column>
 				<Column gap={gap}>
 					<SectionTitle title="Market Overview" />

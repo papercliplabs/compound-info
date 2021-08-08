@@ -6,6 +6,7 @@ import ProgressRing from 'components/ProgressRing';
 import Row from 'components/Row';
 import Column from 'components/Column';
 import TooltipText from 'components/TooltipText';
+import { StyledExternalInfoLink } from 'theme/components';
 
 const Card = styled.div`
 	display: flex;
@@ -44,6 +45,23 @@ export function StatCard({ title, value, unit, tooltipContent }) {
 			</Row>
 			<Row>
 				<Typography.displayL>{formattedValue}</Typography.displayL>
+			</Row>
+		</StyledStatCard>
+	);
+}
+
+export function CoinInfoCard({ value, whitepaper, website, twitter, coingecko }) {
+	return (
+		<StyledStatCard>
+			<Row>
+				<Typography.body>{value}</Typography.body>
+			</Row>
+			<br />
+			<Row>
+				<StyledExternalInfoLink href={whitepaper} content={'Whitepaper ↗'} />
+				<StyledExternalInfoLink href={website} content={'Website ↗'} />
+				<StyledExternalInfoLink href={twitter} content={'Twitter ↗'} />
+				<StyledExternalInfoLink href={coingecko} content={'Coingecko ↗'} />
 			</Row>
 		</StyledStatCard>
 	);
