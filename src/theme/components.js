@@ -32,7 +32,10 @@ export function StyledExternalLink({ href, content }) {
 const StyledExternalInfoLinkWrapper = styled.a`
 	text-decoration: none;
 	color: ${({ theme }) => theme.color.linkInternal};
-	padding-right: ${({ theme }) => theme.spacing.lg};
+	padding-right: ${({ theme }) => theme.spacing.md};
+	:hover {
+		text-decoration: underline;
+	}
 	a:active {
 		text-decoration: none;
 	}
