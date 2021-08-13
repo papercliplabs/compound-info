@@ -20,9 +20,10 @@ const Row = styled.div`
 
 export const ScrollRow = styled(Row)`
 	width: 100%;
+	height: 100%;
 	overflow-x: scroll;
 	overflow-y: hidden;
-
+	scroll-behavior: smooth;
 	scrollbar-width: none;
 	&::-webkit-scrollbar {
 		display: none;

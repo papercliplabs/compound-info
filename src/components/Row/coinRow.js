@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTheme } from 'styled-components';
 import { CoinButton } from 'components/Button';
 import { ScrollRow } from './index';
+import Row from 'components/Row';
 import { formatNumber } from 'utils';
 import { COINS } from 'constants/index';
+import { HorizontalScrollButton } from 'components/Button/horizontalScrollButton';
 
 function defaultCoinStates() {
 	return COINS.map((coinData, i) => {
@@ -16,6 +18,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	const [colorStack, setColorStack] = useState([...theme.color.lineChartColors].reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates());
 	const loaded = useRef(false);
+	const scroll = useRef();
 
 	// Helpers
 	const getNumberSelected = useCallback(() => {
@@ -138,5 +141,20 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		);
 	});
 
-	return <ScrollRow>{coinButtons}</ScrollRow>;
+	function leftScroll() {
+		// the leftmost point starts @ 0
+		scroll.current.scrollLeft -= 200;
+	}
+
+	function rightScroll() {
+		scroll.current.scrollLeft += 200;
+	}
+
+	return (
+		<Row>
+			<HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>
+			<ScrollRow ref={scroll}>{coinButtons}</ScrollRow>
+			<HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>
+		</Row>
+	);
 }
