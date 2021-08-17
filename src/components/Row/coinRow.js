@@ -141,20 +141,49 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		);
 	});
 
+	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
+
+	useEffect(() => {
+		setMaxScrollLeft(scroll.current.scrollWidth - scroll.current.clientWidth);
+	}, []);
+
 	function leftScroll() {
-		// the leftmost point starts @ 0
-		scroll.current.scrollLeft -= 200;
+		// take 4 clicks to get to the end of a scroll
+		scroll.current.scrollLeft -= maxScrollLeft / 3;
 	}
 
 	function rightScroll() {
-		scroll.current.scrollLeft += 200;
+		scroll.current.scrollLeft += maxScrollLeft / 3;
 	}
 
+	const [showLeftArrow, setShowLeftArrow] = useState(false);
+	const [showRightArrow, setShowRightArrow] = useState(true);
+
+	function onScroll() {
+		var currentPos = scroll.current.scrollLeft;
+
+		if (currentPos == 0) {
+			setShowLeftArrow(false);
+		}
+		if (currentPos == maxScrollLeft) {
+			setShowRightArrow(false);
+		}
+		if (currentPos > 0 && currentPos < maxScrollLeft) {
+			setShowLeftArrow(true);
+			setShowRightArrow(true);
+		}
+	}
 	return (
 		<Row>
-			<HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>
-			<ScrollRow ref={scroll}>{coinButtons}</ScrollRow>
-			<HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>
+			<HorizontalScrollButton show={showLeftArrow} isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>
+			<ScrollRow onScroll={onScroll} ref={scroll}>
+				{coinButtons}
+			</ScrollRow>
+			<HorizontalScrollButton
+				show={showRightArrow}
+				isLeft={false}
+				onClick={() => rightScroll()}
+			></HorizontalScrollButton>
 		</Row>
 	);
 }
