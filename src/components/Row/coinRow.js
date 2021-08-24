@@ -17,6 +17,9 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	const theme = useTheme();
 	const [colorStack, setColorStack] = useState([...theme.color.lineChartColors].reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates());
+	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
+	const [showLeftArrow, setShowLeftArrow] = useState(false);
+	const [showRightArrow, setShowRightArrow] = useState(true);
 	const loaded = useRef(false);
 	const scroll = useRef();
 
@@ -141,8 +144,6 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		);
 	});
 
-	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
-
 	useEffect(() => {
 		setMaxScrollLeft(scroll.current.scrollWidth - scroll.current.clientWidth);
 	}, []);
@@ -156,16 +157,13 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		scroll.current.scrollLeft += maxScrollLeft / 3;
 	}
 
-	const [showLeftArrow, setShowLeftArrow] = useState(false);
-	const [showRightArrow, setShowRightArrow] = useState(true);
-
 	function onScroll() {
 		var currentPos = scroll.current.scrollLeft;
 
 		if (currentPos == 0) {
 			setShowLeftArrow(false);
 		}
-		if (currentPos == maxScrollLeft) {
+		if (currentPos >= maxScrollLeft) {
 			setShowRightArrow(false);
 		}
 		if (currentPos > 0 && currentPos < maxScrollLeft) {
@@ -175,15 +173,11 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	}
 	return (
 		<Row>
-			<HorizontalScrollButton show={showLeftArrow} isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>
+			{showLeftArrow && <HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>}
 			<ScrollRow onScroll={onScroll} ref={scroll}>
 				{coinButtons}
 			</ScrollRow>
-			<HorizontalScrollButton
-				show={showRightArrow}
-				isLeft={false}
-				onClick={() => rightScroll()}
-			></HorizontalScrollButton>
+			{showRightArrow && <HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>}
 		</Row>
 	);
 }
