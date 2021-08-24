@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTheme } from 'styled-components';
 import { CoinButton } from 'components/Button';
 import { ScrollRow } from './index';
+import Row from 'components/Row';
 import { formatNumber } from 'utils';
 import { COINS } from 'constants/index';
+import { HorizontalScrollButton } from 'components/Button/horizontalScrollButton';
 
 function defaultCoinStates() {
 	return COINS.map((coinData, i) => {
@@ -15,7 +17,11 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 	const theme = useTheme();
 	const [colorStack, setColorStack] = useState([...theme.color.lineChartColors].reverse());
 	const [coinStates, setCoinStates] = useState(defaultCoinStates());
+	const [maxScrollLeft, setMaxScrollLeft] = useState(0);
+	const [showLeftArrow, setShowLeftArrow] = useState(false);
+	const [showRightArrow, setShowRightArrow] = useState(true);
 	const loaded = useRef(false);
+	const scroll = useRef();
 
 	// Helpers
 	const getNumberSelected = useCallback(() => {
@@ -138,5 +144,40 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 		);
 	});
 
-	return <ScrollRow>{coinButtons}</ScrollRow>;
+	useEffect(() => {
+		setMaxScrollLeft(scroll.current.scrollWidth - scroll.current.clientWidth);
+	}, []);
+
+	function leftScroll() {
+		// take 4 clicks to get to the end of a scroll
+		scroll.current.scrollLeft -= maxScrollLeft / 3;
+	}
+
+	function rightScroll() {
+		scroll.current.scrollLeft += maxScrollLeft / 3;
+	}
+
+	function onScroll() {
+		var currentPos = scroll.current.scrollLeft;
+
+		if (currentPos == 0) {
+			setShowLeftArrow(false);
+		}
+		if (currentPos >= maxScrollLeft) {
+			setShowRightArrow(false);
+		}
+		if (currentPos > 0 && currentPos < maxScrollLeft) {
+			setShowLeftArrow(true);
+			setShowRightArrow(true);
+		}
+	}
+	return (
+		<Row>
+			{showLeftArrow && <HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>}
+			<ScrollRow onScroll={onScroll} ref={scroll}>
+				{coinButtons}
+			</ScrollRow>
+			{showRightArrow && <HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>}
+		</Row>
+	);
 }
