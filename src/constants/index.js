@@ -7,6 +7,12 @@ import zrxSvg from 'assets/coins/ZRX.svg';
 import usdcSvg from 'assets/coins/USDC.svg';
 import usdtSvg from 'assets/coins/USDT.svg';
 import wbtcSvg from 'assets/coins/WBTC.svg';
+import aaveSvg from 'assets/coins/AAVE.svg';
+import mkrSvg from 'assets/coins/MKR.svg';
+import sushiSvg from 'assets/coins/SUSHI.svg';
+import tusdSvg from 'assets/coins/TUSD.svg';
+import yfiSvg from 'assets/coins/YFI.svg';
+import linkSvg from 'assets/coins/LINK.svg';
 
 export const COINS = [
 	{
@@ -17,7 +23,7 @@ export const COINS = [
 		whitepaper: 'https://basicattentiontoken.org/static-assets/documents/BasicAttentionTokenWhitePaper-4.pdf',
 		website: 'https://basicattentiontoken.org/',
 		twitter: 'https://twitter.com/attentiontoken',
-		coingecko: 'https://www.coingecko.com/en/coins/basic-attention-token',
+		coingecko: 'https://www.coingecko.com/coins/basic-attention-token',
 	},
 	{
 		name: 'COMP',
@@ -28,7 +34,7 @@ export const COINS = [
 		whitepaper: 'https://compound.finance/documents/Compound.Whitepaper.pdf',
 		website: 'https://compound.finance/',
 		twitter: 'https://twitter.com/compoundfinance',
-		coingecko: 'https://www.coingecko.com/en/coins/compound',
+		coingecko: 'https://www.coingecko.com/coins/compound',
 	},
 	{
 		name: 'DAI',
@@ -38,9 +44,9 @@ export const COINS = [
 		dollars in a bank account. Instead, it’s backed by collateral on the Maker
 		platform.`,
 		whitepaper: 'https://makerdao.com/en/whitepaper/#abstract',
-		website: 'https://makerdao.com/en/',
+		website: 'https://makerdao.com',
 		twitter: 'https://twitter.com/MakerDAO',
-		coingecko: 'https://www.coingecko.com/en/coins/dai',
+		coingecko: 'https://www.coingecko.com/coins/dai',
 	},
 	{
 		name: 'ETH',
@@ -49,10 +55,10 @@ export const COINS = [
 		(also called Ether) to pay transaction fees (or “gas”). Developers can use
 		Ethereum to run decentralized applications (like Compound) and issue new
 		crypto assets, known as Ethereum tokens (ERC-20).`,
-		whitepaper: 'https://ethereum.org/en/whitepaper/',
-		website: 'https://ethereum.org/en/',
-		twitter: 'https://twitter.com/ethereum?lang=en',
-		coingecko: 'https://www.coingecko.com/en/coins/ethereum',
+		whitepaper: 'https://ethereum.org/whitepaper/',
+		website: 'https://ethereum.org',
+		twitter: 'https://twitter.com/ethereum',
+		coingecko: 'https://www.coingecko.com/coins/ethereum',
 	},
 	{
 		name: 'UNI',
@@ -63,7 +69,7 @@ export const COINS = [
 		whitepaper: 'https://uniswap.org/whitepaper-v3.pdf',
 		website: 'http://uniswap.org/',
 		twitter: 'https://twitter.com/Uniswap',
-		coingecko: 'https://www.coingecko.com/en/coins/uniswap',
+		coingecko: 'https://www.coingecko.com/coins/uniswap',
 	},
 	{
 		name: 'ZRX',
@@ -74,7 +80,7 @@ export const COINS = [
 		whitepaper: 'https://0x.org/pdfs/0x_white_paper.pdf',
 		website: 'https://0x.org/',
 		twitter: 'https://twitter.com/0xProject',
-		coingecko: 'https://www.coingecko.com/en/coins/0x',
+		coingecko: 'https://www.coingecko.com/coins/0x',
 	},
 	{
 		name: 'USDC',
@@ -83,9 +89,9 @@ export const COINS = [
 		developed by the CENTRE consortium. USDC can be exchanged for dollars
 		1:1 on Coinbase and other exchanges.`,
 		whitepaper: 'https://f.hubspotusercontent30.net/hubfs/9304636/PDF/centre-whitepaper.pdf',
-		website: 'https://www.circle.com/en/usdc',
+		website: 'https://www.circle.com/usdc',
 		twitter: 'https://twitter.com/circlepay',
-		coingecko: 'https://www.coingecko.com/en/coins/usd-coin',
+		coingecko: 'https://www.coingecko.com/coins/usd-coin',
 	},
 	{
 		name: 'USDT',
@@ -108,7 +114,7 @@ export const COINS = [
 		whitepaper: 'https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf',
 		website: 'https://wbtc.network/',
 		twitter: 'https://twitter.com/wrappedbtc',
-		coingecko: 'https://www.coingecko.com/en/coins/wrapped-bitcoin',
+		coingecko: 'https://www.coingecko.com/coins/wrapped-bitcoin',
 	},
 	{
 		name: 'WBTC2',
@@ -117,9 +123,63 @@ export const COINS = [
 		represent Bitcoin (BTC) on the Ethereum blockchain. 
 		This version of WBTC is still being actively supported on Compound.`,
 		whitepaper: 'https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf',
-		website: 'https://wbtc.network/',
+		website: 'https://wbtc.network',
 		twitter: 'https://twitter.com/wrappedbtc',
-		coingecko: 'https://www.coingecko.com/en/coins/wrapped-bitcoin',
+		coingecko: 'https://www.coingecko.com/coins/wrapped-bitcoin',
+	},
+	{
+		name: 'AAVE',
+		imgSrc: aaveSvg,
+		desc: 'Aave (AAVE) is an Ethereum token that powers Aave, a decentralized non-custodial money market protocol where users can participate as depositors or borrowers. Depositors provide liquidity to the market to earn a passive income, while borrowers are able to borrow cryptocurrencies in exchange for paying a variable interest rate.',
+		whitepaper: 'https://github.com/aave/aave-protocol/blob/master/docs/Aave_Protocol_Whitepaper_v1_0.pdf',
+		website: 'https://aave.com',
+		twitter: 'https://twitter.com/AaveAave',
+		coingecko: 'https://www.coingecko.com/coins/aave',
+	},
+	{
+		name: 'LINK',
+		imgSrc: linkSvg,
+		desc: `Chainlink (LINK) is an Ethereum token that powers the Chainlink decentralized oracle network. This network allows smart contracts on Ethereum to securely connect to external data sources, APIs, and payment systems.`,
+		whitepaper: 'https://chain.link/whitepaper',
+		website: 'https://chain.link',
+		twitter: 'https://twitter.com/chainlink',
+		coingecko: 'https://www.coingecko.com/coins/chainlink',
+	},
+	{
+		name: 'MKR',
+		imgSrc: mkrSvg,
+		desc: `Maker is an Ethereum token that describes itself as “a utility token, governance token, and recapitalization resource of the Maker system.” The purpose of the Maker system is to generate another Ethereum token, called Dai, that seeks to trade on exchanges at a value of exactly US$1.00.`,
+		whitepaper: 'https://makerdao.com/whitepaper/',
+		website: 'https://makerdao.com/',
+		twitter: 'https://twitter.com/MakerDAO',
+		coingecko: 'https://www.coingecko.com/coins/maker',
+	},
+	{
+		name: 'SUSHI',
+		imgSrc: sushiSvg,
+		desc: `SushiSwap (SUSHI) is an Ethereum token that powers SushiSwap, a decentralized cryptocurrency exchange and automated market maker built on Ethereum. Holders of SUSHI can participate in community governance and stake their tokens to receive a portion of SushiSwap’s transaction fees.`,
+		whitepaper: 'https://docs.sushi.com',
+		website: 'https://sushi.com',
+		twitter: 'https://twitter.com/sushiswap',
+		coingecko: 'https://www.coingecko.com/coins/sushi',
+	},
+	{
+		name: 'TUSD',
+		imgSrc: tusdSvg,
+		desc: `TrueUSD is a stablecoin running on Ethereum that attempts to maintain a value of US$1.00. The supply of TUSD is collateralized by US dollars held in escrow by banks. Tokens can be purchased and redeemed for US dollars on the TrustToken website.`,
+		whitepaper: 'https://www.trusttoken.com',
+		website: 'https://www.trusttoken.com',
+		twitter: 'https://twitter.com/TrustToken',
+		coingecko: 'https://www.coingecko.com/coins/true-usd',
+	},
+	{
+		name: 'YFI',
+		imgSrc: yfiSvg,
+		desc: `Yearn.finance (YFI) is an Ethereum token that governs the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance (“defi”) ecosystem in an effort to generate a high return.`,
+		whitepaper: 'https://docs.yearn.finance',
+		website: 'https://yearn.finance',
+		twitter: 'https://twitter.com/iearnfinance',
+		coingecko: 'https://www.coingecko.com/coins/yearn-finance',
 	},
 ];
 
