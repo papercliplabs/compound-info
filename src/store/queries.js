@@ -31,7 +31,11 @@ export function queryApyData(rawData, dataSelectorKey, timeSelector) {
 		return blockStartTime >= startTime;
 	});
 
-	return data;
+	if (data && data.length > 0) {
+		return data;
+	} else {
+		return null;
+	}
 }
 
 // coinName: name of underlying asset (ex: USDC), coinName = ALL returns protocol summary data
