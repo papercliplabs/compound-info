@@ -1,21 +1,27 @@
 {
   "files": {
-    "main.js": "/compound-info/static/js/main.edaaabbf.chunk.js",
-    "main.js.map": "/compound-info/static/js/main.edaaabbf.chunk.js.map",
+    "main.js": "/compound-info/static/js/main.6f81b715.chunk.js",
+    "main.js.map": "/compound-info/static/js/main.6f81b715.chunk.js.map",
     "runtime-main.js": "/compound-info/static/js/runtime-main.70296f4e.js",
     "runtime-main.js.map": "/compound-info/static/js/runtime-main.70296f4e.js.map",
     "static/js/2.18ca8ef2.chunk.js": "/compound-info/static/js/2.18ca8ef2.chunk.js",
     "static/js/2.18ca8ef2.chunk.js.map": "/compound-info/static/js/2.18ca8ef2.chunk.js.map",
     "index.html": "/compound-info/index.html",
     "static/js/2.18ca8ef2.chunk.js.LICENSE.txt": "/compound-info/static/js/2.18ca8ef2.chunk.js.LICENSE.txt",
+    "static/media/AAVE.22030d27.svg": "/compound-info/static/media/AAVE.22030d27.svg",
     "static/media/BAT.67fb43cb.svg": "/compound-info/static/media/BAT.67fb43cb.svg",
     "static/media/COMP.1d38f23c.svg": "/compound-info/static/media/COMP.1d38f23c.svg",
     "static/media/DAI.2fa815ce.svg": "/compound-info/static/media/DAI.2fa815ce.svg",
     "static/media/ETH.8b73e520.svg": "/compound-info/static/media/ETH.8b73e520.svg",
+    "static/media/LINK.b8368226.svg": "/compound-info/static/media/LINK.b8368226.svg",
+    "static/media/MKR.6b101b5b.svg": "/compound-info/static/media/MKR.6b101b5b.svg",
+    "static/media/SUSHI.c3fab7f4.svg": "/compound-info/static/media/SUSHI.c3fab7f4.svg",
+    "static/media/TUSD.215c1692.svg": "/compound-info/static/media/TUSD.215c1692.svg",
     "static/media/UNI.4c88dba0.svg": "/compound-info/static/media/UNI.4c88dba0.svg",
     "static/media/USDC.c3105ea5.svg": "/compound-info/static/media/USDC.c3105ea5.svg",
     "static/media/USDT.112dc7c9.svg": "/compound-info/static/media/USDT.112dc7c9.svg",
     "static/media/WBTC.a67385b1.svg": "/compound-info/static/media/WBTC.a67385b1.svg",
+    "static/media/YFI.021be439.svg": "/compound-info/static/media/YFI.021be439.svg",
     "static/media/ZRX.e70ab0da.svg": "/compound-info/static/media/ZRX.e70ab0da.svg",
     "static/media/closeIcon.8ddd1c9d.svg": "/compound-info/static/media/closeIcon.8ddd1c9d.svg",
     "static/media/compoundLogo.dfb35bbc.svg": "/compound-info/static/media/compoundLogo.dfb35bbc.svg",
@@ -29,6 +35,6 @@
   "entrypoints": [
     "static/js/runtime-main.70296f4e.js",
     "static/js/2.18ca8ef2.chunk.js",
-    "static/js/main.edaaabbf.chunk.js"
+    "static/js/main.6f81b715.chunk.js"
   ]
 }
