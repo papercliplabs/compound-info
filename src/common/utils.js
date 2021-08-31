@@ -1,19 +1,19 @@
-import { COINS } from 'constants/index';
+import { COINS } from "common/constants";
 
 // Formats a javascript date object as the month and day.
 // If withTime, adds the time of day, otherwise adds the year (short term vs long term data)
 export function formatDate(date, withTime) {
-	const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	let formattedDate = months[date.getMonth()] + ' ' + date.getDate();
+	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	let formattedDate = months[date.getMonth()] + " " + date.getDate();
 	if (withTime) {
 		const timeOptions = {
-			hour: 'numeric',
-			minute: 'numeric',
+			hour: "numeric",
+			minute: "numeric",
 		};
-		const time = date.toLocaleTimeString('en-US', timeOptions);
-		formattedDate += ' ' + time;
+		const time = date.toLocaleTimeString("en-US", timeOptions);
+		formattedDate += " " + time;
 	} else {
-		formattedDate += ' ' + date.getFullYear().toString();
+		formattedDate += " " + date.getFullYear().toString();
 	}
 
 	return formattedDate;
@@ -26,13 +26,13 @@ export function formatNumber(number, unit, decimals = null) {
 	const T = 1000000000000;
 	let defaultDecimals = 2;
 
-	let postFix = '';
+	let postFix = "";
 	let unitPostfix = false;
 	let formattedNum = number;
 	let isInt = false;
 
 	// If it is represented as a sting, convert to number first
-	if (typeof number === 'string') {
+	if (typeof number === "string") {
 		formattedNum = parseFloat(formattedNum);
 		if (isNaN(formattedNum)) {
 			return number; // It isn't a number
@@ -40,7 +40,7 @@ export function formatNumber(number, unit, decimals = null) {
 	}
 
 	// Multiply by 100, and set so unit is postfixed
-	if (unit === '%') {
+	if (unit === "%") {
 		formattedNum *= 100;
 		unitPostfix = true;
 	}
@@ -48,16 +48,16 @@ export function formatNumber(number, unit, decimals = null) {
 	// Converting to digestable format
 	if (formattedNum > T) {
 		formattedNum /= T;
-		postFix = 'T';
+		postFix = "T";
 	} else if (formattedNum > B) {
 		formattedNum /= B;
-		postFix = 'B';
+		postFix = "B";
 	} else if (formattedNum > M) {
 		formattedNum /= M;
-		postFix = 'M';
+		postFix = "M";
 	} else if (formattedNum > K) {
 		formattedNum /= K;
-		postFix = 'K';
+		postFix = "K";
 	}
 
 	// If its an interger, flag to rount to whole number
@@ -87,7 +87,7 @@ export function getCoinInfo(coinName) {
 }
 
 export function getEtherscanLink(address) {
-	return 'https://etherscan.io/token/' + address;
+	return "https://etherscan.io/token/" + address;
 }
 
 export function shortAddress(address) {
@@ -96,7 +96,7 @@ export function shortAddress(address) {
 	if (len < 12) {
 		return address;
 	} else {
-		return address.slice(0, 6) + '...' + address.slice(len - 6, len);
+		return address.slice(0, 6) + "..." + address.slice(len - 6, len);
 	}
 }
 
@@ -110,7 +110,7 @@ export function getCoinList() {
 }
 
 export function camelCaseToSentenceCase(camel) {
-	let sentenceCase = camel.replace(/([A-Z])/g, ' $1');
+	let sentenceCase = camel.replace(/([A-Z])/g, " $1");
 	sentenceCase = sentenceCase.charAt(0).toUpperCase() + sentenceCase.slice(1);
 	return sentenceCase;
 }

@@ -1,11 +1,12 @@
-import React from 'react';
-import Header from 'components/Header';
-import Footer from 'components/Footer';
-import Overview from 'pages/Overview';
-import Market from 'pages/Market';
-import { HashRouter, Route, Switch } from 'react-router-dom';
-import styled from 'styled-components';
-import GoogleAnalyticsReporter from 'components/analytics/GoogleAnalyticsReporter';
+import React from "react";
+import Market from "pages/Market";
+import styled from "styled-components";
+import { HashRouter, Route, Switch } from "react-router-dom";
+
+import GoogleAnalyticsReporter from "components/analytics/GoogleAnalyticsReporter";
+import Header from "components/Header";
+import Footer from "components/Footer";
+import Overview from "pages/Overview";
 
 const HeaderWrapper = styled.div`
 	position: fixed;

@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 // From uniswap, for closing popover on outside mouse click
 export function useClickOutside(node, handler) {
@@ -15,10 +15,10 @@ export function useClickOutside(node, handler) {
 			if (handlerRef.current) handlerRef.current();
 		};
 
-		document.addEventListener('mousedown', handleClickOutside);
+		document.addEventListener("mousedown", handleClickOutside);
 
 		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+			document.removeEventListener("mousedown", handleClickOutside);
 		};
 	}, [node]);
 }

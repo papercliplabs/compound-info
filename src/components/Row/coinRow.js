@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useTheme } from 'styled-components';
-import { CoinButton } from 'components/Button';
-import { ScrollRow } from './index';
-import Row from 'components/Row';
-import { formatNumber } from 'utils';
-import { COINS } from 'constants/index';
-import { HorizontalScrollButton } from 'components/Button/horizontalScrollButton';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useTheme } from "styled-components";
+
+import { CoinButton } from "components/Button";
+import { ScrollRow } from "./index";
+import Row from "components/Row";
+import { formatNumber } from "common/utils";
+import { COINS } from "common/constants";
+import { HorizontalScrollButton } from "components/Button/horizontalScrollButton";
 
 function defaultCoinStates() {
 	return COINS.map((coinData, i) => {
@@ -137,7 +138,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 				name={coinState.name}
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null}
-				value={formatNumber(coinData.value ? coinData.value : 0, '%')}
+				value={formatNumber(coinData.value ? coinData.value : 0, "%")}
 				onClick={() => handleClick(i)}
 				allowDeselect={allowDeselect}
 			/>

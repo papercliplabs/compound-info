@@ -1,13 +1,15 @@
-import React, { useState, useRef } from 'react';
-import styled, { css } from 'styled-components';
-import { StyledExternalLink, StyledLogo, Break } from 'theme/components';
-import Button from './';
-import { Typography } from 'theme';
-import Card from 'components/Card';
-import Row from 'components/Row';
-import questionIcon from 'assets/questionIcon.svg';
-import { useClickOutside } from 'hooks/useClickOutside';
-import { URLS } from 'constants/index';
+import React, { useState, useRef } from "react";
+import styled from "styled-components";
+
+import { StyledExternalLink } from "components/Link";
+import { Break } from "components/shared";
+import Button from "./";
+import { Typography } from "theme";
+import Card from "components/Card";
+import Row from "components/Row";
+import questionIcon from "assets/questionIcon.svg";
+import { useClickOutside } from "common/hooks/useClickOutside";
+import { URLS } from "common/constants";
 
 const IconButtonWrapper = styled.div`
 	positon: relative;
@@ -26,7 +28,7 @@ const StyledIconButton = styled.img`
 `;
 
 const Overlay = styled.span`
-	display: ${({ open }) => (open ? 'block' : 'none')};
+	display: ${({ open }) => (open ? "block" : "none")};
 	position: absolute;
 	top: 5rem;
 	right: 7rem;
@@ -47,19 +49,19 @@ export function IconButton({}) {
 				<Card column>
 					<Row>
 						<Typography.caption>
-							This app is an open-source standalone dashboard for the{' '}
+							This app is an open-source standalone dashboard for the{" "}
 							<StyledExternalLink href={URLS.COMPOUND_FINANCE} content="Compound protocol" />. It was built to provide
 							transparency on historical market APYs to borrowers and lenders in hopes of improving investment
 							decisions.
 							<br />
 							<br />
-							Have a question? Want to improve the dashboard? Feel free to open an issue on{' '}
+							Have a question? Want to improve the dashboard? Feel free to open an issue on{" "}
 							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />.
 						</Typography.caption>
 					</Row>
 					<Break />
 					<Typography.caption>
-						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{' '}
+						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{" "}
 						<StyledExternalLink href={URLS.COMPOUND_DOCS} content="Compound API" />
 					</Typography.caption>
 				</Card>
