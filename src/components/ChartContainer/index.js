@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { OptionButton, OptionButtonVariantBackdrop } from 'components/Button';
-import MultilineChart from 'components/multilineChart';
-import Row, { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from 'components/Row';
-import Column from 'components/Column';
-import { Typography } from 'theme';
-import { COINS, TIME_SELECTORS } from 'constants/index';
-import { formatNumber } from 'utils';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import styled, { useTheme } from "styled-components";
+
+import { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
+import MultilineChart from "components/MultilineChart";
+import { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from "components/Row";
+import Column from "components/Column";
+import { Typography } from "theme";
+import { COINS, TIME_SELECTORS } from "common/constants";
+import { formatNumber } from "common/utils";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -117,9 +118,9 @@ export default function ChartContainer({ activeCoin, dataSelectors, useData, inc
 			<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 				<Column align="flex-start" overflow="visible">
 					<Typography.headerSecondary>
-						Current {dataSelector.name} {includeComp ? 'with COMP' : 'without COMP'}
+						Current {dataSelector.name} {includeComp ? "with COMP" : "without COMP"}
 					</Typography.headerSecondary>
-					<Typography.displayL>{formatNumber(currentApy, '%')}</Typography.displayL>
+					<Typography.displayL>{formatNumber(currentApy, "%")}</Typography.displayL>
 				</Column>
 				<DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>
 			</ResponsiveRow>

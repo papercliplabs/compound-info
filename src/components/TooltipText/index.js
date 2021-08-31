@@ -1,14 +1,14 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import styled from 'styled-components';
-import Portal from '@reach/portal';
-import { usePopper } from 'react-popper';
-import { Typography } from 'theme';
-import Card from 'components/Card';
+import React, { useEffect, useState, useCallback } from "react";
+import styled from "styled-components";
+import Portal from "@reach/portal";
+import { usePopper } from "react-popper";
+
+import { Typography } from "theme";
 
 const Tooltip = styled.div`
-	display: ${({ show }) => (show ? 'flex' : 'none')};
+	display: ${({ show }) => (show ? "flex" : "none")};
 	background-color: ${({ theme }) => theme.color.bg2};
-	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.bg3};
+	border: solid ${({ theme }) => theme.border.thickness + " " + theme.color.bg3};
 	border-radius: ${({ theme }) => theme.radius.lg};
 	padding: ${({ theme }) => theme.spacing.md};
 	box-shadow: ${({ theme }) => theme.shadow.card};
@@ -39,9 +39,9 @@ export default function TooltipText({ baseText, tooltipContent }) {
 	const [popperElement, setPopperElement] = useState(null);
 	const [arrowElement, setArrowElement] = useState(null);
 	const { styles, attributes, update } = usePopper(referenceElement, popperElement, {
-		placement: 'auto',
-		strategy: 'fixed',
-		modifiers: [{ name: 'offset', options: { offset: [0, 10] } }],
+		placement: "auto",
+		strategy: "fixed",
+		modifiers: [{ name: "offset", options: { offset: [0, 10] } }],
 	});
 	const [show, setShow] = useState(false);
 

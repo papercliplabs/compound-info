@@ -1,10 +1,10 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
-export * from './optionButton';
-export * from './coinButton';
-export * from './sortButton';
-export * from './toggleButton';
+export * from "./optionButton";
+export * from "./coinButton";
+export * from "./sortButton";
+export * from "./toggleButton";
 
 const Button = styled.button`
 	background: none;

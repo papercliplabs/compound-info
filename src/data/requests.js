@@ -1,11 +1,11 @@
-import { URLS } from 'constants/index';
-import { getCoinList } from 'utils';
+import { URLS } from "common/constants";
+import { getCoinList } from "common/utils";
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
 // Fetch the data using the URL's pointing to flipside queries
 export async function requestApyData() {
-	console.log('fetching apy data');
+	console.log("fetching apy data");
 	const shortTermUrl = URLS.APY_SHORT;
 	const longTermUrl = URLS.APY_LONG;
 	let ret = {};
@@ -26,13 +26,13 @@ export async function requestApyData() {
 	// Sending parallel api requests, and manipulating it in an easy to consume manor
 	await Promise.all(
 		[
-			['shortTerm', shortTermUrl],
-			['longTerm', longTermUrl],
+			["shortTerm", shortTermUrl],
+			["longTerm", longTermUrl],
 		].map(([type, url]) =>
 			fetch(url)
 				.then((response) => response.json())
 				.then((data) => {
-					let keys = Object.keys(data[0]).filter((key) => key !== 'BLOCK_TIME'); // Table keys without block time
+					let keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
 					keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply
 					const max = keys.length + 1; // len: keys.len + 1
 
@@ -48,10 +48,10 @@ export async function requestApyData() {
 						};
 
 						for (let i = 0; i < max / 4 - 1; i++) {
-							newEntry.values['borrow'][coins[i]] = entry[keys[4 * i]];
-							newEntry.values['supply'][coins[i]] = entry[keys[4 * i + 1]];
-							newEntry.values['totalBorrow'][coins[i]] = entry[keys[4 * i + 2]]; // Including COMP
-							newEntry.values['totalSupply'][coins[i]] = entry[keys[4 * i + 3]]; // Including COMP
+							newEntry.values["borrow"][coins[i]] = entry[keys[4 * i]];
+							newEntry.values["supply"][coins[i]] = entry[keys[4 * i + 1]];
+							newEntry.values["totalBorrow"][coins[i]] = entry[keys[4 * i + 2]]; // Including COMP
+							newEntry.values["totalSupply"][coins[i]] = entry[keys[4 * i + 3]]; // Including COMP
 						}
 
 						return newEntry;
@@ -66,25 +66,25 @@ export async function requestApyData() {
 }
 
 export async function requestSummaryData() {
-	console.log('fetching summary data');
+	console.log("fetching summary data");
 	const url = URLS.SUMMARY_DATA;
 	const coinList = getCoinList();
 
 	const params = {
-		addresses: [''], // All addresses
+		addresses: [""], // All addresses
 		block_timestamp: 0, // Most current timestamp
 		meta: true,
 	};
 
 	const response = await fetch(url, {
-		method: 'POST',
-		headers: { 'Content-type': 'application/json' },
+		method: "POST",
+		headers: { "Content-type": "application/json" },
 		body: JSON.stringify(params),
 	});
 
 	if (!response.ok) {
 		const error = await response.text();
-		console.log('Error requesting summary Data:' + error);
+		console.log("Error requesting summary Data:" + error);
 		return {};
 	}
 
@@ -93,7 +93,7 @@ export async function requestSummaryData() {
 	data = data.cToken;
 
 	// Conversion factor using price of USD = USDC
-	const usdcData = data.filter((obj) => obj.underlying_symbol === 'USDC')[0];
+	const usdcData = data.filter((obj) => obj.underlying_symbol === "USDC")[0];
 	const ethToUsd = 1 / parseFloat(usdcData.underlying_price.value);
 
 	const totals = {
@@ -132,14 +132,14 @@ export async function requestSummaryData() {
 		};
 
 		// Derived data
-		newData['marketSize'] = newData.totalSupply * newData.collateralFactor;
-		newData['maxBorrow'] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
-		newData['utilization'] = newData.totalBorrow / newData.totalSupply;
-		newData['availableLiquidity'] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
-		newData['totalValueLocked'] = newData.totalSupply - newData.totalBorrow;
+		newData["marketSize"] = newData.totalSupply * newData.collateralFactor;
+		newData["maxBorrow"] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
+		newData["utilization"] = newData.totalBorrow / newData.totalSupply;
+		newData["availableLiquidity"] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
+		newData["totalValueLocked"] = newData.totalSupply - newData.totalBorrow;
 
-		newData['totalSupplyApy'] = newData.supplyApy + newData.distributionSupplyApy;
-		newData['totalBorrowApy'] = newData.borrowApy - newData.distributionBorrowApy;
+		newData["totalSupplyApy"] = newData.supplyApy + newData.distributionSupplyApy;
+		newData["totalBorrowApy"] = newData.borrowApy - newData.distributionBorrowApy;
 
 		totals.totalSupply += newData.totalSupply;
 		totals.totalBorrow += newData.totalBorrow;
@@ -154,11 +154,11 @@ export async function requestSummaryData() {
 		return coinList.includes(coinData.name);
 	});
 
-	totals['numberOfUniqueSuppliers'] = metaData.unique_suppliers;
-	totals['numberOfUniqueBorrowers'] = metaData.unique_borrowers;
-	totals['utilization'] = totals.totalBorrow / totals.maxBorrow;
+	totals["numberOfUniqueSuppliers"] = metaData.unique_suppliers;
+	totals["numberOfUniqueBorrowers"] = metaData.unique_borrowers;
+	totals["utilization"] = totals.totalBorrow / totals.maxBorrow;
 
-	data['ALL'] = totals;
+	data["ALL"] = totals;
 
 	return [data, ethToUsd];
 }
@@ -190,12 +190,12 @@ export async function requestSummaryData() {
 //	}
 
 export async function requestGasData() {
-	console.log('fetching gas data');
+	console.log("fetching gas data");
 	const response = await fetch(URLS.GAS_NOW);
 
 	if (!response.ok) {
 		const error = await response.text();
-		console.log('Error requesting gas Data:' + error);
+		console.log("Error requesting gas Data:" + error);
 		return null;
 	}
 

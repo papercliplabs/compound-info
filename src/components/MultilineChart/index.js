@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from 'recharts';
-import { formatNumber, formatDate } from 'utils';
-import { SHORT_TERM_DAYS } from 'constants/index';
-import { Typography, mediaQuerySizes } from 'theme';
+import React, { useState, useEffect, useMemo } from "react";
+import styled, { useTheme } from "styled-components";
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from "recharts";
+
+import { formatNumber, formatDate } from "common/utils";
+import { SHORT_TERM_DAYS } from "common/constants";
+import { Typography, mediaQuerySizes } from "theme";
 
 // Used in custom labels and ticks
 const foreignObjectWidth = 150;
@@ -34,7 +35,7 @@ const StyledCustomYTick = styled.div`
 const StyledAvgLabel = styled.div`
 	display: inline-block;
 	padding: 2px 8px;
-	background-color: ${({ theme }) => theme.color.bg0 + 'A0'};
+	background-color: ${({ theme }) => theme.color.bg0 + "A0"};
 	backdrop-filter: blur(2px);
 	text-align: left;
 `;
@@ -84,7 +85,7 @@ function CustomXTick({ x, y, payload, showTime }) {
 }
 
 function CustomYTick({ x, y, payload }) {
-	let formattedValue = formatNumber(payload.value, '%', 2); // TODO: make so it can take generic values
+	let formattedValue = formatNumber(payload.value, "%", 2); // TODO: make so it can take generic values
 	return (
 		<foreignObject x={x} y={y - 15} width={foreignObjectWidth} height={foreignObjectHeight}>
 			<StyledCustomYTick>
@@ -103,7 +104,7 @@ function AvgLabel({ viewBox, avg }) {
 			height={foreignObjectHeight}
 		>
 			<StyledAvgLabel>
-				<Typography.caption>{formatNumber(avg, '%')} average</Typography.caption>
+				<Typography.caption>{formatNumber(avg, "%")} average</Typography.caption>
 			</StyledAvgLabel>
 		</foreignObject>
 	);
@@ -136,7 +137,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 		return {
 			stroke: theme.color.bg4, // Can't use theme here
 			strokeWidth: 2,
-			strokeDasharray: '5,5',
+			strokeDasharray: "5,5",
 		};
 	}, [theme]);
 
@@ -153,7 +154,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 				activeDot={activeDotConfig}
 				isAnimationActive={true}
 				animationDuration={750}
-				fill={avg ? 'url(#areaGrad)' : '#00000000'}
+				fill={avg ? "url(#areaGrad)" : "#00000000"}
 			/>
 		);
 	});

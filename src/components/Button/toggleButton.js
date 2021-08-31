@@ -1,6 +1,5 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { Typography } from 'theme';
+import React from "react";
+import styled from "styled-components";
 
 const StyledToggleButton = styled.div`
 	width: 40px;
@@ -25,7 +24,7 @@ const Knob = styled.div`
 	border-radius: 10px;
 	position: absolute;
 	z-index: 9999;
-	left: ${({ active }) => (active ? '20px' : '0px')};
+	left: ${({ active }) => (active ? "20px" : "0px")};
 `;
 
 export function ToggleButton({ active, onClick }) {
