@@ -1,23 +1,26 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import styled, { useTheme } from 'styled-components';
-import Card from 'components/Card';
-import { StyledExternalLink, StyledLogo, Break } from 'theme/components';
-import Row from 'components/Row';
-import { useGasData, useEthToUsd } from 'store/hooks';
-import { formatNumber, weiToGwei } from 'utils';
-import gasLogo from 'assets/gas.svg';
-import dropDownIcon from 'assets/dropDownIcon.svg';
-import Button, { OptionButton, OptionButtonVariantBackdrop } from 'components/Button';
-import { Typography } from 'theme';
-import { URLS, SPEED_SELECTORS, GAS_USED } from 'constants/index';
-import { useClickOutside } from 'hooks/useClickOutside';
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import styled, { useTheme } from "styled-components";
+
+import Card from "components/Card";
+import { StyledExternalLink } from "components/Link";
+import { Break } from "components/shared";
+import Logo from "components/Logo";
+import Row from "components/Row";
+import { useGasData, useEthToUsd } from "data/hooks";
+import { formatNumber, weiToGwei } from "common/utils";
+import gasLogo from "assets/gas.svg";
+import dropDownIcon from "assets/dropDownIcon.svg";
+import Button, { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
+import { Typography } from "theme";
+import { SPEED_SELECTORS, GAS_USED } from "common/constants";
+import { useClickOutside } from "common/hooks/useClickOutside";
 
 const GasTrackerWrapper = styled.div`
 	positon: relative;
 `;
 
 const Overlay = styled.span`
-	display: ${({ open }) => (open ? 'block' : 'none')};
+	display: ${({ open }) => (open ? "block" : "none")};
 	position: absolute;
 	top: 5rem;
 	right: 1.5rem;
@@ -27,7 +30,7 @@ const Overlay = styled.span`
 const RowEntry = styled(Typography.body)`
 	display: flex;
 	flex-direction: row;
-	justify-content: ${({ left }) => (left ? 'flex-begin' : 'flex-end')};
+	justify-content: ${({ left }) => (left ? "flex-begin" : "flex-end")};
 	align-items: center;
 	width: 100%;
 `;
@@ -45,7 +48,7 @@ export default function GasTracker({}) {
 	const speedSelectorButtons = useMemo(() => {
 		if (!gasData) return null;
 
-		const width = parseInt(100 / SPEED_SELECTORS.length).toString() + '%';
+		const width = parseInt(100 / SPEED_SELECTORS.length).toString() + "%";
 		return SPEED_SELECTORS.map((selector, i) => {
 			const buttonContent = (
 				<Row justify="center">
@@ -77,7 +80,7 @@ export default function GasTracker({}) {
 					<Row justify="space-between">
 						<RowEntry left>{obj.action}</RowEntry>
 						<RowEntry>{obj.gasUsed}</RowEntry>
-						<RowEntry>{formatNumber(price, '$')}</RowEntry>
+						<RowEntry>{formatNumber(price, "$")}</RowEntry>
 					</Row>
 				</React.Fragment>
 			);
@@ -89,10 +92,10 @@ export default function GasTracker({}) {
 			<Button onClick={() => setOverlayIsOpen(!overlayIsOpen)}>
 				<Card height="48px" width="" padding={theme.spacing.sm}>
 					<Row justify="space-between">
-						<StyledLogo src={gasLogo} size="20px" borderRadius="0" marginRight="0" />
+						<Logo src={gasLogo} size="20px" borderRadius="0" marginRight="0" />
 
 						<Typography.header>{prettyGwei(fastPrice)}</Typography.header>
-						<StyledLogo src={dropDownIcon} size="10px" borderRadius="0" marginRight="0" />
+						<Logo src={dropDownIcon} size="10px" borderRadius="0" marginRight="0" />
 					</Row>
 				</Card>
 			</Button>
@@ -134,5 +137,5 @@ export default function GasTracker({}) {
 
 // Helpers
 function prettyGwei(wei) {
-	return formatNumber(weiToGwei(wei), '', 0);
+	return formatNumber(weiToGwei(wei), "", 0);
 }

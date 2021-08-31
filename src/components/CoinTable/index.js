@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Row from 'components/Row';
-import Column from 'components/Column';
-import { Link } from 'react-router-dom';
-import { Typography } from 'theme';
-import { formatNumber, camelCaseToSentenceCase } from 'utils';
-import CoinLogo from 'components/CoinLogo';
-import { Break } from 'theme/components';
-import { SortButton } from 'components/Button';
+import React, { useState } from "react";
+import styled from "styled-components";
+
+import Row from "components/Row";
+import Column from "components/Column";
+import { Link } from "react-router-dom";
+import { Typography } from "theme";
+import { formatNumber } from "common/utils";
+import { CoinLogo } from "components/Logo";
+import { SortButton } from "components/Button";
 
 const StyledTableRow = styled(Row)`
 	padding: ${({ theme }) => theme.spacing.md};
@@ -55,7 +55,7 @@ const LinkWrapper = styled(Link)`
 const RowEntry = styled(Typography.body)`
 	display: flex;
 	flex-direction: row;
-	justify-content: ${({ left }) => (left ? 'flex-begin' : 'flex-end')};
+	justify-content: ${({ left }) => (left ? "flex-begin" : "flex-end")};
 	align-items: center;
 	width: 100%;
 `;
@@ -67,7 +67,7 @@ function TableRow({ rowData, keysAndUnits }) {
 
 	return (
 		<>
-			<LinkWrapper to={'/' + rowData.name}>
+			<LinkWrapper to={"/" + rowData.name}>
 				<StyledTableRow>
 					<RowEntry left>
 						<CoinLogo name={rowData.name} />
@@ -83,12 +83,12 @@ function TableRow({ rowData, keysAndUnits }) {
 export default function CoinTable({ data, keysAndUnits }) {
 	let keys = keysAndUnits.map((obj) => obj.key);
 	const [sortKey, setSortKey] = useState(keys[0]);
-	keys = ['name', ...keys];
+	keys = ["name", ...keys];
 	const [asc, setAsc] = useState(false); // If the sort is asc of desc
 	const sortedData = sortData(data, sortKey, asc); // Sorting based on totalSupply, desc
 
 	const sortButtons = keys.map((keyName, i) => {
-		const buttonName = keyName === 'name' ? 'Asset' : keysAndUnits.filter((keyItem) => keyItem.key === keyName)[0].name; // Alias name as asset for displaying on the table
+		const buttonName = keyName === "name" ? "Asset" : keysAndUnits.filter((keyItem) => keyItem.key === keyName)[0].name; // Alias name as asset for displaying on the table
 		return (
 			<RowEntry key={i} left={i === 0}>
 				<SortButton

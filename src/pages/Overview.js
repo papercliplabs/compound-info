@@ -1,19 +1,21 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import styled, { useTheme } from 'styled-components';
-import { Typography } from 'theme';
-import { StyledLogo, SectionTitle, StyledDisclaimer } from 'theme/components';
-import Row, { ResponsiveRow } from 'components/Row';
-import compoundLogo from 'assets/compoundLogo.svg';
-import Card, { StatCard, ProgressCard } from 'components/Card';
-import CoinTable from 'components/CoinTable';
-import { useSummaryData } from 'store/hooks';
-import { ToggleButton } from 'components/Button';
-import TooltipText from 'components/TooltipText';
+import React, { useState, useEffect, useMemo } from "react";
+import styled, { useTheme } from "styled-components";
+
+import { Typography } from "theme";
+import { useSummaryData } from "data/hooks";
+import compoundLogo from "assets/compoundLogo.svg";
+import Logo from "components/Logo";
+import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
+import Row, { ResponsiveRow } from "components/Row";
+import Card, { StatCard, ProgressCard } from "components/Card";
+import CoinTable from "components/CoinTable";
+import { ToggleButton } from "components/Button";
+import TooltipText from "components/TooltipText";
 
 const TableCard = styled(Card)`
-	padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.lg};
+	padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.lg};
 	${({ theme }) => theme.mediaWidth.small`
-		padding: ${({ theme }) => theme.spacing.md + ' ' + theme.spacing.md};
+		padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.md};
 	`}
 `;
 
@@ -30,16 +32,16 @@ export default function Overview() {
 	const tableDataKeysAndUnits = useMemo(() => {
 		return includeComp
 			? [
-					{ name: 'Total Supply', key: 'totalSupply', unit: '$' },
-					{ name: 'Supply APY', key: 'totalSupplyApy', unit: '%' },
-					{ name: 'Total Borrow', key: 'totalBorrow', unit: '$' },
-					{ name: 'Borrow APY', key: 'totalBorrowApy', unit: '%' },
+					{ name: "Total Supply", key: "totalSupply", unit: "$" },
+					{ name: "Supply APY", key: "totalSupplyApy", unit: "%" },
+					{ name: "Total Borrow", key: "totalBorrow", unit: "$" },
+					{ name: "Borrow APY", key: "totalBorrowApy", unit: "%" },
 			  ]
 			: [
-					{ name: 'Total Supply', key: 'totalSupply', unit: '$' },
-					{ name: 'Supply APY', key: 'supplyApy', unit: '%' },
-					{ name: 'Total Borrow', key: 'totalBorrow', unit: '$' },
-					{ name: 'Borrow APY', key: 'borrowApy', unit: '%' },
+					{ name: "Total Supply", key: "totalSupply", unit: "$" },
+					{ name: "Supply APY", key: "supplyApy", unit: "%" },
+					{ name: "Total Borrow", key: "totalBorrow", unit: "$" },
+					{ name: "Borrow APY", key: "borrowApy", unit: "%" },
 			  ];
 	}, [includeComp]);
 
@@ -47,37 +49,37 @@ export default function Overview() {
 		return null; // Loading summary data
 	}
 
-	const protocolData = summaryData['ALL'];
+	const protocolData = summaryData["ALL"];
 
 	return (
 		<>
-			<Row height="40px" margin={'20px 0'}>
-				<StyledLogo src={compoundLogo} size="40px" />
+			<Row height="40px" margin={"20px 0"}>
+				<Logo src={compoundLogo} size="40px" />
 				<Typography.displayXL>Compound Protocol</Typography.displayXL>
 			</Row>
 			<SectionTitle title="Compound Overview" />
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={'Total supplied'}
+					title={"Total supplied"}
 					tooltipContent="The total amount of funds supplied to Compound. (USD)"
 					value={protocolData.totalSupply}
 					unit="$"
 				/>
 				<StatCard
-					title={'Total unique active users'}
+					title={"Total unique active users"}
 					tooltipContent="Number of non-duplicate users between all markets"
 					value={protocolData.numberOfUniqueSuppliers}
 				/>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={'Total reserves'}
+					title={"Total reserves"}
 					tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders. (USD)"
 					value={protocolData.totalReserves}
 					unit="$"
 				/>
 				<ProgressCard
-					title={'Utilization'}
+					title={"Utilization"}
 					tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
 					value={protocolData.utilization}
 					unit="%"
@@ -85,7 +87,7 @@ export default function Overview() {
 					progressPercent={protocolData.utilization}
 				/>
 				<StatCard
-					title={'Total borrowed'}
+					title={"Total borrowed"}
 					tooltipContent="The total amount of funds borrowed from Compound. (USD)"
 					value={protocolData.totalBorrow}
 					unit="$"

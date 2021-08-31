@@ -1,16 +1,17 @@
-import { useState, useEffect, useRef } from 'react';
-import { useGlobalStore } from './index';
-import { requestGasData, requestApyData, requestSummaryData } from './requests';
-import { queryApyData, querySummaryData } from './queries';
+import { useState, useEffect, useRef } from "react";
+
+import { useGlobalStore } from "data/store";
+import { requestGasData, requestApyData, requestSummaryData } from "data/requests";
+import { queryApyData, querySummaryData } from "data/queries";
 
 // Custom hooks which are used by the app to interface with the store
 const retryTime = 2000; // Retry in 1000ms if there was an error
-const ethToUsdKey = 'ethToUsd';
+const ethToUsdKey = "ethToUsd";
 
 export function useApyData(dataSelectorKey, timeSelector, includeComp = false) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const key = 'apyData';
+	const key = "apyData";
 	const apyData = store[key];
 
 	useEffect(() => {
@@ -27,10 +28,10 @@ export function useApyData(dataSelectorKey, timeSelector, includeComp = false) {
 
 	let selectorKey = dataSelectorKey;
 	if (includeComp) {
-		if (selectorKey === 'borrow') {
-			selectorKey = 'totalBorrow';
-		} else if (selectorKey === 'supply') {
-			selectorKey = 'totalSupply';
+		if (selectorKey === "borrow") {
+			selectorKey = "totalBorrow";
+		} else if (selectorKey === "supply") {
+			selectorKey = "totalSupply";
 		}
 	}
 
@@ -47,7 +48,7 @@ export function useApyData(dataSelectorKey, timeSelector, includeComp = false) {
 export function useSummaryData(coinName) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const summaryDataKey = 'summaryData';
+	const summaryDataKey = "summaryData";
 	const summaryData = store[summaryDataKey];
 
 	useEffect(() => {
@@ -82,7 +83,7 @@ export function useEthToUsd() {
 
 export function useGasData() {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = 'gasData';
+	const key = "gasData";
 	const gasData = store[key];
 
 	useEffect(() => {
