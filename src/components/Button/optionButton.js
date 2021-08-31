@@ -1,15 +1,16 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { Typography } from 'theme';
+import React from "react";
+import styled, { css } from "styled-components";
+
+import { Typography } from "theme";
 
 const StyledOptionButton = styled.button`
-	padding: ${({ padding, theme }) => padding ?? theme.spacing.xs + ' ' + theme.spacing.md};
+	padding: ${({ padding, theme }) => padding ?? theme.spacing.xs + " " + theme.spacing.md};
 	border-radius: ${({ theme }) => theme.radius.md};
 	border: none;
-	background-color: ${({ theme, variant }) => (variant ? 'transparent' : theme.color.bg1)};
+	background-color: ${({ theme, variant }) => (variant ? "transparent" : theme.color.bg1)};
 	display: inline;
-	width: ${({ width }) => width ?? 'auto'};
-	height: ${({ height }) => height ?? 'auto'};
+	width: ${({ width }) => width ?? "auto"};
+	height: ${({ height }) => height ?? "auto"};
 	:hover {
 		cursor: pointer;
 	}
@@ -49,7 +50,7 @@ export const OptionButtonVariantBackdrop = styled.div`
 	border-radius: ${({ theme }) => theme.radius.lg};
 	background-color: ${({ theme }) => theme.color.bg0};
 	column-gap: ${({ theme }) => theme.spacing.xs};
-	width: ${({ width }) => width ?? 'auto'};
+	width: ${({ width }) => width ?? "auto"};
 `;
 
 export function OptionButton({ buttonContent, padding, active, width, onClick, variant }) {

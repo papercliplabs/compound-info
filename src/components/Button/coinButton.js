@@ -1,19 +1,19 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import Button from './';
-import { Typography } from 'theme';
-import closeIcon from 'assets/closeIcon.svg';
-import CoinLogo from 'components/CoinLogo';
-import { StyledInternalLink } from 'theme/components';
+import React from "react";
+import styled, { css } from "styled-components";
+
+import { Typography } from "theme";
+import { CoinLogo } from "components/Logo";
+import { StyledInternalLink } from "components/Link";
+import closeIcon from "assets/closeIcon.svg";
 
 const StyledCoinButton = styled.button`
 	background-color: ${({ theme }) => theme.color.bg1};
 
 	display: flex;
 	align-items: center;
-	border: solid ${({ theme }) => theme.border.thickness + ' ' + theme.color.border1};
+	border: solid ${({ theme }) => theme.border.thickness + " " + theme.color.border1};
 	background-color: ${({ theme }) => theme.color.bg2};
-	padding: ${({ padding }) => padding ?? '6px'};
+	padding: ${({ padding }) => padding ?? "6px"};
 	border-radius: ${({ theme }) => theme.radius.lg};
 	height: 100%;
 	box-shadow: ${({ theme }) => theme.shadow.card};
@@ -35,7 +35,7 @@ const StyledCoinButton = styled.button`
 `;
 
 const SelectedIndicator = styled.div`
-	display: ${({ hidden }) => (hidden ? 'none' : 'flex')};
+	display: ${({ hidden }) => (hidden ? "none" : "flex")};
 	background-color: ${({ selectedColor }) => selectedColor};
 	width: 8px;
 	height: 8px;
@@ -52,7 +52,7 @@ const CoinInfo = styled.div`
 `;
 
 const CloseIndicator = styled.img`
-	display: ${({ hidden }) => (hidden ? 'none' : 'flex')};
+	display: ${({ hidden }) => (hidden ? "none" : "flex")};
 	border-radius: 4px;
 	margin-left: ${({ theme }) => theme.spacing.xs};
 	opacity: 0.7;
@@ -79,7 +79,7 @@ export function CoinButton({ name, imgSrc, value, color, selected, allowDeselect
 			<CoinLogo name={name} />
 			<CoinInfo>
 				{selected && allowDeselect ? (
-					<StyledInternalLink to={'/' + name}>
+					<StyledInternalLink to={"/" + name}>
 						<Typography.header useDefaultLineHeight>
 							<HoverText>{name}</HoverText>
 						</Typography.header>

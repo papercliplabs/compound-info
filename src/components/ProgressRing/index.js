@@ -1,6 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import Column from 'components/Column';
+import React from "react";
+import styled from "styled-components";
+
+import Column from "components/Column";
 
 const SvgContainer = styled.svg`
 	height: ${({ size }) => size}px;

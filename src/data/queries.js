@@ -1,4 +1,4 @@
-import { SHORT_TERM_DAYS } from 'constants/index';
+import { SHORT_TERM_DAYS } from "common/constants";
 
 //// Queries used by hooks to return useful data from the store (reducers)
 

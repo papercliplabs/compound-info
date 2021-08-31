@@ -1,6 +1,7 @@
-import React from 'react';
-import styled, { css } from 'styled-components';
-import { Typography } from 'theme';
+import React from "react";
+import styled, { css } from "styled-components";
+
+import { Typography } from "theme";
 
 const StyledSortButton = styled(Typography.header)`
 	user-select: none;
@@ -20,7 +21,7 @@ const StyledSortButton = styled(Typography.header)`
 export function SortButton({ name, isActive, isAsc, handleClick }) {
 	return (
 		<StyledSortButton onClick={handleClick} active={isActive}>
-			{name} {isActive ? (isAsc ? '↑' : '↓') : null}
+			{name} {isActive ? (isAsc ? "↑" : "↓") : null}
 		</StyledSortButton>
 	);
 }
