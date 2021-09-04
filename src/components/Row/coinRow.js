@@ -6,6 +6,7 @@ import Row from 'components/Row';
 import { formatNumber } from 'utils';
 import { COINS } from 'constants/index';
 import { HorizontalScrollButton } from 'components/Button/horizontalScrollButton';
+import { isMobile } from 'react-device-detect';
 
 function defaultCoinStates() {
 	return COINS.map((coinData, i) => {
@@ -171,13 +172,27 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 			setShowRightArrow(true);
 		}
 	}
+
 	return (
 		<Row>
-			{showLeftArrow && <HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>}
-			<ScrollRow onScroll={onScroll} ref={scroll}>
-				{coinButtons}
-			</ScrollRow>
-			{showRightArrow && <HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>}
+			{/* Only want to show horizontal scroll buttons if user is on desktop */}
+			{!isMobile ? (
+				<>
+					{showLeftArrow && (
+						<HorizontalScrollButton isLeft={true} onClick={() => leftScroll()}></HorizontalScrollButton>
+					)}
+					<ScrollRow onScroll={onScroll} ref={scroll}>
+						{coinButtons}
+					</ScrollRow>
+					{showRightArrow && (
+						<HorizontalScrollButton isLeft={false} onClick={() => rightScroll()}></HorizontalScrollButton>
+					)}
+				</>
+			) : (
+				<ScrollRow onScroll={onScroll} ref={scroll}>
+					{coinButtons}
+				</ScrollRow>
+			)}
 		</Row>
 	);
 }
