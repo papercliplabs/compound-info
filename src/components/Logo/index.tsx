@@ -1,9 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-import { getCoinImgSource } from "common/utils";
+import { coin_E } from "common/enums";
+import { COIN_INFO } from "common/constants";
 
-const Logo = styled.img`
+const Logo = styled.img<{
+	size?: string;
+	borderRadius?: number;
+	marginRight?: number;
+}>`
 	width: ${({ size }) => size ?? "24px"};
 	height: ${({ size }) => size ?? "24px"};
 	border-radius: ${({ borderRadius, size }) => borderRadius ?? "calc(" + size + "/ 2)"};
@@ -12,7 +17,8 @@ const Logo = styled.img`
 
 export default Logo;
 
-export function CoinLogo({ name, size }) {
-	const imgSrc = getCoinImgSource(name);
+export function CoinLogo({ coin, size }: { coin: coin_E; size?: string }): JSX.Element {
+	const imgSrc = COIN_INFO[coin].imgSrc;
+
 	return <Logo src={imgSrc} size={size} />;
 }

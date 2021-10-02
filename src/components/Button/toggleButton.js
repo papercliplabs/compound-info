@@ -23,7 +23,6 @@ const Knob = styled.div`
 	height: 20px;
 	border-radius: 10px;
 	position: absolute;
-	z-index: 9999;
 	left: ${({ active }) => (active ? "20px" : "0px")};
 `;
 

@@ -3,13 +3,20 @@ import styled from "styled-components";
 
 import Column from "components/Column";
 
-const SvgContainer = styled.svg`
+const SvgContainer = styled.svg<{
+	size: number;
+}>`
 	height: ${({ size }) => size}px;
 	width: ${({ size }) => size}px;
 	transform: rotate(-90deg);
 `;
 
-const BackCircle = styled.circle`
+const BackCircle = styled.circle<{
+	r: number;
+	strokeWidth: number;
+	circumference: number;
+	value: number;
+}>`
 	stroke: ${({ theme }) => theme.color.secondary1};
 	r: ${({ r }) => r}px;
 	cx: 50%;
@@ -25,7 +32,7 @@ const ProgressCircle = styled(BackCircle)`
 `;
 
 // Value from 0 to 1
-export default function ProgressRing({ size, value }) {
+export default function ProgressRing({ size, value }: { size: number; value: number }): JSX.Element {
 	const strokeWidth = 8; //px
 	const r = size / 2 - strokeWidth;
 	const circumference = Math.PI * 2 * r;

@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom";
 import { isMobile } from "react-device-detect";
-import App from "app";
+import App from "App";
 import Theme, { GlobalStyle } from "theme";
 import GlobalStoreProvider from "data/store";
 import ReactGA from "react-ga";

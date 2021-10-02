@@ -49,7 +49,7 @@ const StyledBody = styled.div`
 	`}
 `;
 
-function App() {
+export default function App(): JSX.Element {
 	return (
 		<HashRouter>
 			<Route component={GoogleAnalyticsReporter} />
@@ -68,5 +68,3 @@ function App() {
 		</HashRouter>
 	);
 }
-
-export default App;
