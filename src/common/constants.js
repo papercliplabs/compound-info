@@ -194,18 +194,28 @@ export const TIME_SELECTORS = [
 	{ name: "All", days: null },
 ];
 
+// Keys correspond to what is returned from SHORT_TIME_SERIES_DATA and LONG_TIME_SERIES_DATA url's.
+// This is the data types per each coin, order of the keys matters and must match the sorted key order (see comment in requests.js)
+export const TIME_SERIES_DATA_SELECTORS = {
+	BORROW_APY: { key: "borrowApy", name: "Borrow" },
+	BORRROW_USD: { key: "borrowUsd", name: "Borrow" },
+	RESERVES_USD: { key: "reservesUsd", name: "Reserves" },
+	SUPPLY_APY: { key: "supplyApy", name: "Supply" },
+	SUPPLY_USD: { key: "supplyUsd", name: "Supply" },
+	TOTAL_BORROW_APY: { key: "totalBorrowApy", name: "Borrow" },
+	TOTAL_SUPPLY_APY: { key: "totalSupplyApy", name: "Supply" },
+	UTALIZATION: { key: "utalization", name: "Utalization" },
+};
+
 //// APY Chart config
 // The active coin is always selected, if null there is no active coin (i.e non coin specific plot)
-export const APY_DATA_SELECTORS = [
-	// key must be consistent with the names for the data table from flipside query
-	{ name: "Supply", key: "supply" },
-	{ name: "Borrow", key: "borrow" },
-];
+export const APY_DATA_SELECTORS = [TIME_SERIES_DATA_SELECTORS.SUPPLY_APY, TIME_SERIES_DATA_SELECTORS.BORROW_APY];
 
 //// URL's for API calls
 export const URLS = {
-	APY_LONG: "https://api.flipsidecrypto.com/api/v2/queries/ebad7f35-11e0-4561-9346-fa87c88d7598/data/latest",
-	APY_SHORT: "https://api.flipsidecrypto.com/api/v2/queries/dc338ecd-cdce-4c0b-ae9e-ac7978c2469e/data/latest",
+	LONG_TIME_SERIES_DATA: process.env.REACT_APP_LONG_TERM_DATA_URL,
+	SHORT_TIME_SERIES_DATA: process.env.REACT_APP_SHORT_TERM_DATA_URL,
+	TRANSACTIONS: process.env.REACT_APP_TRANACTIONS_URL,
 	SUMMARY_DATA: "https://api.compound.finance/api/v2/ctoken",
 	PAPERCLIP_HOME: "https://twitter.com/papercliplabs",
 	GAS_NOW: "https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo",

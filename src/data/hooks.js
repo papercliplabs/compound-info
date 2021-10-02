@@ -1,46 +1,37 @@
 import { useState, useEffect, useRef } from "react";
 
 import { useGlobalStore } from "data/store";
-import { requestGasData, requestApyData, requestSummaryData } from "data/requests";
-import { queryApyData, querySummaryData } from "data/queries";
+import { requestGasData, requestTimeSeriesData, requestSummaryData } from "data/requests";
+import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
 // Custom hooks which are used by the app to interface with the store
-const retryTime = 2000; // Retry in 1000ms if there was an error
 const ethToUsdKey = "ethToUsd";
 
-export function useApyData(dataSelectorKey, timeSelector, includeComp = false) {
+// dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS, timeSelector is one of the time selector from TIME_SELECTORS
+export function useTimeSeriesData(dataSelectorKey, timeSelector) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const key = "apyData";
-	const apyData = store[key];
+	const timeSeriesDataKey = "timeSeriesData";
+	const timeSeriesData = store[timeSeriesDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
-			// Fetch the data if it hasn't been fetched already:
-			if (!apyData) {
-				const data = await requestApyData();
-				updateStore(key, data);
+			// Fetch the time series data if it hasn't been fetched already:
+			if (!timeSeriesData) {
+				const data = await requestTimeSeriesData();
+				updateStore(timeSeriesDataKey, data);
 			}
 		}
 
 		checkForData();
-	}, [apyData, updateStore]);
-
-	let selectorKey = dataSelectorKey;
-	if (includeComp) {
-		if (selectorKey === "borrow") {
-			selectorKey = "totalBorrow";
-		} else if (selectorKey === "supply") {
-			selectorKey = "totalSupply";
-		}
-	}
+	}, [timeSeriesData, updateStore]);
 
 	useEffect(() => {
-		if (apyData) {
-			const newQueriedData = queryApyData(apyData, selectorKey, timeSelector);
+		if (timeSeriesData) {
+			const newQueriedData = queryTimeSeriesData(timeSeriesData, dataSelectorKey, timeSelector);
 			setQueriedData(newQueriedData);
 		}
-	}, [selectorKey, timeSelector, apyData, setQueriedData, includeComp]);
+	}, [dataSelectorKey, timeSelector, timeSeriesData, setQueriedData]);
 
 	return queriedData;
 }

@@ -1,13 +1,13 @@
-import { URLS } from "common/constants";
+import { URLS, TIME_SERIES_DATA_SELECTORS } from "common/constants";
 import { getCoinList } from "common/utils";
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
 // Fetch the data using the URL's pointing to flipside queries
-export async function requestApyData() {
-	console.log("fetching apy data");
-	const shortTermUrl = URLS.APY_SHORT;
-	const longTermUrl = URLS.APY_LONG;
+export async function requestTimeSeriesData() {
+	console.log("fetching coin data");
+	const shortTimeSeriesUrl = URLS.SHORT_TIME_SERIES_DATA;
+	const longTimeSeriesUrl = URLS.LONG_TIME_SERIES_DATA;
 	let ret = {};
 
 	// Custom compare function for sorting to handle the case where one is a substring of the other, this is for WBTC and WBTC2
@@ -23,35 +23,44 @@ export async function requestApyData() {
 
 	const coins = getCoinList().sort(compareFn);
 
+	// List of all the data types, in order
+	const timeSeriesDataTypes = Object.keys(TIME_SERIES_DATA_SELECTORS).map(
+		(objName) => TIME_SERIES_DATA_SELECTORS[objName].key
+	);
+
 	// Sending parallel api requests, and manipulating it in an easy to consume manor
 	await Promise.all(
 		[
-			["shortTerm", shortTermUrl],
-			["longTerm", longTermUrl],
+			["shortTerm", shortTimeSeriesUrl],
+			["longTerm", longTimeSeriesUrl],
 		].map(([type, url]) =>
 			fetch(url)
 				.then((response) => response.json())
 				.then((data) => {
+					console.log(data);
 					let keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
 					keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply
 					const max = keys.length + 1; // len: keys.len + 1
+					const numDataTypes = timeSeriesDataTypes.length;
+
+					// TIME_SERIES_DATA_SELECTORS_KEYS must be in the same order as the keys here
+					// console.log(keys);
 
 					data = data.map((entry) => {
 						let newEntry = {
 							blockTime: entry.BLOCK_TIME,
-							values: {
-								borrow: {},
-								supply: {},
-								totalBorrow: {},
-								totalSupply: {},
-							},
+							values: {},
 						};
 
-						for (let i = 0; i < max / 4 - 1; i++) {
-							newEntry.values["borrow"][coins[i]] = entry[keys[4 * i]];
-							newEntry.values["supply"][coins[i]] = entry[keys[4 * i + 1]];
-							newEntry.values["totalBorrow"][coins[i]] = entry[keys[4 * i + 2]]; // Including COMP
-							newEntry.values["totalSupply"][coins[i]] = entry[keys[4 * i + 3]]; // Including COMP
+						// Initialize values to the datatypes and an empty object
+						for (let i = 0; i < numDataTypes; i++) {
+							newEntry.values[timeSeriesDataTypes[i]] = {};
+						}
+
+						for (let i = 0; i < max / numDataTypes - 1; i++) {
+							for (let j = 0; j < numDataTypes; j++) {
+								newEntry.values[timeSeriesDataTypes[j]][coins[i]] = entry[keys[numDataTypes * i + j]];
+							}
 						}
 
 						return newEntry;
@@ -62,6 +71,10 @@ export async function requestApyData() {
 		)
 	).catch((error) => console.log(error));
 
+	// {shortTerm: Array<blockTime, values{borrowApy: {AAVE, BAT, COMP, DAI, ... (all coins)}, borrowUsd: {AAVE, BAT, ... }, ... (all data types)}>,
+	//  longTerm: Array<blockTime, values{borrowApy: {AAVE, BAT, ...}, borrowUsd: { AAVE, BAT, ... }, ... (all data types)}>}
+
+	console.log(ret);
 	return ret;
 }
 

@@ -11,9 +11,9 @@ export function formatDate(date, withTime) {
 			minute: "numeric",
 		};
 		const time = date.toLocaleTimeString("en-US", timeOptions);
-		formattedDate += " " + time;
+		formattedDate += ", " + time;
 	} else {
-		formattedDate += " " + date.getFullYear().toString();
+		formattedDate += ", " + date.getFullYear().toString();
 	}
 
 	return formattedDate;
