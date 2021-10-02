@@ -2,8 +2,11 @@ import { SHORT_TERM_DAYS } from "common/constants";
 
 //// Queries used by hooks to return useful data from the store (reducers)
 
-export function queryApyData(rawData, dataSelectorKey, timeSelector) {
+// dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS
+export function queryTimeSeriesData(rawData, dataSelectorKey, timeSelector) {
 	if (!rawData) return null;
+
+	console.log(rawData);
 
 	// Grab short term, or long term and create a copy
 	let data;

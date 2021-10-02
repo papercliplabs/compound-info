@@ -2,19 +2,20 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Redirect } from "react-router-dom";
 import { useTheme } from "styled-components";
 
-import ChartContainer from "components/ChartContainer";
-import { useApyData, useSummaryData } from "data/hooks";
+import ApyChartContainer from "components/ApyChartContainer";
+import { useSummaryData, useTimeSeriesData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
 import { Typography } from "theme";
-import { APY_DATA_SELECTORS } from "common/constants";
+import { APY_DATA_SELECTORS, TIME_SERIES_DATA_SELECTORS, TIME_SELECTORS } from "common/constants";
 import { formatNumber, getCoinInfo, getEtherscanLink, shortAddress } from "common/utils";
 import { StyledInternalLink, StyledExternalLink } from "components/Link";
 import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import { CoinLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
+import MultilineChart from "components/MultilineChart";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
@@ -37,6 +38,11 @@ export default function Market({ match }) {
 	const activeCoin = getCoinInfo(activeCoinName);
 	const coinData = useSummaryData(activeCoinName);
 	const [includeComp, setIncludeComp] = useState(false);
+	const [reservesTimeSelector, setReservesTimeSelector] = useState(TIME_SELECTORS.slice(-1)[0]);
+
+	// TODO: add buttons to update the time selectors, probably make another component for this
+	const reservesData = useTimeSeriesData(TIME_SERIES_DATA_SELECTORS.RESERVES_USD.key, reservesTimeSelector);
+	const selectedCoinsAndColors = [{ name: activeCoin.name, color: theme.color.lineChartColors[4] }];
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -82,12 +88,7 @@ export default function Market({ match }) {
 						</Row>
 					</Row>
 					<Card>
-						<ChartContainer
-							dataSelectors={APY_DATA_SELECTORS}
-							activeCoin={activeCoin}
-							useData={useApyData}
-							includeComp={includeComp}
-						/>
+						<ApyChartContainer dataSelectors={APY_DATA_SELECTORS} activeCoin={activeCoin} includeComp={includeComp} />
 					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
@@ -151,6 +152,13 @@ export default function Market({ match }) {
 						twitter={activeCoin.twitter}
 						coingecko={activeCoin.coingecko}
 					/>
+					<Card>
+						<MultilineChart
+							data={reservesData}
+							selectedCoinsAndColors={selectedCoinsAndColors}
+							setHoverDate={(date) => {}}
+						/>
+					</Card>
 				</Column>
 				<Column gap={gap}>
 					<SectionTitle title="Market Overview" />

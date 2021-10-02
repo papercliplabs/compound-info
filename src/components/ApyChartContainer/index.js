@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled, { useTheme } from "styled-components";
 
+import { useTimeSeriesData } from "data/hooks";
 import { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
 import MultilineChart from "components/MultilineChart";
 import { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from "components/Row";
@@ -38,15 +39,26 @@ function initialCoinValues() {
 	});
 }
 
-export default function ChartContainer({ activeCoin, dataSelectors, useData, includeComp }) {
+export default function ApyChartContainer({ activeCoin, dataSelectors, includeComp }) {
 	const [dataSelector, setDataSelector] = useState(dataSelectors[0]);
 	const [timeSelector, setTimeSelector] = useState(TIME_SELECTORS.slice(-1)[0]);
 	const [selectedCoinsAndColors, setSelectedCoinsAndColors] = useState([]);
 	const [hoverDate, setHoverDate] = useState(0);
 	const [coinValues, setCoinValues] = useState(initialCoinValues());
-	const data = useData(dataSelector.key, timeSelector, includeComp);
+
+	// If includeComp, need to get the data selector key for that
+	let dataSelectorKey = dataSelector.key;
+	if (includeComp) {
+		if (dataSelectorKey === "borrowApy") {
+			dataSelectorKey = "totalBorrowApy";
+		} else if (dataSelectorKey === "supplyApy") {
+			dataSelectorKey = "totalSupplyApy";
+		}
+	}
+	const data = useTimeSeriesData(dataSelectorKey, timeSelector);
 	const theme = useTheme();
 
+	console.log(data);
 	// Set coin values when hover date changes
 	useEffect(() => {
 		const currentCoinValues = data?.slice(-1)[0];

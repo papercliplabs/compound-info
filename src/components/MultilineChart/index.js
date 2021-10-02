@@ -73,14 +73,13 @@ function CustomXTick({ x, y, payload, showTime }) {
 	const formattedDate = formatDate(date, showTime);
 	// Render foreignObject first, as this allows us to render html and not just svg
 
-	// Not rendering X-axis titles
-	//	return (
-	//		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
-	//			<StyledCustomXTick>
-	//				<Typography.subheader>{formattedDate}</Typography.subheader>
-	//			</StyledCustomXTick>
-	//		</foreignObject>
-	//	);
+	return (
+		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
+			<StyledCustomXTick>
+				<Typography.subheader>{formattedDate}</Typography.subheader>
+			</StyledCustomXTick>
+		</foreignObject>
+	);
 	return null;
 }
 
@@ -167,7 +166,7 @@ export default function MultilineChart({ data, selectedCoinsAndColors, setHoverD
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			<AreaChart margin={{ left: 0, top: -1, bottom: -25 }} data={data}>
+			<AreaChart margin={{ left: 0, top: -1, bottom: 0 }} data={data}>
 				<CartesianGrid vertical={false} width="1" strokeWidth={0.1} />
 				<defs>
 					<linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
