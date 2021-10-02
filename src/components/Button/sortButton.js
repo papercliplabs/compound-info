@@ -5,6 +5,7 @@ import { Typography } from "theme";
 
 const StyledSortButton = styled(Typography.header)`
 	user-select: none;
+	text-align: right;
 
 	:hover {
 		cursor: pointer;

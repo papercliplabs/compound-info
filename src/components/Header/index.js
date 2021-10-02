@@ -15,6 +15,7 @@ const StyledHeader = styled.div`
 	width: 100%;
 	background-color: ${({ theme }) => theme.color.bg0};
 	align-items: center;
+	z-index: 999;
 `;
 
 export default function Header() {

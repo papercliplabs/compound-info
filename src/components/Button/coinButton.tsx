@@ -5,15 +5,21 @@ import { Typography } from "theme";
 import { CoinLogo } from "components/Logo";
 import { StyledInternalLink } from "components/Link";
 import closeIcon from "assets/closeIcon.svg";
+import { coin_E } from "common/enums";
+import { COIN_INFO } from "common/constants";
+import { formatNumber } from "common/utils";
 
-const StyledCoinButton = styled.button`
+const StyledCoinButton = styled.button<{
+	active: boolean;
+	selectedColor: string;
+}>`
 	background-color: ${({ theme }) => theme.color.bg1};
 
 	display: flex;
 	align-items: center;
 	border: solid ${({ theme }) => theme.border.thickness + " " + theme.color.border1};
 	background-color: ${({ theme }) => theme.color.bg2};
-	padding: ${({ padding }) => padding ?? "6px"};
+	padding: "6px";
 	border-radius: ${({ theme }) => theme.radius.lg};
 	height: 100%;
 	box-shadow: ${({ theme }) => theme.shadow.card};
@@ -23,18 +29,18 @@ const StyledCoinButton = styled.button`
 		background-color: ${({ theme }) => theme.color.bg3};
 	}
 
-	${({ active }) =>
+	${({ active, selectedColor }) =>
 		active &&
 		css`
 			border-width: 2px;
-			border-color: ${({ selectedColor }) => selectedColor};
+			border-color: ${selectedColor};
 			:hover {
 				background-color: ${({ theme }) => theme.color.bg2};
 			}
 		`}
 `;
 
-const SelectedIndicator = styled.div`
+const SelectedIndicator = styled.div<{ selectedColor: string }>`
 	display: ${({ hidden }) => (hidden ? "none" : "flex")};
 	background-color: ${({ selectedColor }) => selectedColor};
 	width: 8px;
@@ -48,10 +54,12 @@ const CoinInfo = styled.div`
 	display: flex;
 	flex-direction: column;
 	text-align: left;
-	margin-right: ${({ theme, marginRight }) => marginRight ?? theme.spacing.xs};
+	margin-right: ${({ theme }) => theme.spacing.xs};
 `;
 
-const CloseIndicator = styled.img`
+const CloseIndicator = styled.img<{
+	hidden: boolean;
+}>`
 	display: ${({ hidden }) => (hidden ? "none" : "flex")};
 	border-radius: 4px;
 	margin-left: ${({ theme }) => theme.spacing.xs};
@@ -71,25 +79,42 @@ const HoverText = styled.span`
 	}
 `;
 
-export function CoinButton({ name, imgSrc, value, color, selected, allowDeselect, onClick }) {
-	const open = selected ? null : onClick;
+export function CoinButton({
+	coin,
+	value,
+	unit,
+	color,
+	selected,
+	allowDeselect,
+	clickCallback,
+}: {
+	coin: coin_E;
+	value: number;
+	unit: string | null;
+	color: string;
+	selected: boolean;
+	allowDeselect: boolean;
+	clickCallback: () => void;
+}): JSX.Element | null {
+	const open = selected ? undefined : clickCallback;
+	const coinName = COIN_INFO[coin].name;
 	return (
-		<StyledCoinButton selectedColor={color} active={selected} onClick={open} allowDeselect={allowDeselect}>
+		<StyledCoinButton selectedColor={color} active={selected} onClick={open}>
 			<SelectedIndicator selectedColor={color} hidden={!selected} />
-			<CoinLogo name={name} />
+			<CoinLogo coin={coin} />
 			<CoinInfo>
 				{selected && allowDeselect ? (
-					<StyledInternalLink to={"/" + name}>
+					<StyledInternalLink to={"/" + coinName}>
 						<Typography.header useDefaultLineHeight>
-							<HoverText>{name}</HoverText>
+							<HoverText>{coinName}</HoverText>
 						</Typography.header>
 					</StyledInternalLink>
 				) : (
-					<Typography.header useDefaultLineHeight>{name}</Typography.header>
+					<Typography.header useDefaultLineHeight>{coinName}</Typography.header>
 				)}
-				<Typography.caption useDefaultLineHeight>{value}</Typography.caption>
+				<Typography.caption useDefaultLineHeight>{formatNumber(value, "%")}</Typography.caption>
 			</CoinInfo>
-			<CloseIndicator src={closeIcon} onClick={onClick} hidden={!selected || !allowDeselect} />
+			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
 		</StyledCoinButton>
 	);
 }

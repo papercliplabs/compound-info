@@ -3,14 +3,14 @@ import styled from "styled-components";
 
 import { Typography } from "theme";
 
-const StyledSectionTitle = styled.div`
+const StyledSectionTitle = styled.div<{ width?: string }>`
 	width: ${({ width }) => width ?? "100%"};
 	text-align: left;
 	padding-top: 20px;
 	margin-bottom: 8px;
 `;
 
-export function SectionTitle({ title, width }) {
+export function SectionTitle({ title, width }: { title: string; width?: string }): JSX.Element {
 	return (
 		<StyledSectionTitle width={width}>
 			<Typography.displayS paddingTop={"10px"}>{title}</Typography.displayS>

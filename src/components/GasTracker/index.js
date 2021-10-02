@@ -53,7 +53,9 @@ export default function GasTracker({}) {
 			const buttonContent = (
 				<Row justify="center">
 					<Typography.header>{selector.name}</Typography.header>
-					<Typography.subheader>({prettyGwei(gasData[selector.key])} gwei)</Typography.subheader>
+					<Typography.subheader color={theme.color.text2}>
+						({prettyGwei(gasData[selector.key])} gwei)
+					</Typography.subheader>
 				</Row>
 			);
 			return (
@@ -64,6 +66,7 @@ export default function GasTracker({}) {
 					active={selector === speedSelector}
 					onClick={() => setSpeedSelector(selector)}
 					variant
+					flex={1}
 				/>
 			);
 		});
@@ -105,7 +108,9 @@ export default function GasTracker({}) {
 						<Typography.displayM>Realtime Cost of Compound</Typography.displayM>
 					</Row>
 					<Row>
-						<Typography.subheader>These values change based on how busy the Ethereum network is.</Typography.subheader>
+						<Typography.subheader color={theme.color.text2}>
+							These values change based on how busy the Ethereum network is.
+						</Typography.subheader>
 					</Row>
 					<Row justify="space-between" padding="10px 0">
 						<OptionButtonVariantBackdrop width="100%">{speedSelectorButtons}</OptionButtonVariantBackdrop>
