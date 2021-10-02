@@ -35,7 +35,10 @@ export async function requestTimeSeriesData() {
 			["longTerm", longTimeSeriesUrl],
 		].map(([type, url]) =>
 			fetch(url)
-				.then((response) => response.json())
+				.then((response) => {
+					response.json();
+					console.log(response);
+				})
 				.then((data) => {
 					console.log(data);
 					let keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
@@ -65,6 +68,7 @@ export async function requestTimeSeriesData() {
 
 						return newEntry;
 					});
+
 					ret[type] = data;
 				})
 				.catch((error) => console.log(error))
