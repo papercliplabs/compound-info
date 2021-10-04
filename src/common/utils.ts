@@ -1,0 +1,144 @@
+import { COIN_INFO } from "common/constants";
+
+import { coin_E } from "common/enums";
+
+/**
+ * Format date to nicely render it
+ * @param date date object to be formatteed
+ * @param withTime if true, the time will be incluede at the end, otherwise the year is included
+ * @returns nicely formatted date
+ */
+export function formatDate(date: Date, withTime: boolean): string {
+	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	let formattedDate = months[date.getMonth()] + " " + date.getDate();
+	if (withTime) {
+		const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
+		formattedDate += ", " + time;
+	} else {
+		formattedDate += ", " + date.getFullYear().toString();
+	}
+
+	return formattedDate;
+}
+
+/**
+ * Format a number so it can nicely be rendered. This ensures the number of digits is 5 or less
+ * @param number the number to be formatted, this can be a number or a string representation of a number
+ * @param unit the unit of the number, if it is "%" then we
+ * @param decimals the number of decimals to keep after formatting, if not specified it will keep 2
+ * @returns nicely formatted number, for example if number is 11023 this will return 1.10K
+ */
+export function formatNumber(number: number | string, unit?: string, decimals: number | null = null): string {
+	const K = 1000;
+	const M = 1000000;
+	const B = 1000000000;
+	const T = 1000000000000;
+	let defaultDecimals = 2;
+
+	let postFix = "";
+	let unitPostfix = false;
+	let formattedNum = number;
+
+	// If it is represented as a sting, convert to number first
+	if (typeof formattedNum === "string") {
+		formattedNum = parseFloat(formattedNum);
+
+		if (isNaN(formattedNum)) {
+			return number as string; // It isn't a number
+		}
+	}
+
+	// Multiply by 100, and set so unit is postfixed
+	if (unit === "%") {
+		formattedNum *= 100;
+		unitPostfix = true;
+	}
+
+	// Converting to digestable format
+	if (formattedNum > T) {
+		formattedNum /= T;
+		postFix = "T";
+	} else if (formattedNum > B) {
+		formattedNum /= B;
+		postFix = "B";
+	} else if (formattedNum > M) {
+		formattedNum /= M;
+		postFix = "M";
+	} else if (formattedNum > K) {
+		formattedNum /= K;
+		postFix = "K";
+	}
+
+	// If its an interger, flag to rount to whole number
+	if (formattedNum % 1 === 0) {
+		defaultDecimals = 0;
+	}
+
+	// Applying configs
+	if (decimals !== null) {
+		formattedNum = formattedNum.toFixed(decimals).toString();
+	} else {
+		formattedNum = formattedNum.toFixed(defaultDecimals).toString();
+	}
+	formattedNum += postFix;
+	formattedNum = unit ? (unitPostfix ? formattedNum + unit : unit + formattedNum) : formattedNum;
+
+	return formattedNum;
+}
+
+/**
+ * Convert from wei to gwei, 1 gwei = 10^9 wei
+ * @param wei the number of wei to be converted
+ * @returns the equivilent number of gwei
+ */
+export function weiToGwei(wei: number): number {
+	return wei * 10 ** -9;
+}
+
+/**
+ * Getter for the ethercan link given a coin address
+ * @param address coin address to get the link for
+ * @returns etherscan link for the coin address
+ */
+export function getEtherscanLink(address: string): string {
+	return "https://etherscan.io/token/" + address;
+}
+
+/**
+ * Format an address to a shorter version by adding ... in the middle
+ * @param address address to be shortened
+ * @returns shortened address
+ */
+export function shortAddress(address: string): string {
+	const len = address.length;
+	if (len < 12) return address;
+	if (len < 12) {
+		return address;
+	} else {
+		return address.slice(0, 6) + "..." + address.slice(len - 6, len);
+	}
+}
+
+/**
+ * Getter for the list of coin names
+ * @returns list of coin names
+ */
+export function getCoinList(): string[] {
+	return COIN_INFO.map((info) => info.name);
+}
+
+/**
+ * Get the coin with the given coin name
+ * @param coinName the coin name to get the coin for
+ * @returns the coin for the coin name, or null if none exists
+ */
+export function getCoinForCoinName(coinName: string): coin_E | null {
+	const filteredCoinInfo = COIN_INFO.filter((info) => info.name == coinName);
+	const coinInfo = filteredCoinInfo.length === 1 ? filteredCoinInfo[0] : null;
+	let coin: coin_E | null = null;
+	if (coinInfo !== null) {
+		coin = COIN_INFO.indexOf(coinInfo) as coin_E;
+	}
+
+	return coin;
+}

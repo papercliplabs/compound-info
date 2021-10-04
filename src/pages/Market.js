@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import { useTheme } from "styled-components";
 
 import ApyChartContainer from "components/ApyChartContainer";
-import { useSummaryData, useTimeSeriesData } from "data/hooks";
+import { useMarketSummaryData, useTimeSeriesData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
@@ -16,6 +16,8 @@ import { CoinLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
 import MultilineChart from "components/MultilineChart";
+
+import { COIN_INFO } from "common/constants";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
@@ -34,30 +36,35 @@ function StatRow({ title, value, unit, tooltipContent }) {
 export default function Market({ match }) {
 	const theme = useTheme();
 	const gap = theme.spacing.md;
-	const activeCoinName = match.params.coin;
-	const activeCoin = getCoinInfo(activeCoinName);
-	const coinData = useSummaryData(activeCoinName);
 	const [includeComp, setIncludeComp] = useState(false);
 	const [reservesTimeSelector, setReservesTimeSelector] = useState(TIME_SELECTORS.slice(-1)[0]);
 
-	// TODO: add buttons to update the time selectors, probably make another component for this
-	const reservesData = useTimeSeriesData(TIME_SERIES_DATA_SELECTORS.RESERVES_USD.key, reservesTimeSelector);
-	const selectedCoinsAndColors = [{ name: activeCoin.name, color: theme.color.lineChartColors[4] }];
+	const coinName = match.params.coin; // From url
+	const coin = getCoinForCoinName(coinName);
+	const marketData = useMarketSummaryData(coin);
 
+	// Scroll to the top of the page
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [match]);
 
 	// Redirect to home if the param name doesn't match a coin
-	if (!activeCoin) {
+	if (coin === null) {
 		return <Redirect to={"/"} />;
 	}
 
-	if (!coinData) {
-		return null; // Loading the summary data
+	// Still loading data
+	if (!marketData) {
+		return null;
 	}
 
-	const etherscanLink = getEtherscanLink(coinData.cTokenAddress);
+	// TODO: add buttons to update the time selectors, probably make another component for this
+	// const reservesData = useTimeSeriesData(TIME_SERIES_DATA_SELECTORS.RESERVES_USD.key, reservesTimeSelector);
+	// const selectedCoinsAndColors = [{ name: activeCoin.name, color: theme.color.lineChartColors[4] }];
+
+	const coinInfo = COIN_INFO[coin];
+
+	const etherscanLink = getEtherscanLink(marketData.cTokenAddress);
 
 	return (
 		<>
@@ -72,7 +79,7 @@ export default function Market({ match }) {
 				</Typography.body>
 			</Row>
 			<Row height="40px" margin={"20px 0"}>
-				<CoinLogo name={activeCoinName} size="40px" />
+				<CoinLogo coin={coin} size="40px" />
 				<Typography.displayXL>{activeCoin.name}</Typography.displayXL>
 			</Row>
 			<ResponsiveRow reverse align="flex-start" gap={"32px"}>
@@ -153,11 +160,11 @@ export default function Market({ match }) {
 						coingecko={activeCoin.coingecko}
 					/>
 					<Card>
-						<MultilineChart
+						{/* <MultilineChart
 							data={reservesData}
 							selectedCoinsAndColors={selectedCoinsAndColors}
 							setHoverDate={(date) => {}}
-						/>
+						/> */}
 					</Card>
 				</Column>
 				<Column gap={gap}>

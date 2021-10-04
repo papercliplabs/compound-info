@@ -4,12 +4,17 @@ import styled from "styled-components";
 import { Typography } from "theme";
 import { formatNumber } from "common/utils";
 import ProgressRing from "components/ProgressRing";
-import Row, { ResponsiveRow, ResponsiveJustifyRow } from "components/Row";
+import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
 import TooltipText from "components/TooltipText";
 import { StyledExternalInfoLink } from "components/Link";
 
-const Card = styled.div`
+const Card = styled.div<{
+	column?: boolean;
+	height?: string;
+	width?: string;
+	padding?: string;
+}>`
 	display: flex;
 	flex-direction: ${({ column }) => (column ? "column" : "row")};
 	border-radius: ${({ theme }) => theme.radius.lg};
@@ -22,7 +27,7 @@ const Card = styled.div`
 	row-gap: 8px;
 
 	${({ theme }) => theme.mediaWidth.small`
-		padding: ${({ theme }) => theme.spacing.md};
+		padding: ${theme.spacing.md};
 	`}
 `;
 
@@ -37,7 +42,17 @@ const CardHeader = styled(Typography.header)`
 	color: ${({ theme }) => theme.color.bg4};
 `;
 
-export function StatCard({ title, value, unit, tooltipContent }) {
+export function StatCard({
+	title,
+	value,
+	unit,
+	tooltipContent,
+}: {
+	title: string;
+	value: any;
+	unit?: string;
+	tooltipContent: any;
+}): JSX.Element {
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<StyledStatCard>
@@ -51,14 +66,26 @@ export function StatCard({ title, value, unit, tooltipContent }) {
 	);
 }
 
-export function CoinInfoCard({ value, whitepaper, website, twitter, coingecko }) {
+export function CoinInfoCard({
+	value,
+	whitepaper,
+	website,
+	twitter,
+	coingecko,
+}: {
+	value: any;
+	whitepaper: string;
+	website: string;
+	twitter: string;
+	coingecko: string;
+}): JSX.Element {
 	return (
 		<StyledStatCard>
 			<Row>
 				<Typography.body>{value}</Typography.body>
 			</Row>
 			<br />
-			<ResponsiveRow align="flex-start" xs>
+			<ResponsiveRow align="flex-start" $xs={true}>
 				<StyledExternalInfoLink href={whitepaper} content={"Whitepaper ↗"} />
 				<StyledExternalInfoLink href={website} content={"Website ↗"} />
 				<StyledExternalInfoLink href={twitter} content={"Twitter ↗"} />
@@ -69,7 +96,21 @@ export function CoinInfoCard({ value, whitepaper, website, twitter, coingecko })
 }
 
 // progressValue is a number from 0 to 1
-export function ProgressCard({ title, value, unit, size, progressValue, tooltipContent }) {
+export function ProgressCard({
+	title,
+	value,
+	unit,
+	size,
+	progressValue,
+	tooltipContent,
+}: {
+	title: string;
+	value: any;
+	unit?: string;
+	size: number;
+	progressValue?: number;
+	tooltipContent: any;
+}): JSX.Element {
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<Card>

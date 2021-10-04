@@ -1,0 +1,18 @@
+export enum coin_E {
+	BAT = 0,
+	COMP,
+	DAI,
+	ETH,
+	UNI,
+	ZRX,
+	USDC,
+	USDT,
+	WBTC,
+	WBTC2,
+	AAVE,
+	MKR,
+	SUSHI,
+	TUSD,
+	YFI,
+	LINK,
+}

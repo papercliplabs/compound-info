@@ -1,5 +1,9 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { URLS, TIME_SERIES_DATA_SELECTORS } from "common/constants";
-import { getCoinList } from "common/utils";
+import { getCoinList, getCoinForCoinName } from "common/utils";
+
+import { market_summary_data_S, protocol_summary_data_S } from "common/interfaces";
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
@@ -8,7 +12,7 @@ export async function requestTimeSeriesData() {
 	console.log("fetching coin data");
 	const shortTimeSeriesUrl = URLS.SHORT_TIME_SERIES_DATA;
 	const longTimeSeriesUrl = URLS.LONG_TIME_SERIES_DATA;
-	let ret = {};
+	const ret = {};
 
 	// Custom compare function for sorting to handle the case where one is a substring of the other, this is for WBTC and WBTC2
 	function compareFn(a, b) {
@@ -35,22 +39,17 @@ export async function requestTimeSeriesData() {
 			["longTerm", longTimeSeriesUrl],
 		].map(([type, url]) =>
 			fetch(url)
-				.then((response) => {
-					response.json();
-					console.log(response);
-				})
+				.then((response) => response.json())
 				.then((data) => {
-					console.log(data);
-					let keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
+					const keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
 					keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply
 					const max = keys.length + 1; // len: keys.len + 1
 					const numDataTypes = timeSeriesDataTypes.length;
 
 					// TIME_SERIES_DATA_SELECTORS_KEYS must be in the same order as the keys here
-					// console.log(keys);
 
 					data = data.map((entry) => {
-						let newEntry = {
+						const newEntry = {
 							blockTime: entry.BLOCK_TIME,
 							values: {},
 						};
@@ -79,13 +78,20 @@ export async function requestTimeSeriesData() {
 	//  longTerm: Array<blockTime, values{borrowApy: {AAVE, BAT, ...}, borrowUsd: { AAVE, BAT, ... }, ... (all data types)}>}
 
 	console.log(ret);
+
 	return ret;
 }
 
-export async function requestSummaryData() {
+/**
+ * Http request to get market and protocol summary data, and eth to use conversion factor
+ * @returns null if there is an error, otherwise a list of 3 things where:
+ * 		* First element: list of market summary data for each coin with the indicies being the corresponding coin_E value
+ * 		* Second element: protocol level summary data
+ * 		* Third element: eth to usd price conversion
+ */
+export async function requestSummaryData(): [market_summary_data_S[], protocol_summary_data_S, number] | null {
 	console.log("fetching summary data");
 	const url = URLS.SUMMARY_DATA;
-	const coinList = getCoinList();
 
 	const params = {
 		addresses: [""], // All addresses
@@ -120,8 +126,18 @@ export async function requestSummaryData() {
 		maxBorrow: 0,
 	};
 
-	// Transform into more useful form
-	data = data.map((coinData) => {
+	const marketSummaryList = [];
+
+	for (let i = 0; i < data.length; i++) {
+		const coinData = data[i];
+		const coinName = coinData.symbol.slice(1); // Remove the leading c
+		const coin = getCoinForCoinName(coinName);
+
+		if (!coin) {
+			// Coin doesn't exist in our list of coins, so lets ignore it
+			continue;
+		}
+
 		const underlyingToUsd = parseFloat(coinData.underlying_price.value) * ethToUsd;
 		const cTokenToUnderlying = parseFloat(coinData.exchange_rate.value);
 		const cTokenToUsd = cTokenToUnderlying * underlyingToUsd;
@@ -129,7 +145,6 @@ export async function requestSummaryData() {
 		const newData = {
 			name: coinData.symbol.slice(1), // Remove the leading c
 			cTokenAddress: coinData.token_address,
-			underlyingAddress: coinData.underlying_address,
 			underlyingPrice: underlyingToUsd,
 			numberOfSuppliers: coinData.number_of_suppliers,
 			numberOfBorrowers: coinData.number_of_borrowers,
@@ -163,48 +178,15 @@ export async function requestSummaryData() {
 		totals.totalReserves += newData.totalReserves;
 		totals.maxBorrow += newData.maxBorrow;
 
-		return newData;
-	});
-
-	// Filter out the unused coins
-	data = data.filter((coinData) => {
-		return coinList.includes(coinData.name);
-	});
+		marketSummaryList[coin] = newData;
+	}
 
 	totals["numberOfUniqueSuppliers"] = metaData.unique_suppliers;
 	totals["numberOfUniqueBorrowers"] = metaData.unique_borrowers;
 	totals["utilization"] = totals.totalBorrow / totals.maxBorrow;
 
-	data["ALL"] = totals;
-
-	return [data, ethToUsd];
+	return [marketSummaryList, totals, ethToUsd];
 }
-
-// Example of response data on a single coin: (https://compound.finance/docs/api#CTokenService)
-// {
-// 		borrow_cap: {value: "90750.00000000000000000"} -> In number of this asset
-//		borrow_rate: {value: "0.073069347550420829539998625"}
-//		cash: {value: "398302.984529048648843283"}
-//		collateral_factor: {value: "0.60000000000000000"}
-//		comp_borrow_apy: {value: "14.121370424434954"}
-//		comp_supply_apy: {value: "2.4867830322301776"}
-//		exchange_rate: {value: "0.020281861414402391"}
-//		interest_rate_model_address: "0xd956188795ca6f4a74092ddca33e0ea4ca3a1395"
-//		name: "Compound Collateral"
-//		number_of_borrowers: 98
-//		number_of_suppliers: 3931
-//		reserve_factor: {value: "0.25000000000000000"}
-//		reserves: {value: "945.0536197237982647850500000"}
-//		supply_rate: {value: "0.009883654153405490432620127"}
-//		symbol: "cCOMP"
-//		token_address: "0x70e36f6bf80a52b3b46b3af8e106cc0ed743e8e4"
-//		total_borrows: {value: "90755.298189666935054184"}
-//		total_supply: {value: "24066490.69953593"}
-//		underlying_address: "0xc00e94cb662c3520282e6f5717214004a7f26888"
-//		underlying_name: "Compound Governance Token"
-//		underlying_price: {value: "0.207669553249863714"}
-//		underlying_symbol: "COMP"
-//	}
 
 export async function requestGasData() {
 	console.log("fetching gas data");

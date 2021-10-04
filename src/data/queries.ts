@@ -1,4 +1,9 @@
-import { SHORT_TERM_DAYS } from "common/constants";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import { SHORT_TERM_DAYS, COIN_INFO } from "common/constants";
+
+import { market_summary_data_S } from "common/interfaces";
+import { coin_E } from "common/enums";
 
 //// Queries used by hooks to return useful data from the store (reducers)
 
@@ -41,12 +46,15 @@ export function queryTimeSeriesData(rawData, dataSelectorKey, timeSelector) {
 	}
 }
 
-// coinName: name of underlying asset (ex: USDC), coinName = ALL returns protocol summary data
-export function querySummaryData(summaryData, coinName) {
-	let data = summaryData;
-	if (coinName) {
-		data = summaryData.filter((obj) => obj.name === coinName)[0];
-	}
+/**
+ * Query the list of summary data for the data of the specified coin
+ * @param summaryDataList list of all the summary data to be queried
+ * @param coin coin that you want to extract the data for
+ * @returns summary data for the specific coin, or null if there is none available
+ */
+export function querySummaryData(summaryDataList: market_summary_data_S[], coin: coin_E): market_summary_data_S | null {
+	let queriedData = summaryDataList.filter((data) => data.name === COIN_INFO[coin].name);
+	queriedData = queriedData.length === 1 ? queriedData[0] : null;
 
-	return data;
+	return queriedData;
 }

@@ -5,12 +5,12 @@ import { CoinButton } from "components/Button";
 import { ScrollRow } from "./index";
 import Row from "components/Row";
 import { formatNumber } from "common/utils";
-import { COINS } from "common/constants";
+import { COIN_INFO } from "common/constants";
 import { HorizontalScrollButton } from "components/Button/horizontalScrollButton";
 
 function defaultCoinStates() {
-	return COINS.map((coinData, i) => {
-		return { name: coinData.name, color: null, selectedPosition: null };
+	return COIN_INFO.map((info, i) => {
+		return { name: info.name, color: null, selectedPosition: null };
 	});
 }
 
@@ -139,7 +139,7 @@ export function CoinRow({ activeCoin, coinList, updateSelectedCoins }) {
 				color={coinState.color} // The order in coinStates, and coinList must stay the same
 				selected={coinState.selectedPosition !== null}
 				value={formatNumber(coinData.value ? coinData.value : 0, "%")}
-				onClick={() => handleClick(i)}
+				clickCallback={() => handleClick(i)}
 				allowDeselect={allowDeselect}
 			/>
 		);

@@ -7,7 +7,7 @@ import MultilineChart from "components/MultilineChart";
 import { ScrollRow, ResponsiveRow, CoinRow, ResponsiveJustifyRow } from "components/Row";
 import Column from "components/Column";
 import { Typography } from "theme";
-import { COINS, TIME_SELECTORS } from "common/constants";
+import { COIN_INFO, TIME_SELECTORS } from "common/constants";
 import { formatNumber } from "common/utils";
 
 const StyledChartContainer = styled.div`
@@ -34,8 +34,8 @@ const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
 `;
 
 function initialCoinValues() {
-	return COINS.map((coin) => {
-		return { name: coin.name, value: 0 };
+	return COIN_INFO.map((info) => {
+		return { name: info.name, value: 0 };
 	});
 }
 
@@ -113,9 +113,9 @@ export default function ApyChartContainer({ activeCoin, dataSelectors, includeCo
 		});
 	}, [timeSelector, setTimeSelector]);
 
-	const coinList = COINS.map((coin) => {
-		const value = coinValues.filter((obj) => obj.name === coin.name)[0].value;
-		return { name: coin.name, value: value, allowDeselect: coin.name !== activeCoin?.name };
+	const coinList = COIN_INFO.map((info) => {
+		const value = coinValues.filter((obj) => obj.name === info.name)[0].value;
+		return { name: info.name, value: value, allowDeselect: info.name !== activeCoin?.name };
 	});
 
 	const currentApy = useMemo(() => {
