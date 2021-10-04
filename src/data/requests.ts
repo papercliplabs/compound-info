@@ -1,14 +1,21 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import { URLS, TIME_SERIES_DATA_SELECTORS } from "common/constants";
-import { getCoinList, getCoinForCoinName } from "common/utils";
+import { getCoinNameList, getCoinForCoinName } from "common/utils";
 
-import { market_summary_data_S, protocol_summary_data_S } from "common/interfaces";
+import {
+	market_summary_data_S,
+	protocol_summary_data_S,
+	time_series_data_entry_S,
+	time_series_data_S,
+} from "common/interfaces";
+
+import { time_series_data_selector_E } from "common/enums";
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
 // Fetch the data using the URL's pointing to flipside queries
-export async function requestTimeSeriesData() {
+export async function requestTimeSeriesData(): { shortTerm: time_series_data_S; longTerm: time_series_data_S } {
 	console.log("fetching coin data");
 	const shortTimeSeriesUrl = URLS.SHORT_TIME_SERIES_DATA;
 	const longTimeSeriesUrl = URLS.LONG_TIME_SERIES_DATA;
@@ -25,12 +32,11 @@ export async function requestTimeSeriesData() {
 		}
 	}
 
-	const coins = getCoinList().sort(compareFn);
+	const coins = getCoinNameList().sort(compareFn);
 
-	// List of all the data types, in order
-	const timeSeriesDataTypes = Object.keys(TIME_SERIES_DATA_SELECTORS).map(
-		(objName) => TIME_SERIES_DATA_SELECTORS[objName].key
-	);
+	const timeSeriesDataSelectors: time_series_data_selector_E[] = Object.values(time_series_data_selector_E);
+
+	console.log(timeSeriesDataSelectors);
 
 	// Sending parallel api requests, and manipulating it in an easy to consume manor
 	await Promise.all(
@@ -41,12 +47,15 @@ export async function requestTimeSeriesData() {
 			fetch(url)
 				.then((response) => response.json())
 				.then((data) => {
+					console.log(data);
 					const keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
-					keys.sort(compareFn); // 0|i => borrow, 1|i => supply, 2|i => total borrow, 3|i => total supply
+					keys.sort(compareFn);
 					const max = keys.length + 1; // len: keys.len + 1
-					const numDataTypes = timeSeriesDataTypes.length;
+					const numDataTypes = timeSeriesDataSelectors.length;
 
-					// TIME_SERIES_DATA_SELECTORS_KEYS must be in the same order as the keys here
+					console.log(keys);
+
+					// time_series_data_selector_E must be in the same order as the keys here
 
 					data = data.map((entry) => {
 						const newEntry = {
@@ -56,14 +65,14 @@ export async function requestTimeSeriesData() {
 
 						// Initialize values to the datatypes and an empty object
 						for (let i = 0; i < numDataTypes; i++) {
-							newEntry.values[timeSeriesDataTypes[i]] = {};
+							newEntry.values[timeSeriesDataSelectors[i]] = {};
 						}
 
-						for (let i = 0; i < max / numDataTypes - 1; i++) {
-							for (let j = 0; j < numDataTypes; j++) {
-								newEntry.values[timeSeriesDataTypes[j]][coins[i]] = entry[keys[numDataTypes * i + j]];
-							}
-						}
+						// for (let i = 0; i < max / numDataTypes - 1; i++) {
+						// 	for (let j = 0; j < numDataTypes; j++) {
+						// 		newEntry.values[timeSeriesDataSelectors[j]][coins[i]] = entry[keys[numDataTypes * i + j]];
+						// 	}
+						// }
 
 						return newEntry;
 					});

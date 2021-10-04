@@ -2,14 +2,18 @@
 // @ts-nocheck
 import { SHORT_TERM_DAYS, COIN_INFO } from "common/constants";
 
-import { market_summary_data_S } from "common/interfaces";
-import { coin_E } from "common/enums";
+import { market_summary_data_S, time_series_data_S } from "common/interfaces";
+import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
 
 //// Queries used by hooks to return useful data from the store (reducers)
 
 // dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS
-export function queryTimeSeriesData(rawData, dataSelectorKey, timeSelector) {
-	if (!rawData) return null;
+export function queryTimeSeriesData(
+	timeSeriesData: time_series_data_S,
+	dataSelector: time_series_data_selector_E,
+	timeSelector: time_selector_E
+) {
+	if (!timeSeriesData) return null;
 
 	console.log(rawData);
 

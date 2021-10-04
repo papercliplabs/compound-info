@@ -14,8 +14,8 @@ import tusdSvg from "assets/coins/TUSD.svg";
 import yfiSvg from "assets/coins/YFI.svg";
 import linkSvg from "assets/coins/LINK.svg";
 
-import { coin_E } from "common/enums";
-import { coin_info_S } from "common/interfaces";
+import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
+import { coin_info_S, time_selector_info_S, time_series_data_selector_info_S } from "common/interfaces";
 
 export const COIN_INFO: coin_info_S[] = [];
 COIN_INFO[coin_E.BAT] = {
@@ -187,31 +187,67 @@ COIN_INFO[coin_E.YFI] = {
 
 //// General chart config
 // Used for chart buttons and data
-export const TIME_SELECTORS = [
-	{ name: "1D", days: 1 },
-	{ name: "1W", days: 7 },
-	{ name: "1M", days: 30 },
-	{ name: "3M", days: 90 },
-	{ name: "1Y", days: 365 },
-	{ name: "All", days: null },
-];
+export const TIME_SELECTOR_INFO: time_selector_info_S[] = [];
+TIME_SELECTOR_INFO[time_selector_E.ONE_DAY] = {
+	name: "1D",
+	days: 1,
+};
+TIME_SELECTOR_INFO[time_selector_E.ONE_WEEK] = {
+	name: "1W",
+	days: 7,
+};
+TIME_SELECTOR_INFO[time_selector_E.ONE_MONTH] = {
+	name: "1M",
+	days: 30,
+};
+TIME_SELECTOR_INFO[time_selector_E.THREE_MONTHS] = {
+	name: "3M",
+	days: 90,
+};
+TIME_SELECTOR_INFO[time_selector_E.THREE_MONTHS] = {
+	name: "1Y",
+	days: 365,
+};
+TIME_SELECTOR_INFO[time_selector_E.ALL] = {
+	name: "1Y",
+	days: null,
+};
 
 // Keys correspond to what is returned from SHORT_TIME_SERIES_DATA and LONG_TIME_SERIES_DATA url's.
 // This is the data types per each coin, order of the keys matters and must match the sorted key order (see comment in requests.js)
-export const TIME_SERIES_DATA_SELECTORS = {
-	BORROW_APY: { key: "borrowApy", name: "Borrow" },
-	BORRROW_USD: { key: "borrowUsd", name: "Borrow" },
-	RESERVES_USD: { key: "reservesUsd", name: "Reserves" },
-	SUPPLY_APY: { key: "supplyApy", name: "Supply" },
-	SUPPLY_USD: { key: "supplyUsd", name: "Supply" },
-	TOTAL_BORROW_APY: { key: "totalBorrowApy", name: "Borrow" },
-	TOTAL_SUPPLY_APY: { key: "totalSupplyApy", name: "Supply" },
-	UTALIZATION: { key: "utalization", name: "Utalization" },
+export const TIME_SERIES_DATA_SELECTOR_INFO: time_series_data_selector_info_S[] = [];
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_APY] = {
+	key: "borrowApy",
+	name: "Borrow",
 };
-
-//// APY Chart config
-// The active coin is always selected, if null there is no active coin (i.e non coin specific plot)
-export const APY_DATA_SELECTORS = [TIME_SERIES_DATA_SELECTORS.SUPPLY_APY, TIME_SERIES_DATA_SELECTORS.BORROW_APY];
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_USD] = {
+	key: "borrowUsd",
+	name: "Borrow",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.RESERVES_USD] = {
+	key: "reservedUsd",
+	name: "Reserves",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_APY] = {
+	key: "supplyApy",
+	name: "Supply",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_USD] = {
+	key: "supplyUsd",
+	name: "Supply",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_BORROW_APY] = {
+	key: "titakBorrowApy",
+	name: "Supply",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_SUPPLY_APY] = {
+	key: "totalSupplyApy",
+	name: "Supply",
+};
+TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.UTALIZATION] = {
+	key: "utilization",
+	name: "Utalization",
+};
 
 //// URL's for API calls
 export const URLS = {

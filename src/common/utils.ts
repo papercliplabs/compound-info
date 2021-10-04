@@ -1,4 +1,4 @@
-import { COIN_INFO } from "common/constants";
+import { COIN_INFO, TIME_SERIES_DATA_SELECTOR_INFO } from "common/constants";
 
 import { coin_E } from "common/enums";
 
@@ -123,8 +123,16 @@ export function shortAddress(address: string): string {
  * Getter for the list of coin names
  * @returns list of coin names
  */
-export function getCoinList(): string[] {
+export function getCoinNameList(): string[] {
 	return COIN_INFO.map((info) => info.name);
+}
+
+/**
+ * Getter for the list of all time series data selector keys
+ * @returns list of all time series data selector keys
+ */
+export function getTimeSeriesDataSelectorKeyList(): string[] {
+	return TIME_SERIES_DATA_SELECTOR_INFO.map((info) => info.key);
 }
 
 /**

@@ -109,12 +109,6 @@ function AvgLabel({ viewBox, avg }) {
 	);
 }
 
-/**
- * @brief
- *
- * @param {*} param0
- * @returns
- */
 export default function MultilineChart({ data, selectedCoinsAndColors, setHoverDate }) {
 	const theme = useTheme();
 	const [avg, setAvg] = useState(null);

@@ -6,8 +6,8 @@ import { useGlobalStore } from "data/store";
 import { requestGasData, requestTimeSeriesData, requestSummaryData } from "data/requests";
 import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
-import { market_summary_data_S } from "common/interfaces";
-import { coin_E } from "common/enums";
+import { market_summary_data_S, time_selector_info_S } from "common/interfaces";
+import { coin_E, time_series_data_selector_E, time_selector_E } from "common/enums";
 
 const marketSummaryDataKey = "marketSummaryDataList";
 const protocolSummaryDataKey = "protocolSummaryData";
@@ -16,7 +16,7 @@ const ethToUsdKey = "ethToUsd";
 // Custom hooks which are used by the app to interface with the store
 
 // dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS, timeSelector is one of the time selector from TIME_SELECTORS
-export function useTimeSeriesData(dataSelectorKey, timeSelector) {
+export function useTimeSeriesData(dataSelector: time_series_data_selector_E, timeSelector: time_selector_E) {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
 	const timeSeriesDataKey = "timeSeriesData";
@@ -36,10 +36,10 @@ export function useTimeSeriesData(dataSelectorKey, timeSelector) {
 
 	useEffect(() => {
 		if (timeSeriesData) {
-			const newQueriedData = queryTimeSeriesData(timeSeriesData, dataSelectorKey, timeSelector);
+			const newQueriedData = queryTimeSeriesData(timeSeriesData, dataSelector, timeSelector);
 			setQueriedData(newQueriedData);
 		}
-	}, [dataSelectorKey, timeSelector, timeSeriesData, setQueriedData]);
+	}, [dataSelector, timeSelector, timeSeriesData, setQueriedData]);
 
 	return queriedData;
 }
@@ -80,7 +80,7 @@ export function useMarketSummaryData(coin?: coin_E): market_summary_data_S | mar
 		if (marketSummaryDataList) {
 			let queriedData = marketSummaryDataList;
 			if (coin) {
-				queriedData = querySummaryData(summaryData, coin);
+				queriedData = querySummaryData(queriedData, coin);
 			}
 			setQueriedData(queriedData);
 		}
