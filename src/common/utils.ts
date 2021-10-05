@@ -150,3 +150,14 @@ export function getCoinForCoinName(coinName: string): coin_E | null {
 
 	return coin;
 }
+
+/**
+ * Converts a camelCaseWord to SCREAMING_SNAKE_CASE
+ * @param camelCaseWord the camel case word to be converted
+ * @returns the screaming snake case of the word
+ */
+export function camelToScreamingSnakeCase(camelCaseWord: string): string {
+	const scremingSnakeCaseWord = camelCaseWord.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`); // snake_case
+
+	return scremingSnakeCaseWord.toUpperCase(); // SCREAMING_SNAKE_CASE
+}

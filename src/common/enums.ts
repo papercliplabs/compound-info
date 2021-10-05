@@ -28,7 +28,6 @@ export enum time_selector_E {
 
 /**
  * All time series data selectors
- * The order here must be in the same order as produces from keys.sort(compareFn) in requests
  */
 export enum time_series_data_selector_E {
 	BORROW_APY = 0,
@@ -40,3 +39,37 @@ export enum time_series_data_selector_E {
 	TOTAL_SUPPLY_APY,
 	UTALIZATION,
 }
+
+/**
+ * String literal of coin names, these are used in coin_info_S and timer_series_data_S
+ */
+export type coin_name_L =
+	| "BAT"
+	| "COMP"
+	| "DAI"
+	| "ETH"
+	| "UNI"
+	| "ZRX"
+	| "USDC"
+	| "USDT"
+	| "WBTC"
+	| "WBTC2"
+	| "AAVE"
+	| "LINK"
+	| "MKR"
+	| "SUSHI"
+	| "TUSD"
+	| "YFI";
+
+/**
+ * String literals of data selector keys, these are used in time_series_data_selector_info_S and timer_series_data_S
+ */
+export type time_series_data_selector_key_L =
+	| "borrowApy"
+	| "borrowUsd"
+	| "reservesUsd"
+	| "supplyApy"
+	| "supplyUsd"
+	| "totalBorrowApy"
+	| "totalSupplyApy"
+	| "utalization";

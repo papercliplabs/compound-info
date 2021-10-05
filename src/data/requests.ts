@@ -1,44 +1,26 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-import { URLS, TIME_SERIES_DATA_SELECTORS } from "common/constants";
+import { URLS, TIME_SERIES_DATA_SELECTOR_INFO } from "common/constants";
 import { getCoinNameList, getCoinForCoinName } from "common/utils";
 
-import {
-	market_summary_data_S,
-	protocol_summary_data_S,
-	time_series_data_entry_S,
-	time_series_data_S,
-} from "common/interfaces";
-
-import { time_series_data_selector_E } from "common/enums";
+import { market_summary_data_S, protocol_summary_data_S, time_series_data_S } from "common/interfaces";
 
 //// API requests, manipulates responses in a nice way to save in store and render later
 
-// Fetch the data using the URL's pointing to flipside queries
-export async function requestTimeSeriesData(): { shortTerm: time_series_data_S; longTerm: time_series_data_S } {
+/**
+ * Fetch time series data and transform it into nice to use format
+ * @returns short and long term time series data
+ */
+export async function requestTimeSeriesData(): Promise<{
+	shortTerm: time_series_data_S[];
+	longTerm: time_series_data_S[];
+} | null> {
 	console.log("fetching coin data");
 	const shortTimeSeriesUrl = URLS.SHORT_TIME_SERIES_DATA;
 	const longTimeSeriesUrl = URLS.LONG_TIME_SERIES_DATA;
-	const ret = {};
+	let ret: any = {};
 
-	// Custom compare function for sorting to handle the case where one is a substring of the other, this is for WBTC and WBTC2
-	function compareFn(a, b) {
-		if (a.includes(b)) {
-			return -1;
-		} else if (b.includes(a)) {
-			return 1;
-		} else {
-			return [a, b].sort()[0] === a ? -1 : 1; // default sort
-		}
-	}
+	const coinNames = getCoinNameList();
 
-	const coins = getCoinNameList().sort(compareFn);
-
-	const timeSeriesDataSelectors: time_series_data_selector_E[] = Object.values(time_series_data_selector_E);
-
-	console.log(timeSeriesDataSelectors);
-
-	// Sending parallel api requests, and manipulating it in an easy to consume manor
+	// Sending parallel api requests, and transforming the data into desired format
 	await Promise.all(
 		[
 			["shortTerm", shortTimeSeriesUrl],
@@ -47,48 +29,48 @@ export async function requestTimeSeriesData(): { shortTerm: time_series_data_S; 
 			fetch(url)
 				.then((response) => response.json())
 				.then((data) => {
-					console.log(data);
-					const keys = Object.keys(data[0]).filter((key) => key !== "BLOCK_TIME"); // Table keys without block time
-					keys.sort(compareFn);
-					const max = keys.length + 1; // len: keys.len + 1
-					const numDataTypes = timeSeriesDataSelectors.length;
+					const transformedData: time_series_data_S[] = [];
 
-					console.log(keys);
+					// For each row (time step) in data
+					for (let i = 0; i < data.length; i++) {
+						const transformedRow: any = {};
 
-					// time_series_data_selector_E must be in the same order as the keys here
+						// For each data selector
+						for (let j = 0; j < TIME_SERIES_DATA_SELECTOR_INFO.length; j++) {
+							const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[j];
+							const dataSelectorData: any = {};
 
-					data = data.map((entry) => {
-						const newEntry = {
-							blockTime: entry.BLOCK_TIME,
-							values: {},
-						};
+							// For each coin name
+							for (let k = 0; k < coinNames.length; k++) {
+								const coinName = coinNames[k];
+								const fullQueryKey = coinName + "_" + dataSelectorInfo.sqlKey;
 
-						// Initialize values to the datatypes and an empty object
-						for (let i = 0; i < numDataTypes; i++) {
-							newEntry.values[timeSeriesDataSelectors[i]] = {};
+								dataSelectorData[coinName] = data[i][fullQueryKey];
+							}
+
+							dataSelectorData["blockTime"] = data[i]["BLOCK_TIME"]; // Grab the block time
+							transformedRow[dataSelectorInfo.key] = dataSelectorData;
 						}
+						transformedData.push(transformedRow as time_series_data_S);
+					}
 
-						// for (let i = 0; i < max / numDataTypes - 1; i++) {
-						// 	for (let j = 0; j < numDataTypes; j++) {
-						// 		newEntry.values[timeSeriesDataSelectors[j]][coins[i]] = entry[keys[numDataTypes * i + j]];
-						// 	}
-						// }
-
-						return newEntry;
-					});
-
-					ret[type] = data;
+					ret[type] = transformedData;
 				})
-				.catch((error) => console.log(error))
+				.catch((error) => {
+					console.log(error);
+					ret = null;
+				})
 		)
-	).catch((error) => console.log(error));
+	).catch((error) => {
+		console.log(error);
+		ret = null;
+	});
 
-	// {shortTerm: Array<blockTime, values{borrowApy: {AAVE, BAT, COMP, DAI, ... (all coins)}, borrowUsd: {AAVE, BAT, ... }, ... (all data types)}>,
-	//  longTerm: Array<blockTime, values{borrowApy: {AAVE, BAT, ...}, borrowUsd: { AAVE, BAT, ... }, ... (all data types)}>}
-
-	console.log(ret);
-
-	return ret;
+	if (ret && ret.shortTerm.length === 0 && ret.longTerm.length === 0) {
+		return null;
+	} else {
+		return ret;
+	}
 }
 
 /**
@@ -98,7 +80,7 @@ export async function requestTimeSeriesData(): { shortTerm: time_series_data_S; 
  * 		* Second element: protocol level summary data
  * 		* Third element: eth to usd price conversion
  */
-export async function requestSummaryData(): [market_summary_data_S[], protocol_summary_data_S, number] | null {
+export async function requestSummaryData(): Promise<[market_summary_data_S[], protocol_summary_data_S, number] | null> {
 	console.log("fetching summary data");
 	const url = URLS.SUMMARY_DATA;
 
@@ -117,7 +99,7 @@ export async function requestSummaryData(): [market_summary_data_S[], protocol_s
 	if (!response.ok) {
 		const error = await response.text();
 		console.log("Error requesting summary Data:" + error);
-		return {};
+		return null;
 	}
 
 	let data = await response.json();
@@ -125,10 +107,10 @@ export async function requestSummaryData(): [market_summary_data_S[], protocol_s
 	data = data.cToken;
 
 	// Conversion factor using price of USD = USDC
-	const usdcData = data.filter((obj) => obj.underlying_symbol === "USDC")[0];
+	const usdcData = data.filter((obj: any) => obj.underlying_symbol === "USDC")[0];
 	const ethToUsd = 1 / parseFloat(usdcData.underlying_price.value);
 
-	const totals = {
+	const totals: any = {
 		totalSupply: 0,
 		totalBorrow: 0,
 		totalReserves: 0,
@@ -151,7 +133,7 @@ export async function requestSummaryData(): [market_summary_data_S[], protocol_s
 		const cTokenToUnderlying = parseFloat(coinData.exchange_rate.value);
 		const cTokenToUsd = cTokenToUnderlying * underlyingToUsd;
 
-		const newData = {
+		const newData: any = {
 			name: coinData.symbol.slice(1), // Remove the leading c
 			cTokenAddress: coinData.token_address,
 			underlyingPrice: underlyingToUsd,

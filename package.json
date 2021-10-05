@@ -1,6 +1,6 @@
 {
 	"homepage": "https://papercliplabs.github.io/compound-info",
-	"name": "compoundinfo",
+	"name": "src",
 	"version": "0.1.0",
 	"private": true,
 	"dependencies": {

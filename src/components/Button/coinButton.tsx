@@ -92,7 +92,8 @@ export function CoinButton({
 	selected: boolean;
 	allowDeselect: boolean;
 	clickCallback: () => void;
-}): JSX.Element {
+}): JSX.Element | null {
+	if (!coin) return null; // Temporary
 	const open = selected ? undefined : clickCallback;
 	const coinName = COIN_INFO[coin].name;
 	return (

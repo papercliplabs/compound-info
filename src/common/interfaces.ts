@@ -1,10 +1,10 @@
-import { coin_E } from "common/enums";
+import { coin_name_L, time_series_data_selector_key_L } from "common/enums";
 
 /**
  * Structure which holds information about a coin
  */
 export interface coin_info_S {
-	name: string;
+	name: coin_name_L;
 	imgSrc: string;
 	desc: string;
 	whitepaper: string;
@@ -75,32 +75,24 @@ export interface time_selector_info_S {
 }
 
 /**
- * Structure which holds data entries for time series data
- */
-export interface time_series_data_entry_S {
-	borrowUsd: number | null;
-	borrowApy: number | null;
-	supplyUsd: number | null;
-	supplyApy: number | null;
-	totalBorrowApy: number | null;
-	totalSupplyApy: number | null;
-	utalization: number | null;
-}
-
-/**
- * Structure object with keys that are coins, and values which are arrays of time series data entries
- */
-export type time_series_data_S = {
-	[key in keyof typeof coin_E]: time_series_data_entry_S[];
-};
-
-/**
  * Structure which holds data about a time series data selector
- * key: key of the data in the time_series_data
- * name: name of the thing corresponding to the key, generally this is what is displayed on the front end
+ * key: key used to store the time series data in the app
+ * sqlKey: data selector part of the sql column name (full name is <coin name>_<sqlKey>)
+ * displayName: name of the thing corresponding to the key for use displaying within the app
  */
 export interface time_series_data_selector_info_S {
-	// key: keyof time_series_data_S;
-	key: string;
-	name: string;
+	key: time_series_data_selector_key_L;
+	sqlKey: string;
+	displayName: string;
 }
+
+/**
+ * Structure to hold time series data
+ */
+export type time_series_data_S = {
+	[key in time_series_data_selector_key_L]: {
+		[key in coin_name_L]: number | null;
+	} & {
+		blockTime: Date;
+	};
+};

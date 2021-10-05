@@ -4,38 +4,43 @@ import { SHORT_TERM_DAYS, COIN_INFO } from "common/constants";
 
 import { market_summary_data_S, time_series_data_S } from "common/interfaces";
 import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
+import { TIME_SELECTOR_INFO, TIME_SERIES_DATA_SELECTOR_INFO } from "../common/constants";
 
 //// Queries used by hooks to return useful data from the store (reducers)
 
 // dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS
+/**
+ * Query time series data for the specified data and time selectors
+ * @param timeSeriesData the time series data to be queried, this should be the data returned from the request (i.e unqueried full data)
+ * @param dataSelector data selector to query on
+ * @param timeSelector time selector to query on
+ * @returns queried time series data, or null if there is none
+ */
 export function queryTimeSeriesData(
-	timeSeriesData: time_series_data_S,
+	timeSeriesData: time_series_data_S[],
 	dataSelector: time_series_data_selector_E,
 	timeSelector: time_selector_E
-) {
-	if (!timeSeriesData) return null;
-
-	console.log(rawData);
+): time_series_data_S[] | null {
+	const timeSelectorInfo = TIME_SELECTOR_INFO[timeSelector];
+	const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[dataSelector];
 
 	// Grab short term, or long term and create a copy
 	let data;
-	if (timeSelector.days !== null && timeSelector.days <= SHORT_TERM_DAYS) {
-		data = rawData.shortTerm.slice();
+	if (timeSelectorInfo.days !== null && timeSelectorIndo.days <= SHORT_TERM_DAYS) {
+		data = timeSeriesData.shortTerm.slice();
 	} else {
-		data = rawData.longTerm.slice();
+		data = timeSeriesData.longTerm.slice();
 	}
 
 	let startTime = new Date();
-	if (timeSelector.days === null) {
+	if (timeSelectorInfo.days === null) {
 		startTime = new Date(1700, 1, 1); // smallest date
 	} else {
-		startTime.setDate(startTime.getDate() - timeSelector.days);
+		startTime.setDate(startTime.getDate() - timeSelectorInfo.days);
 	}
 
 	// Filter on dataSelector
-	data = data.map((entry) => {
-		return Object.assign(entry.values[dataSelectorKey], { blockTime: entry.blockTime });
-	});
+	data = data.map((entry) => entry[dataSelectorInfo.key]);
 
 	// Filter on timeSelector
 	data = data.filter((entry) => {

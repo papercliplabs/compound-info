@@ -8,6 +8,7 @@ import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
 import { market_summary_data_S, time_selector_info_S } from "common/interfaces";
 import { coin_E, time_series_data_selector_E, time_selector_E } from "common/enums";
+import { timer_series_data_S } from "../common/interfaces";
 
 const marketSummaryDataKey = "marketSummaryDataList";
 const protocolSummaryDataKey = "protocolSummaryData";
@@ -15,8 +16,16 @@ const ethToUsdKey = "ethToUsd";
 
 // Custom hooks which are used by the app to interface with the store
 
-// dataSelectorKey is one of the keys from TIME_SERIES_DATA_SELECTORS, timeSelector is one of the time selector from TIME_SELECTORS
-export function useTimeSeriesData(dataSelector: time_series_data_selector_E, timeSelector: time_selector_E) {
+/**
+ * Hook to get time series data for the specified data and time selector
+ * @param dataSelector data selector to get the data for
+ * @param timeSelector time selector to get the data for
+ * @returns time series data for the specified data and time selector, or null if none is available
+ */
+export function useTimeSeriesData(
+	dataSelector: time_series_data_selector_E,
+	timeSelector: time_selector_E
+): timer_series_data_S[] | null {
 	const [store, { updateStore }] = useGlobalStore();
 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
 	const timeSeriesDataKey = "timeSeriesData";

@@ -214,46 +214,55 @@ TIME_SELECTOR_INFO[time_selector_E.ALL] = {
 };
 
 // Keys correspond to what is returned from SHORT_TIME_SERIES_DATA and LONG_TIME_SERIES_DATA url's.
-// This is the data types per each coin, order of the keys matters and must match the sorted key order (see comment in requests.js)
+// This is the data types per each coin, and the keys must correspond to the camelCase version of the SNAKE_CASE selector in the returned data
+// Ex: if AAVE_SUPPLY_APY is one of the entries in the returned data, the corresponding data selector key would be supplyApy
 export const TIME_SERIES_DATA_SELECTOR_INFO: time_series_data_selector_info_S[] = [];
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_APY] = {
 	key: "borrowApy",
-	name: "Borrow",
+	sqlKey: "BORROW_APY",
+	displayName: "Borrow",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_USD] = {
 	key: "borrowUsd",
-	name: "Borrow",
+	sqlKey: "BORROW",
+	displayName: "Borrow",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.RESERVES_USD] = {
-	key: "reservedUsd",
-	name: "Reserves",
+	key: "reservesUsd",
+	sqlKey: "BORROW_APY",
+	displayName: "Reserves",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_APY] = {
 	key: "supplyApy",
-	name: "Supply",
+	sqlKey: "SUPPLY_APY",
+	displayName: "Supply",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_USD] = {
 	key: "supplyUsd",
-	name: "Supply",
+	sqlKey: "SUPPLY",
+	displayName: "Supply",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_BORROW_APY] = {
-	key: "titakBorrowApy",
-	name: "Supply",
+	key: "totalBorrowApy",
+	sqlKey: "BORROW_APY",
+	displayName: "Borrow",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_SUPPLY_APY] = {
 	key: "totalSupplyApy",
-	name: "Supply",
+	sqlKey: "TOTAL_SUPPLY_APY",
+	displayName: "Supply",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.UTALIZATION] = {
-	key: "utilization",
-	name: "Utalization",
+	key: "utalization",
+	sqlKey: "UTALIZATION",
+	displayName: "Utalization",
 };
 
 //// URL's for API calls
 export const URLS = {
-	LONG_TIME_SERIES_DATA: process.env.REACT_APP_LONG_TIME_SERIES_DATA_URL,
-	SHORT_TIME_SERIES_DATA: process.env.REACT_APP_SHORT_TIME_SERIES_DATA_URL,
-	TRANSACTIONS: process.env.REACT_APP_TRANACTIONS_URL,
+	LONG_TIME_SERIES_DATA: process.env.REACT_APP_LONG_TIME_SERIES_DATA_URL as string,
+	SHORT_TIME_SERIES_DATA: process.env.REACT_APP_SHORT_TIME_SERIES_DATA_URL as string,
+	TRANSACTIONS: process.env.REACT_APP_TRANACTIONS_URL as string,
 	SUMMARY_DATA: "https://api.compound.finance/api/v2/ctoken",
 	PAPERCLIP_HOME: "https://twitter.com/papercliplabs",
 	GAS_NOW: "https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo",
