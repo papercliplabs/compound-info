@@ -204,12 +204,12 @@ TIME_SELECTOR_INFO[time_selector_E.THREE_MONTHS] = {
 	name: "3M",
 	days: 90,
 };
-TIME_SELECTOR_INFO[time_selector_E.THREE_MONTHS] = {
+TIME_SELECTOR_INFO[time_selector_E.ONE_YEAR] = {
 	name: "1Y",
 	days: 365,
 };
 TIME_SELECTOR_INFO[time_selector_E.ALL] = {
-	name: "1Y",
+	name: "ALL",
 	days: null,
 };
 
@@ -220,42 +220,58 @@ export const TIME_SERIES_DATA_SELECTOR_INFO: time_series_data_selector_info_S[] 
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_APY] = {
 	key: "borrowApy",
 	sqlKey: "BORROW_APY",
-	displayName: "Borrow",
+	displayName: "Borrow APY",
+	description: "borrow APY excluding COMP",
+	unit: "%",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.BORROW_USD] = {
 	key: "borrowUsd",
 	sqlKey: "BORROW",
 	displayName: "Borrow",
+	description: "borrowed",
+	unit: "$",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.RESERVES_USD] = {
 	key: "reservesUsd",
-	sqlKey: "BORROW_APY",
+	sqlKey: "RESERVES",
 	displayName: "Reserves",
+	description: "reserves",
+	unit: "$",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_APY] = {
 	key: "supplyApy",
 	sqlKey: "SUPPLY_APY",
-	displayName: "Supply",
+	displayName: "Supply APY",
+	description: "supply APY excluding COMP",
+	unit: "%",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_USD] = {
 	key: "supplyUsd",
 	sqlKey: "SUPPLY",
 	displayName: "Supply",
+	description: "supplied",
+	unit: "$",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_BORROW_APY] = {
 	key: "totalBorrowApy",
 	sqlKey: "BORROW_APY",
-	displayName: "Borrow",
+	displayName: "Borrow APY",
+	description: "borrow APY including COMP",
+	unit: "%",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_SUPPLY_APY] = {
 	key: "totalSupplyApy",
 	sqlKey: "TOTAL_SUPPLY_APY",
-	displayName: "Supply",
+	displayName: "Supply APY",
+	description: "supply APY including COMP",
+	unit: "%",
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.UTALIZATION] = {
 	key: "utalization",
 	sqlKey: "UTALIZATION",
 	displayName: "Utalization",
+	description: "utalization",
+	unit: "%",
 };
 
 //// URL's for API calls

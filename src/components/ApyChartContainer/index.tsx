@@ -83,7 +83,7 @@ export default function ApyChartContainer({ coin, includeComp }: { coin: coin_E;
 	}, [selectedCoinsAndColors, hoverDate, data]);
 
 	const handleSelectedCoinsAndColors = useCallback((newSelectedCoinsAndColors) => {
-		setSelectedCoinsAndColors(newSelectedCoinsAndColors);
+		// setSelectedCoinsAndColors(newSelectedCoinsAndColors);
 	}, []);
 
 	// Render

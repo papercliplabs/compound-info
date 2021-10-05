@@ -41,14 +41,20 @@ export async function requestTimeSeriesData(): Promise<{
 							const dataSelectorData: any = {};
 
 							// For each coin name
+							let sum = 0;
 							for (let k = 0; k < coinNames.length; k++) {
 								const coinName = coinNames[k];
 								const fullQueryKey = coinName + "_" + dataSelectorInfo.sqlKey;
 
-								dataSelectorData[coinName] = data[i][fullQueryKey];
+								const value = data[i][fullQueryKey];
+								dataSelectorData[coinName] = value;
+
+								// Only sum aggregate for fields it makes sense
+								sum += dataSelectorInfo.unit != "%" && value ? value : 0;
 							}
 
 							dataSelectorData["blockTime"] = data[i]["BLOCK_TIME"]; // Grab the block time
+							dataSelectorData["ALL"] = sum; // Sum the aggregate
 							transformedRow[dataSelectorInfo.key] = dataSelectorData;
 						}
 						transformedData.push(transformedRow as time_series_data_S);
@@ -65,6 +71,8 @@ export async function requestTimeSeriesData(): Promise<{
 		console.log(error);
 		ret = null;
 	});
+
+	console.log(ret);
 
 	if (ret && ret.shortTerm.length === 0 && ret.longTerm.length === 0) {
 		return null;
@@ -111,10 +119,10 @@ export async function requestSummaryData(): Promise<[market_summary_data_S[], pr
 	const ethToUsd = 1 / parseFloat(usdcData.underlying_price.value);
 
 	const totals: any = {
-		totalSupply: 0,
-		totalBorrow: 0,
-		totalReserves: 0,
-		maxBorrow: 0,
+		totalSupplyUsd: 0,
+		totalBorrowUsd: 0,
+		totalReservesUsd: 0,
+		maxBorrowUsd: 0,
 	};
 
 	const marketSummaryList = [];
@@ -124,7 +132,7 @@ export async function requestSummaryData(): Promise<[market_summary_data_S[], pr
 		const coinName = coinData.symbol.slice(1); // Remove the leading c
 		const coin = getCoinForCoinName(coinName);
 
-		if (!coin) {
+		if (coin === null) {
 			// Coin doesn't exist in our list of coins, so lets ignore it
 			continue;
 		}
@@ -136,14 +144,14 @@ export async function requestSummaryData(): Promise<[market_summary_data_S[], pr
 		const newData: any = {
 			name: coinData.symbol.slice(1), // Remove the leading c
 			cTokenAddress: coinData.token_address,
-			underlyingPrice: underlyingToUsd,
+			underlyingPriceUsd: underlyingToUsd,
 			numberOfSuppliers: coinData.number_of_suppliers,
 			numberOfBorrowers: coinData.number_of_borrowers,
 
-			totalSupply: parseFloat(coinData.total_supply.value) * cTokenToUsd,
-			totalBorrow: parseFloat(coinData.total_borrows.value) * underlyingToUsd,
-			totalReserves: parseFloat(coinData.reserves.value) * underlyingToUsd,
-			borrowCap: parseFloat(coinData.borrow_cap.value) * underlyingToUsd,
+			totalSupplyUsd: parseFloat(coinData.total_supply.value) * cTokenToUsd,
+			totalBorrowUsd: parseFloat(coinData.total_borrows.value) * underlyingToUsd,
+			totalReservesUsd: parseFloat(coinData.reserves.value) * underlyingToUsd,
+			borrowCapUsd: parseFloat(coinData.borrow_cap.value) * underlyingToUsd,
 
 			distributionSupplyApy: parseFloat(coinData.comp_supply_apy.value) / 100,
 			distributionBorrowApy: parseFloat(coinData.comp_borrow_apy.value) / 100,
@@ -155,26 +163,28 @@ export async function requestSummaryData(): Promise<[market_summary_data_S[], pr
 		};
 
 		// Derived data
-		newData["marketSize"] = newData.totalSupply * newData.collateralFactor;
-		newData["maxBorrow"] = newData.borrowCap ? Math.min(newData.borrowCap, newData.marketSize) : newData.marketSize; // borrow cap of 0 means no cap
-		newData["utilization"] = newData.totalBorrow / newData.totalSupply;
-		newData["availableLiquidity"] = Math.max(0, newData.maxBorrow - newData.totalBorrow);
-		newData["totalValueLocked"] = newData.totalSupply - newData.totalBorrow;
+		newData["marketSizeUsd"] = newData.totalSupplyUsd * newData.collateralFactor;
+		newData["maxBorrowUsd"] = newData.borrowCapUsd
+			? Math.min(newData.borrowCapUsd, newData.marketSizeUsd)
+			: newData.marketSizeUsd; // borrow cap of 0 means no cap
+		newData["utilization"] = newData.totalBorrowUsd / newData.totalSupplyUsd;
+		newData["availableLiquidityUsd"] = Math.max(0, newData.maxBorrowUsd - newData.totalBorrowUsd);
+		newData["totalValueLockedUsd"] = newData.totalSupplyUsd - newData.totalBorrowUsd;
 
 		newData["totalSupplyApy"] = newData.supplyApy + newData.distributionSupplyApy;
 		newData["totalBorrowApy"] = newData.borrowApy - newData.distributionBorrowApy;
 
-		totals.totalSupply += newData.totalSupply;
-		totals.totalBorrow += newData.totalBorrow;
-		totals.totalReserves += newData.totalReserves;
-		totals.maxBorrow += newData.maxBorrow;
+		totals.totalSupplyUsd += newData.totalSupplyUsd;
+		totals.totalBorrowUsd += newData.totalBorrowUsd;
+		totals.totalReservesUsd += newData.totalReservesUsd;
+		totals.maxBorrowUsd += newData.maxBorrowUsd;
 
 		marketSummaryList[coin] = newData;
 	}
 
 	totals["numberOfUniqueSuppliers"] = metaData.unique_suppliers;
 	totals["numberOfUniqueBorrowers"] = metaData.unique_borrowers;
-	totals["utilization"] = totals.totalBorrow / totals.maxBorrow;
+	totals["utilization"] = totals.totalBorrowUsd / totals.maxBorrowUsd;
 
 	return [marketSummaryList, totals, ethToUsd];
 }

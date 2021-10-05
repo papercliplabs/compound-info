@@ -17,10 +17,11 @@ import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import { CoinLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
-import MultilineChart from "components/MultilineChart";
+import TimeSeriesChart from "components/TimeSeriesChart";
 
 import { COIN_INFO } from "common/constants";
-import { coin_E } from "common/enums";
+import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
+import { chart_config_S, line_info_S } from "common/interfaces";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const formattedValue = formatNumber(value, unit);
@@ -65,6 +66,34 @@ export default function Market({ match }): JSX.Element | null {
 	const coinInfo = COIN_INFO[coin];
 	const etherscanLink = getEtherscanLink(marketData.cTokenAddress);
 
+	// Examples of using time series chart
+	function hoverCallback(date: Date | null) {
+		// console.log(date);
+	}
+
+	const chartConfig: chart_config_S = {
+		showAvg: false,
+		showXAxis: false,
+		showYAxis: false,
+		showXTick: true,
+		showYTick: false,
+		showHorizontalGrid: false,
+		showVerticalGrid: false,
+		showAreaGradient: true,
+		numberOfXAxisTicks: 3,
+		showCurrentValue: true,
+		animate: true,
+	};
+
+	const timeSelectors = [
+		time_selector_E.ONE_DAY,
+		time_selector_E.ONE_WEEK,
+		time_selector_E.ONE_MONTH,
+		time_selector_E.THREE_MONTHS,
+		time_selector_E.ONE_YEAR,
+		time_selector_E.ALL,
+	];
+
 	return (
 		<>
 			<Row>
@@ -93,9 +122,7 @@ export default function Market({ match }): JSX.Element | null {
 							<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
 						</Row>
 					</Row>
-					<Card>
-						<ApyChartContainer coin={coin} includeComp={includeComp} />
-					</Card>
+					<Card>{/* <ApyChartContainer coin={coin} includeComp={includeComp} /> */}</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
 						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
@@ -103,7 +130,7 @@ export default function Market({ match }): JSX.Element | null {
 								<StatRow
 									title={"Token price"}
 									tooltipContent="The current price of the asset."
-									value={marketData.underlyingPrice}
+									value={marketData.underlyingPriceUsd}
 									unit="$"
 								/>
 								<StatRow
@@ -133,22 +160,36 @@ export default function Market({ match }): JSX.Element | null {
 								<StatRow
 									title={"Total borrow"}
 									tooltipContent="The total amount of funds borrowed from the market. (USD)"
-									value={marketData.totalBorrow}
+									value={marketData.totalBorrowUsd}
 									unit="$"
 								/>
 								<StatRow
 									title={"Borrow cap"}
 									tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
-									value={marketData.borrowCap ? marketData.borrowCap : "No limit"}
+									value={marketData.borrowCapUsd ? marketData.borrowCapUsd : "No limit"}
 								/>
 								<StatRow
 									title={"Available liquidity"}
 									tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
-									value={marketData.availableLiquidity}
+									value={marketData.availableLiquidityUsd}
 									unit="$"
 								/>
 							</Column>
 						</ResponsiveRow>
+					</Card>
+					<SectionTitle title={"Supply, Borrow and Reserves"} />
+					<Card>
+						<TimeSeriesChart
+							chartConfig={chartConfig}
+							lineInfoList={[{ coin: coin, color: theme.color.lineChartColors[1] }]}
+							dataSelectors={[
+								time_series_data_selector_E.SUPPLY_USD,
+								time_series_data_selector_E.BORROW_USD,
+								time_series_data_selector_E.RESERVES_USD,
+							]}
+							timeSelectors={timeSelectors}
+							onChartHover={hoverCallback}
+						/>
 					</Card>
 					<SectionTitle title={"About " + coinName} />
 					<CoinInfoCard
@@ -158,20 +199,13 @@ export default function Market({ match }): JSX.Element | null {
 						twitter={coinInfo.twitter}
 						coingecko={coinInfo.coingecko}
 					/>
-					<Card>
-						{/* <MultilineChart
-							data={reservesData}
-							selectedCoinsAndColors={selectedCoinsAndColors}
-							setHoverDate={(date) => {}}
-						/> */}
-					</Card>
 				</Column>
 				<Column gap={gap}>
 					<SectionTitle title="Market Overview" />
 					<StatCard
 						title={"Total supplied"}
 						tooltipContent="The total value (USD) of tokens supplied to the market."
-						value={marketData.totalSupply}
+						value={marketData.totalSupplyUsd}
 						unit="$"
 					/>
 					<ProgressCard
@@ -185,7 +219,7 @@ export default function Market({ match }): JSX.Element | null {
 					<StatCard
 						title={"Reserves"}
 						tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders."
-						value={marketData.totalReserves}
+						value={marketData.totalReservesUsd}
 						unit="$"
 					/>
 				</Column>

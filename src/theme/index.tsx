@@ -51,8 +51,8 @@ export function theme(darkMode: boolean): DefaultTheme {
 
 			// The colors used for coin selection, and chart lines, these will only be this many allowed selected at a time, first is used as base color for charts and progress bar
 			lineChartColors: darkMode
-				? ["#00CD8F", "#0095D5", "#F9A234", "#FF7EA8", "#885FB1"]
-				: ["#00CD8F", "#0095D5", "#F9A234", "#FF7EA8", "#885FB1"],
+				? ["#00CD8F", "#885FB1", "#0095D5", "#F9A234", "#FF7EA8"]
+				: ["#00CD8F", "#885FB1", "#0095D5", "#F9A234", "#FF7EA8"],
 		},
 
 		border: {

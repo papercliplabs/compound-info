@@ -26,7 +26,7 @@ export function queryTimeSeriesData(
 
 	// Grab short term, or long term and create a copy
 	let data;
-	if (timeSelectorInfo.days !== null && timeSelectorIndo.days <= SHORT_TERM_DAYS) {
+	if (timeSelectorInfo.days !== null && timeSelectorInfo.days <= SHORT_TERM_DAYS) {
 		data = timeSeriesData.shortTerm.slice();
 	} else {
 		data = timeSeriesData.longTerm.slice();

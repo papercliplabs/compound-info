@@ -11,8 +11,10 @@ import Card, { StatCard, ProgressCard } from "components/Card";
 import CoinTable from "components/CoinTable";
 import { ToggleButton } from "components/Button";
 import TooltipText from "components/TooltipText";
+import TimeSeriesChart from "components/TimeSeriesChart";
 
-import { market_summary_data_S, market_summary_column_info_S } from "common/interfaces";
+import { time_selector_E, time_series_data_selector_E } from "common/enums";
+import { market_summary_data_S, market_summary_column_info_S, chart_config_S } from "common/interfaces";
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.lg};
@@ -38,16 +40,16 @@ export default function Overview(): JSX.Element | null {
 		return includeComp
 			? [
 					{ name: "Asset", key: "name" },
-					{ name: "Total Supply", key: "totalSupply", unit: "$" },
+					{ name: "Total Supply", key: "totalSupplyUsd", unit: "$" },
 					{ name: "Supply APY", key: "totalSupplyApy", unit: "%" },
-					{ name: "Total Borrow", key: "totalBorrow", unit: "$" },
+					{ name: "Total Borrow", key: "totalBorrowUsd", unit: "$" },
 					{ name: "Borrow APY", key: "totalBorrowApy", unit: "%" },
 			  ]
 			: [
 					{ name: "Asset", key: "name" },
-					{ name: "Total Supply", key: "totalSupply", unit: "$" },
+					{ name: "Total Supply", key: "totalSupplyUsd", unit: "$" },
 					{ name: "Supply APY", key: "supplyApy", unit: "%" },
-					{ name: "Total Borrow", key: "totalBorrow", unit: "$" },
+					{ name: "Total Borrow", key: "totalBorrowUsd", unit: "$" },
 					{ name: "Borrow APY", key: "borrowApy", unit: "%" },
 			  ];
 	}, [includeComp]);
@@ -55,6 +57,25 @@ export default function Overview(): JSX.Element | null {
 	if (!marketSummaryDataList || !protocolSummaryData) {
 		return null; // Loading summary data still
 	}
+
+	// Examples of using time series chart
+	function hoverCallback(date: Date | null) {
+		// console.log(date);
+	}
+
+	const chartConfig: chart_config_S = {
+		showAvg: false,
+		showXAxis: false,
+		showYAxis: false,
+		showXTick: true,
+		showYTick: false,
+		showHorizontalGrid: false,
+		showVerticalGrid: false,
+		showAreaGradient: true,
+		numberOfXAxisTicks: 3,
+		showCurrentValue: true,
+		animate: true,
+	};
 
 	return (
 		<>
@@ -64,24 +85,30 @@ export default function Overview(): JSX.Element | null {
 			</Row>
 			<SectionTitle title="Compound Overview" />
 			<ResponsiveRow gap={gap}>
-				<StatCard
-					title={"Total supplied"}
-					tooltipContent="The total amount of funds supplied to Compound. (USD)"
-					value={protocolSummaryData.totalSupply}
-					unit="$"
-				/>
+				<Card>
+					<TimeSeriesChart
+						chartConfig={chartConfig}
+						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[0] }]}
+						dataSelectors={[time_series_data_selector_E.SUPPLY_USD, time_series_data_selector_E.BORROW_USD]}
+						timeSelectors={[time_selector_E.ALL]}
+						onChartHover={hoverCallback}
+					/>
+				</Card>
+				<Card>
+					<TimeSeriesChart
+						chartConfig={chartConfig}
+						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[1] }]}
+						dataSelectors={[time_series_data_selector_E.RESERVES_USD]}
+						timeSelectors={[time_selector_E.ALL]}
+						onChartHover={hoverCallback}
+					/>
+				</Card>
+			</ResponsiveRow>
+			<ResponsiveRow gap={gap}>
 				<StatCard
 					title={"Total unique active users"}
 					tooltipContent="Number of non-duplicate users between all markets"
 					value={protocolSummaryData.numberOfUniqueSuppliers}
-				/>
-			</ResponsiveRow>
-			<ResponsiveRow gap={gap}>
-				<StatCard
-					title={"Total reserves"}
-					tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders. (USD)"
-					value={protocolSummaryData.totalReserves}
-					unit="$"
 				/>
 				<ProgressCard
 					title={"Utilization"}
@@ -93,7 +120,7 @@ export default function Overview(): JSX.Element | null {
 				<StatCard
 					title={"Total borrowed"}
 					tooltipContent="The total amount of funds borrowed from Compound. (USD)"
-					value={protocolSummaryData.totalBorrow}
+					value={protocolSummaryData.totalBorrowUsd}
 					unit="$"
 				/>
 			</ResponsiveRow>
