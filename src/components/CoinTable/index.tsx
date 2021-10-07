@@ -84,7 +84,7 @@ function TableRow({
 	const rowData = columnInfoList.map((columnInfo, i) => {
 		return (
 			<RowEntry key={i} left={i === 0}>
-				{i === 0 && coin && <CoinLogo coin={coin} />}
+				{i === 0 && coin !== null && coin !== undefined && <CoinLogo coin={coin} />}
 				{formatNumber(marketData[columnInfo.key], columnInfo.unit)}
 			</RowEntry>
 		);

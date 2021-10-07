@@ -254,7 +254,7 @@ TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.SUPPLY_USD] = {
 };
 TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.TOTAL_BORROW_APY] = {
 	key: "totalBorrowApy",
-	sqlKey: "BORROW_APY",
+	sqlKey: "TOTAL_BORROW_APY",
 	displayName: "Borrow APY",
 	description: "borrow APY including COMP",
 	unit: "%",
@@ -276,9 +276,14 @@ TIME_SERIES_DATA_SELECTOR_INFO[time_series_data_selector_E.UTALIZATION] = {
 
 //// URL's for API calls
 export const URLS = {
-	LONG_TIME_SERIES_DATA: process.env.REACT_APP_LONG_TIME_SERIES_DATA_URL as string,
-	SHORT_TIME_SERIES_DATA: process.env.REACT_APP_SHORT_TIME_SERIES_DATA_URL as string,
-	TRANSACTIONS: process.env.REACT_APP_TRANACTIONS_URL as string,
+	// LONG_TIME_SERIES_DATA: process.env.REACT_APP_LONG_TIME_SERIES_DATA_URL as string,
+	// SHORT_TIME_SERIES_DATA: process.env.REACT_APP_SHORT_TIME_SERIES_DATA_URL as string,
+	// TRANSACTIONS: process.env.REACT_APP_TRANACTIONS_URL as string,
+	LONG_TIME_SERIES_DATA:
+		"https://api.flipsidecrypto.com/api/v2/queries/a557f67e-acdf-4dc5-8552-5c75375a9f11/data/latest",
+	SHORT_TIME_SERIES_DATA:
+		"https://api.flipsidecrypto.com/api/v2/queries/e10d9c13-1219-43be-94a0-e98d723dad2b/data/latest",
+	TRANSACTIONS: "https://api.flipsidecrypto.com/api/v2/queries/b61e144f-e705-4c22-951e-e3ca6626cb16/data/latest",
 	SUMMARY_DATA: "https://api.compound.finance/api/v2/ctoken",
 	PAPERCLIP_HOME: "https://twitter.com/papercliplabs",
 	GAS_NOW: "https://www.gasnow.org/api/v3/gas/price?utm_source=compoundinfo",

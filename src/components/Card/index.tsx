@@ -81,7 +81,7 @@ export function CoinInfoCard({
 }): JSX.Element {
 	return (
 		<StyledStatCard>
-			<Row>
+			<Row overflow="visible">
 				<Typography.body>{value}</Typography.body>
 			</Row>
 			<br />

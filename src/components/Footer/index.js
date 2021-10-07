@@ -30,10 +30,10 @@ export default function Footer() {
 			<Column>
 				<Break />
 				<ResponsiveRow padding={theme.spacing.lg + " 0"} justify="space-between">
-					<Typography.subheader>
+					<Typography.subheader color={theme.color.text2}>
 						© 2021 <StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Paperclip Labs" />
 					</Typography.subheader>
-					<Typography.subheader>
+					<Typography.subheader color={theme.color.text2}>
 						<ResponsiveRow gap={"32px"}>
 							<StyledExternalLink href={URLS.COMPOUND_GRANTS} content="Compound Grants Batch 2" />
 							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />

@@ -92,7 +92,7 @@ const StyledText = styled.div<{
 	lineHeight: number;
 	useDefaultLineHeight?: boolean;
 }>`
-	color: ${({ color, theme }) => theme.color[color]};
+	color: ${({ color, theme }) => color ?? theme.color["text1"]};
 	font-size: ${({ fontSize }) => fontSize}px;
 	font-weight: ${({ fontWeight }) => fontWeight};
 	line-height: ${({ lineHeight, useDefaultLineHeight }) => (useDefaultLineHeight ? "auto" : lineHeight + "px")};
@@ -100,31 +100,28 @@ const StyledText = styled.div<{
 
 export const Typography = {
 	displayXL(props: any) {
-		return <StyledText fontSize={42} fontWeight={600} color={"text1"} lineHeight={44} {...props} />;
+		return <StyledText fontSize={42} fontWeight={600} lineHeight={44} {...props} />;
 	},
 	displayL(props: any) {
-		return <StyledText fontSize={28} fontWeight={600} color={"text1"} lineHeight={32} {...props} />;
+		return <StyledText fontSize={28} fontWeight={600} lineHeight={32} {...props} />;
 	},
 	displayM(props: any) {
-		return <StyledText fontSize={26} fontWeight={600} color={"text1"} lineHeight={32} {...props} />;
+		return <StyledText fontSize={26} fontWeight={600} lineHeight={32} {...props} />;
 	},
 	displayS(props: any) {
-		return <StyledText fontSize={20} fontWeight={600} color={"text1"} lineHeight={28} {...props} />;
+		return <StyledText fontSize={20} fontWeight={600} lineHeight={28} {...props} />;
 	},
 	header(props: any) {
-		return <StyledText fontSize={16} fontWeight={500} color={"text1"} lineHeight={24} {...props} />;
-	},
-	headerSecondary(props: any) {
-		return <StyledText fontSize={16} fontWeight={500} color={"text2"} lineHeight={24} {...props} />;
+		return <StyledText fontSize={16} fontWeight={500} lineHeight={24} {...props} />;
 	},
 	subheader(props: any) {
-		return <StyledText fontSize={14} fontWeight={400} color={"text2"} lineHeight={28} {...props} />;
+		return <StyledText fontSize={14} fontWeight={400} lineHeight={28} {...props} />;
 	},
 	body(props: any) {
-		return <StyledText fontSize={16} fontWeight={400} color={"text1"} lineHeight={24} {...props} />;
+		return <StyledText fontSize={16} fontWeight={400} lineHeight={24} {...props} />;
 	},
 	caption(props: any) {
-		return <StyledText fontSize={14} fontWeight={400} color={"text1"} lineHeight={20} {...props} />;
+		return <StyledText fontSize={14} fontWeight={400} lineHeight={20} {...props} />;
 	},
 };
 

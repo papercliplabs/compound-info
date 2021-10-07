@@ -88,7 +88,7 @@ export function useMarketSummaryData(coin?: coin_E): market_summary_data_S | mar
 	useEffect(() => {
 		if (marketSummaryDataList) {
 			let queriedData = marketSummaryDataList;
-			if (coin) {
+			if (coin !== null && coin !== undefined) {
 				queriedData = querySummaryData(queriedData, coin);
 			}
 			setQueriedData(queriedData);

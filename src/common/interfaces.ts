@@ -126,4 +126,5 @@ export interface chart_config_S {
 	numberOfXAxisTicks: number; // Only relevent when showXAxis is true
 	showCurrentValue: boolean; // The big number in the corner above the graph, if false the data selector buttons will span the entire row
 	animate: boolean;
+	showValueInTooltip: boolean;
 }

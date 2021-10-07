@@ -6,16 +6,26 @@ import { coin_E } from "common/enums";
  * Format date to nicely render it
  * @param date date object to be formatteed
  * @param withTime if true, the time will be incluede at the end, otherwise the year is included
+ * @param short if true, the month and year will be shorted to MM/YY and no time will be shown
  * @returns nicely formatted date
  */
-export function formatDate(date: Date, withTime: boolean): string {
+export function formatDate(date: Date, withTime: boolean, short: boolean): string {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-	let formattedDate = months[date.getMonth()] + " " + date.getDate();
-	if (withTime) {
-		const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
-		formattedDate += ", " + time;
+	const monthIndex = date.getMonth();
+	const day = date.getDate();
+	const year = date.getFullYear().toString();
+	const month = months[monthIndex];
+
+	let formattedDate = "";
+	if (short) {
+		formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
 	} else {
-		formattedDate += ", " + date.getFullYear().toString();
+		if (withTime) {
+			const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
+			formattedDate += month + " " + day + " " + time;
+		} else {
+			formattedDate += month + " " + day + ", " + year;
+		}
 	}
 
 	return formattedDate;

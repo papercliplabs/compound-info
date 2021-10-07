@@ -7,6 +7,7 @@ import { StyledInternalLink } from "components/Link";
 import closeIcon from "assets/closeIcon.svg";
 import { coin_E } from "common/enums";
 import { COIN_INFO } from "common/constants";
+import { formatNumber } from "common/utils";
 
 const StyledCoinButton = styled.button<{
 	active: boolean;
@@ -81,6 +82,7 @@ const HoverText = styled.span`
 export function CoinButton({
 	coin,
 	value,
+	unit,
 	color,
 	selected,
 	allowDeselect,
@@ -88,12 +90,12 @@ export function CoinButton({
 }: {
 	coin: coin_E;
 	value: number;
+	unit: string | null;
 	color: string;
 	selected: boolean;
 	allowDeselect: boolean;
 	clickCallback: () => void;
 }): JSX.Element | null {
-	if (!coin) return null; // Temporary
 	const open = selected ? undefined : clickCallback;
 	const coinName = COIN_INFO[coin].name;
 	return (
@@ -110,7 +112,7 @@ export function CoinButton({
 				) : (
 					<Typography.header useDefaultLineHeight>{coinName}</Typography.header>
 				)}
-				<Typography.caption useDefaultLineHeight>{value}</Typography.caption>
+				<Typography.caption useDefaultLineHeight>{formatNumber(value, "%")}</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
 		</StyledCoinButton>

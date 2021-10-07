@@ -17,18 +17,20 @@ import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import { CoinLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
-import TimeSeriesChart from "components/TimeSeriesChart";
+import TimeSeriesChart from "components/Chart/TimeSeriesChart";
+import CoinSelectorTimerSeriesChart from "components/Chart/CoinSelectorTimeSeriesChart";
 
 import { COIN_INFO } from "common/constants";
 import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
 import { chart_config_S, line_info_S } from "common/interfaces";
 
 function StatRow({ title, value, unit, tooltipContent }) {
+	const theme = useTheme();
 	const formattedValue = formatNumber(value, unit);
 	return (
 		<Row justify="space-between">
 			<TooltipText
-				baseText={<Typography.headerSecondary>{title}</Typography.headerSecondary>}
+				baseText={<Typography.header color={theme.color.text1}>{title}</Typography.header>}
 				tooltipContent={tooltipContent}
 			></TooltipText>
 			<Typography.header>{formattedValue}</Typography.header>
@@ -42,10 +44,9 @@ export default function Market({ match }): JSX.Element | null {
 	const gap = theme.spacing.md;
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
 
-	// console.log(keyof(typeof coin_E));
-
 	const coinName = match.params.coin; // From url
 	const coin = getCoinForCoinName(coinName);
+	console.log(coin);
 	const marketData = useMarketSummaryData(coin);
 
 	// Scroll to the top of the page
@@ -63,19 +64,35 @@ export default function Market({ match }): JSX.Element | null {
 		return null;
 	}
 
+	console.log(marketData);
+
 	const coinInfo = COIN_INFO[coin];
 	const etherscanLink = getEtherscanLink(marketData.cTokenAddress);
 
-	// Examples of using time series chart
-	function hoverCallback(date: Date | null) {
-		// console.log(date);
-	}
+	const coinSelectorChartConfig: chart_config_S = {
+		showAvg: true,
+		showXAxis: false,
+		showYAxis: false,
+		showXTick: false,
+		showYTick: true,
+		showHorizontalGrid: true,
+		showVerticalGrid: false,
+		showAreaGradient: true,
+		numberOfXAxisTicks: 2,
+		showCurrentValue: true,
+		animate: true,
+		showValueInTooltip: false,
+	};
 
-	const chartConfig: chart_config_S = {
+	const coinSelectorChartDataSelectors = includeComp
+		? [time_series_data_selector_E.TOTAL_SUPPLY_APY, time_series_data_selector_E.TOTAL_BORROW_APY]
+		: [time_series_data_selector_E.SUPPLY_APY, time_series_data_selector_E.BORROW_APY];
+
+	const timeSeriesChartConfig: chart_config_S = {
 		showAvg: false,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: true,
+		showXTick: false,
 		showYTick: false,
 		showHorizontalGrid: false,
 		showVerticalGrid: false,
@@ -83,6 +100,7 @@ export default function Market({ match }): JSX.Element | null {
 		numberOfXAxisTicks: 3,
 		showCurrentValue: true,
 		animate: true,
+		showValueInTooltip: true,
 	};
 
 	const timeSelectors = [
@@ -122,7 +140,14 @@ export default function Market({ match }): JSX.Element | null {
 							<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
 						</Row>
 					</Row>
-					<Card>{/* <ApyChartContainer coin={coin} includeComp={includeComp} /> */}</Card>
+					<Card>
+						<CoinSelectorTimerSeriesChart
+							chartConfig={coinSelectorChartConfig}
+							dataSelectors={coinSelectorChartDataSelectors}
+							timeSelectors={timeSelectors}
+							mainCoin={coin}
+						/>
+					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
 						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
@@ -180,7 +205,7 @@ export default function Market({ match }): JSX.Element | null {
 					<SectionTitle title={"Supply, Borrow and Reserves"} />
 					<Card>
 						<TimeSeriesChart
-							chartConfig={chartConfig}
+							chartConfig={timeSeriesChartConfig}
 							lineInfoList={[{ coin: coin, color: theme.color.lineChartColors[1] }]}
 							dataSelectors={[
 								time_series_data_selector_E.SUPPLY_USD,
@@ -188,7 +213,6 @@ export default function Market({ match }): JSX.Element | null {
 								time_series_data_selector_E.RESERVES_USD,
 							]}
 							timeSelectors={timeSelectors}
-							onChartHover={hoverCallback}
 						/>
 					</Card>
 					<SectionTitle title={"About " + coinName} />

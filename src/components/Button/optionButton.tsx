@@ -27,7 +27,7 @@ const StyledOptionButton = styled.button<{
 	${({ active, theme, variant }) =>
 		active
 			? css`
-					background-color: ${variant ? theme.color.bg1 : theme.color.secondary1};
+					background-color: ${variant ? theme.color.bg1 : theme.color.bg2};
 					box-shadow: ${variant ? theme.shadow.card : theme.shadow.none};
 			  `
 			: css`
@@ -41,14 +41,15 @@ const StyledOptionButton = styled.button<{
 	`}
 `;
 
-const OptionButtonText = styled(Typography.headerSecondary)<{
+const OptionButtonText = styled(Typography.header)<{
 	active?: boolean;
 	variant?: boolean;
 }>`
+	color: ${({ theme }) => theme.color.text2};
 	${({ active, variant }) =>
 		active &&
 		css`
-			color: ${({ theme }) => (variant ? theme.color.text1 : theme.color.primary1)};
+			color: ${({ theme }) => (variant ? theme.color.text1 : theme.color.white)};
 		`}
 
 	${({ theme }) => theme.mediaWidth.extraSmall`

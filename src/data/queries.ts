@@ -22,6 +22,7 @@ export function queryTimeSeriesData(
 	timeSelector: time_selector_E
 ): time_series_data_S[] | null {
 	const timeSelectorInfo = TIME_SELECTOR_INFO[timeSelector];
+	console.log(dataSelector);
 	const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[dataSelector];
 
 	// Grab short term, or long term and create a copy

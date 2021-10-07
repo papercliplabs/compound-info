@@ -11,7 +11,7 @@ import Card, { StatCard, ProgressCard } from "components/Card";
 import CoinTable from "components/CoinTable";
 import { ToggleButton } from "components/Button";
 import TooltipText from "components/TooltipText";
-import TimeSeriesChart from "components/TimeSeriesChart";
+import TimeSeriesChart from "components/Chart/TimeSeriesChart";
 
 import { time_selector_E, time_series_data_selector_E } from "common/enums";
 import { market_summary_data_S, market_summary_column_info_S, chart_config_S } from "common/interfaces";
@@ -58,23 +58,19 @@ export default function Overview(): JSX.Element | null {
 		return null; // Loading summary data still
 	}
 
-	// Examples of using time series chart
-	function hoverCallback(date: Date | null) {
-		// console.log(date);
-	}
-
 	const chartConfig: chart_config_S = {
 		showAvg: false,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: true,
+		showXTick: false,
 		showYTick: false,
 		showHorizontalGrid: false,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 3,
+		numberOfXAxisTicks: 2,
 		showCurrentValue: true,
 		animate: true,
+		showValueInTooltip: true,
 	};
 
 	return (
@@ -91,7 +87,6 @@ export default function Overview(): JSX.Element | null {
 						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[0] }]}
 						dataSelectors={[time_series_data_selector_E.SUPPLY_USD, time_series_data_selector_E.BORROW_USD]}
 						timeSelectors={[time_selector_E.ALL]}
-						onChartHover={hoverCallback}
 					/>
 				</Card>
 				<Card>
@@ -100,15 +95,19 @@ export default function Overview(): JSX.Element | null {
 						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[1] }]}
 						dataSelectors={[time_series_data_selector_E.RESERVES_USD]}
 						timeSelectors={[time_selector_E.ALL]}
-						onChartHover={hoverCallback}
 					/>
 				</Card>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>
 				<StatCard
-					title={"Total unique active users"}
-					tooltipContent="Number of non-duplicate users between all markets"
+					title={"Total unique suppliers"}
+					tooltipContent="Number of non-duplicate suppliers between all markets, this is also the total number of unique users since each borrower must be a supplier."
 					value={protocolSummaryData.numberOfUniqueSuppliers}
+				/>
+				<StatCard
+					title={"Total unique borrowers"}
+					tooltipContent="Number of non-duplicate borrowers between all markets"
+					value={protocolSummaryData.numberOfUniqueBorrowers}
 				/>
 				<ProgressCard
 					title={"Utilization"}
@@ -116,12 +115,6 @@ export default function Overview(): JSX.Element | null {
 					value={protocolSummaryData.utilization}
 					unit="%"
 					size={60}
-				/>
-				<StatCard
-					title={"Total borrowed"}
-					tooltipContent="The total amount of funds borrowed from Compound. (USD)"
-					value={protocolSummaryData.totalBorrowUsd}
-					unit="$"
 				/>
 			</ResponsiveRow>
 			<Row>

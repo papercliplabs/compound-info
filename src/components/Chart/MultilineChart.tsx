@@ -1,13 +1,13 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from "recharts";
 
 import { formatNumber, formatDate } from "common/utils";
 import { SHORT_TERM_DAYS } from "common/constants";
-import { Typography, mediaQuerySizes } from "theme";
+import { Typography, mediaQuerySizes, theme } from "theme";
 
 import { coin_E } from "common/enums";
 import { line_info_S, chart_config_S, time_series_data_entry_S } from "common/interfaces";
@@ -46,18 +46,45 @@ const StyledAvgLabel = styled.div`
 	text-align: left;
 `;
 
-function CustomTooltip({ coordinate, toolTipWidth, viewBox, showTime, payload, onUpdate }) {
-	const hoverDate = payload ? payload[0]?.payload.blockTime : null;
+function CustomTooltip({
+	toolTipWidth,
+	showTime,
+	showValue,
+	valueUnit,
+	coinKeys,
+	onHover,
+	coordinate,
+	viewBox,
+	payload,
+}: {
+	toolTipWidth: number;
+	showTime: boolean;
+	showValue: boolean;
+	valueUnit: string | null;
+	coinKeys: (coin_name_L | "ALL")[];
+	onHover: (hoverDate: number) => void;
+	coordinate: any;
+	viewBox: any;
+	payload: any;
+}): JSX.Element | null {
+	const theme = useTheme();
+	const hoverData = payload && payload[0] ? payload[0].payload : null;
+	const hoverDate = hoverData ? hoverData.blockTime : null;
+	const value = hoverData ? hoverData[coinKeys[0]] : null;
+	const lastHoverData = useRef(-1);
 
-	// If hover date updates, let parent know (after render)
+	// If hover date updates, let parent know (after render), gaurd spamming the same value to avoid infinite loop
 	useEffect(() => {
-		onUpdate(hoverDate);
-	}, [hoverDate, onUpdate]);
+		if (hoverData != lastHoverData.current) {
+			onHover(hoverData);
+			lastHoverData.current = hoverData;
+		}
+	}, [onHover, hoverData]);
 
 	if (hoverDate) {
 		// Format the tooltip date
 		const date = new Date(hoverDate);
-		const formattedDate = formatDate(date, showTime);
+		const formattedDate = formatDate(date, showTime, false);
 
 		// Bound the right side of tooltip
 		const rightX = coordinate.x + toolTipWidth / 2;
@@ -66,7 +93,8 @@ function CustomTooltip({ coordinate, toolTipWidth, viewBox, showTime, payload, o
 
 		return (
 			<StyledTooltip toolTipWidth={toolTipWidth} translationX={translationX}>
-				<Typography.subheader>{formattedDate}</Typography.subheader>
+				<Typography.caption color={theme.color.text2}>{formattedDate}</Typography.caption>
+				{showValue && value != null && <Typography.caption>{formatNumber(value, valueUnit)}</Typography.caption>}
 			</StyledTooltip>
 		);
 	} else {
@@ -74,9 +102,13 @@ function CustomTooltip({ coordinate, toolTipWidth, viewBox, showTime, payload, o
 	}
 }
 
+// TODO: The x position is broken/wrong from recharts using my custom tick array
 function CustomXTick({ x, y, payload, showTime, show }) {
+	const width = 40;
+
+	const theme = useTheme();
 	const date = new Date(payload.value);
-	const formattedDate = formatDate(date, showTime);
+	const formattedDate = formatDate(date, showTime, true);
 
 	if (!show) {
 		return null;
@@ -84,16 +116,17 @@ function CustomXTick({ x, y, payload, showTime, show }) {
 
 	// Render foreignObject first, as this allows us to render html and not just svg
 	return (
-		<foreignObject x={x - foreignObjectWidth / 2} y={y - 5} width={foreignObjectWidth} height={foreignObjectHeight}>
+		<foreignObject x={x - width / 2} y={y - 5} width={width} height={foreignObjectHeight}>
 			<StyledCustomXTick>
-				<Typography.subheader>{formattedDate}</Typography.subheader>
+				<Typography.subheader color={theme.color.text2}>{formattedDate}</Typography.subheader>
 			</StyledCustomXTick>
 		</foreignObject>
 	);
 	return null;
 }
 
-function CustomYTick({ x, y, payload, show }) {
+function CustomYTick({ x, y, payload, show }): JSX.Element | null {
+	const theme = useTheme();
 	const formattedValue = formatNumber(payload.value, "%", 2); // TODO: make so it can take generic values
 
 	if (!show) {
@@ -103,7 +136,7 @@ function CustomYTick({ x, y, payload, show }) {
 	return (
 		<foreignObject x={x} y={y - 15} width={foreignObjectWidth} height={foreignObjectHeight}>
 			<StyledCustomYTick>
-				<Typography.subheader>{formattedValue}</Typography.subheader>
+				<Typography.subheader color={theme.color.text2}>{formattedValue}</Typography.subheader>
 			</StyledCustomYTick>
 		</foreignObject>
 	);
@@ -128,16 +161,26 @@ function AvgLabel({ viewBox, avg }: { viewBox: any; avg: number | null }): JSX.E
 	);
 }
 
+/**
+ * React element to display a chart with multiple lines from data according to the lineInfoList
+ * @param data data to display
+ * @param chartConfig the chart configuration
+ * @param lineInfoList list of the line info for the lines to be plotted
+ * @param unit the unit of the data being shown, this is used for the tooltip value if it is configured to be shown
+ * @returns react element which is a chart with multiple lines on it
+ */
 export default function MultilineChart({
 	data,
 	chartConfig,
 	lineInfoList,
+	unit,
 	onHover,
 }: {
 	data: time_series_data_entry_S[];
 	chartConfig: chart_config_S;
 	lineInfoList: line_info_S[];
-	onHover?: (hoverData: Date | null) => void;
+	unit: string | null;
+	onHover: (hoverData: time_series_data_entry_S | null) => void;
 }): JSX.Element {
 	const theme = useTheme();
 	const [avg, setAvg] = useState<number | null>(null);
@@ -163,6 +206,9 @@ export default function MultilineChart({
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
 
+	// Used in the tooltip to display the values
+	const coinKeys: (coin_name_L | "ALL")[] = [];
+
 	const lines = lineInfoList.map((lineInfo, i) => {
 		// Current value of the first entry in lineInfoList for the selected data
 		let coinName = lineInfo.coin; // This will be the coin name if it is "ALL"
@@ -170,6 +216,8 @@ export default function MultilineChart({
 			// If it is not ALL, this will find the name
 			coinName = COIN_INFO[coinName].name;
 		}
+
+		coinKeys.push(coinName);
 
 		return (
 			<Area
@@ -192,10 +240,14 @@ export default function MultilineChart({
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
 	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
 	const chartHeight = window.innerWidth < mediaQuerySizes.small ? 200 : 300;
+	const showValueInTooltip = chartConfig.showValueInTooltip && lineInfoList.length === 1; // Only show value if there is 1 entry
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			<AreaChart margin={{ left: 0, top: -1, bottom: chartConfig.showXTick ? 0 : -30 }} data={data}>
+			<AreaChart
+				margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
+				data={data}
+			>
 				<CartesianGrid
 					vertical={chartConfig.showVerticalGrid}
 					horizontal={chartConfig.showHorizontalGrid}
@@ -214,6 +266,7 @@ export default function MultilineChart({
 					axisLine={chartConfig.showXAxis}
 					ticks={xAxisTicks}
 					tickLine={chartConfig.showXTick}
+					interval={"preserveStartEnd"}
 				/>
 				<YAxis
 					datekey="price"
@@ -227,7 +280,16 @@ export default function MultilineChart({
 				<Tooltip
 					cursor={cursorConfig}
 					position={{ y: 0 }} // Set to the top of chart
-					content={<CustomTooltip toolTipWidth={toolTipWidth} showTime={showTime} onUpdate={onHover} />}
+					content={
+						<CustomTooltip
+							toolTipWidth={toolTipWidth}
+							showTime={showTime}
+							showValue={showValueInTooltip}
+							valueUnit={unit}
+							coinKeys={coinKeys}
+							onHover={onHover}
+						/>
+					}
 					isAnimationActive={false}
 					offset={toolTipOffset}
 				/>
@@ -279,13 +341,12 @@ function shouldShowTime(data: time_series_data_entry_S[]): boolean {
  * @returns array of indicies in the time series data of the values to put on each tick
  */
 function getXTicks(data: time_series_data_entry_S[], numberOfTicks: number) {
-	if (!data || numberOfTicks === 0) return [];
+	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
 
 	const ticks = Array(numberOfTicks);
-	const inc = data.length / numberOfTicks;
-	const offset = (data.length - inc * (numberOfTicks - 1)) / 2;
+	const length = data.length;
 	for (let i = 0; i < numberOfTicks; i++) {
-		const index = Math.floor(inc * i + offset);
+		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
 		ticks[i] = data[index].blockTime;
 	}
 
