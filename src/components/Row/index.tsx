@@ -74,4 +74,3 @@ export const ResponsiveJustifyRow = styled(Row)<{
 `;
 
 export default Row;
-export { CoinRow } from "./coinRow";

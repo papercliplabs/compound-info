@@ -66,6 +66,7 @@ export default function GasTracker({}) {
 					active={selector === speedSelector}
 					onClick={() => setSpeedSelector(selector)}
 					variant
+					flex={1}
 				/>
 			);
 		});
