@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { StyledExternalLink } from "components/Link";
 import { Break } from "components/shared";
-import Button from "./";
+import Button from ".";
 import { Typography } from "theme";
 import Card from "components/Card";
 import Row from "components/Row";
@@ -27,18 +27,20 @@ const StyledIconButton = styled.img`
 	}
 `;
 
-const Overlay = styled.span`
+const Overlay = styled.span<{
+	open: boolean;
+}>`
 	display: ${({ open }) => (open ? "block" : "none")};
 	position: absolute;
-	top: 5rem;
-	right: 7rem;
+	right: ${({ theme }) => theme.spacing.md};
+	top: calc(100% + ${({ theme }) => theme.spacing.xxs});
 	max-width: 400px;
 `;
 
 export function IconButton({}) {
 	const [overlayIsOpen, setOverlayIsOpen] = useState(false);
-	const node = useRef();
-	useClickOutside(node, open ? () => setOverlayIsOpen(false) : undefined);
+	const node = useRef(null);
+	useClickOutside(node, overlayIsOpen ? () => setOverlayIsOpen(false) : undefined);
 
 	return (
 		<IconButtonWrapper ref={node}>
