@@ -26,14 +26,16 @@ const FooterWrapper = styled.div`
 	}
 `;
 
-const StyledBody = styled.div`
+const StyledBody = styled.div<{
+	warningActive: boolean;
+}>`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
 	padding: 40px;
-	padding-top: 100px;
+	padding-top: ${({ warningActive }) => (warningActive ? "150px" : "100px")};
 	column-gap: ${({ theme }) => theme.spacing.md};
 	row-gap: ${({ theme }) => theme.spacing.md};
 
@@ -50,13 +52,15 @@ const StyledBody = styled.div`
 `;
 
 export default function App(): JSX.Element {
+	const dataError = true;
+
 	return (
 		<HashRouter>
 			<Route component={GoogleAnalyticsReporter} />
 			<HeaderWrapper>
-				<Header />
+				<Header showDataErrorWarning={dataError} />
 			</HeaderWrapper>
-			<StyledBody>
+			<StyledBody warningActive={dataError}>
 				<Switch>
 					<Route exact strict path="/" component={Overview} />
 					<Route exact strict path="/:coin" component={Market} />

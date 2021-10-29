@@ -138,9 +138,9 @@ export default function TimeSeriesChart({
 		[data, hoverDataCallback, lineInfoList] // lineInfoList here causes infinite loop since it updates on this useCallback
 	);
 
-	if (!data || lineInfoList.length === 0) {
-		return null;
-	}
+	// if (!data || lineInfoList.length === 0) {
+	// 	return null;
+	// }
 
 	// Current value of the first entry in lineInfoList for the selected data
 	let coinName = lineInfoList[0].coin; // This will be the coin name if it is "ALL"
@@ -149,7 +149,7 @@ export default function TimeSeriesChart({
 		coinName = COIN_INFO[coinName].name;
 	}
 
-	const currentValue = data.slice(-1)[0][coinName];
+	const currentValue = data && data.length !== 0 ? data.slice(-1)[0][coinName] : "";
 	const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[dataSelector];
 
 	return (

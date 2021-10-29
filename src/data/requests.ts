@@ -191,16 +191,17 @@ export async function requestSummaryData(): Promise<[market_summary_data_S[], pr
 
 export async function requestGasData() {
 	console.log("fetching gas data");
-	const response = await fetch(URLS.GAS_NOW);
+	// const response = await fetch(URLS.GAS_NOW);
 
-	if (!response.ok) {
-		const error = await response.text();
-		console.log("Error requesting gas Data:" + error);
-		return null;
-	}
+	// if (!response.ok) {
+	// 	const error = await response.text();
+	// 	console.log("Error requesting gas Data:" + error);
+	// 	return null;
+	// }
 
-	let data = await response.json();
-	data = data.data;
+	// let data = await response.json();
+	// data = data.data;
 
-	return data;
+	// return data;
+	return {};
 }

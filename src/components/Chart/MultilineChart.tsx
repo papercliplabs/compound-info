@@ -46,6 +46,15 @@ const StyledAvgLabel = styled.div`
 	text-align: left;
 `;
 
+const NoDataWrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+	justify-content: center;
+	text-align: center;
+`;
+
 function CustomTooltip({
 	toolTipWidth,
 	showTime,
@@ -187,7 +196,7 @@ export default function MultilineChart({
 
 	useEffect(() => {
 		// Only display avg if 1 coin is selected
-		if (!chartConfig.showAvg || lineInfoList.length !== 1) {
+		if (!chartConfig.showAvg || lineInfoList.length !== 1 || !data || data.length === 0) {
 			setAvg(null);
 		} else {
 			const avg = getAvg(data, lineInfoList[0].coin);
@@ -244,58 +253,64 @@ export default function MultilineChart({
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			<AreaChart
-				margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
-				data={data}
-			>
-				<CartesianGrid
-					vertical={chartConfig.showVerticalGrid}
-					horizontal={chartConfig.showHorizontalGrid}
-					width="1"
-					strokeWidth={0.1}
-				/>
-				<defs>
-					<linearGradient id={"areaGrad" + randomId} x1="0" y1="0" x2="0" y2="1">
-						<stop offset="5%" stopColor={lineInfoList[0].color} stopOpacity={0.3} />
-						<stop offset="100%" stopColor={lineInfoList[0].color} stopOpacity={0} />
-					</linearGradient>
-				</defs>
-				<XAxis
-					dataKey="blockTime"
-					tick={<CustomXTick showTime={showTime} show={chartConfig.showXTick} />}
-					axisLine={chartConfig.showXAxis}
-					ticks={xAxisTicks}
-					tickLine={chartConfig.showXTick}
-					interval={"preserveStartEnd"}
-				/>
-				<YAxis
-					datekey="price"
-					padding={{ top: 40 }} // Space for tooltip above the data
-					orientation="right"
-					tick={<CustomYTick show={chartConfig.showYTick} />}
-					axisLine={chartConfig.showYAxis}
-					width={chartConfig.showYTick ? 55 : 0}
-					tickLine={false}
-				/>
-				<Tooltip
-					cursor={cursorConfig}
-					position={{ y: 0 }} // Set to the top of chart
-					content={
-						<CustomTooltip
-							toolTipWidth={toolTipWidth}
-							showTime={showTime}
-							showValue={showValueInTooltip}
-							valueUnit={unit}
-							coinKeys={coinKeys}
-							onHover={onHover}
-						/>
-					}
-					isAnimationActive={false}
-					offset={toolTipOffset}
-				/>
-				{lines}
-				<ReferenceLine y={avg} stroke={theme.color.bg5} strokeDasharray="5 5" label={<AvgLabel avg={avg} />} />
-			</AreaChart>
+			{data && data.lenght !== 0 ? (
+				<AreaChart
+					margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
+					data={data}
+				>
+					<CartesianGrid
+						vertical={chartConfig.showVerticalGrid}
+						horizontal={chartConfig.showHorizontalGrid}
+						width="1"
+						strokeWidth={0.1}
+					/>
+					<defs>
+						<linearGradient id={"areaGrad" + randomId} x1="0" y1="0" x2="0" y2="1">
+							<stop offset="5%" stopColor={lineInfoList[0].color} stopOpacity={0.3} />
+							<stop offset="100%" stopColor={lineInfoList[0].color} stopOpacity={0} />
+						</linearGradient>
+					</defs>
+					<XAxis
+						dataKey="blockTime"
+						tick={<CustomXTick showTime={showTime} show={chartConfig.showXTick} />}
+						axisLine={chartConfig.showXAxis}
+						ticks={xAxisTicks}
+						tickLine={chartConfig.showXTick}
+						interval={"preserveStartEnd"}
+					/>
+					<YAxis
+						datekey="price"
+						padding={{ top: 40 }} // Space for tooltip above the data
+						orientation="right"
+						tick={<CustomYTick show={chartConfig.showYTick} />}
+						axisLine={chartConfig.showYAxis}
+						width={chartConfig.showYTick ? 55 : 0}
+						tickLine={false}
+					/>
+					<Tooltip
+						cursor={cursorConfig}
+						position={{ y: 0 }} // Set to the top of chart
+						content={
+							<CustomTooltip
+								toolTipWidth={toolTipWidth}
+								showTime={showTime}
+								showValue={showValueInTooltip}
+								valueUnit={unit}
+								coinKeys={coinKeys}
+								onHover={onHover}
+							/>
+						}
+						isAnimationActive={false}
+						offset={toolTipOffset}
+					/>
+					{lines}
+					<ReferenceLine y={avg} stroke={theme.color.bg5} strokeDasharray="5 5" label={<AvgLabel avg={avg} />} />
+				</AreaChart>
+			) : (
+				<NoDataWrapper>
+					<Typography.header color={theme.color.text2}>Error loading data</Typography.header>
+				</NoDataWrapper>
+			)}
 		</ResponsiveContainer>
 	);
 }
