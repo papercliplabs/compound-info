@@ -111,20 +111,7 @@ COIN_INFO[coin_E.WBTC] = {
 	name: "WBTC",
 	imgSrc: wbtcSvg,
 	desc: `Wrapped Bitcoin (WBTC) is an Ethereum token that is intended to 
-	represent Bitcoin (BTC) on the Ethereum blockchain. This version of WBTC on 
-	Compound is no longer being supported, with the community migrating 
-	to WBTC2.`,
-	whitepaper: "https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf",
-	website: "https://wbtc.network/",
-	twitter: "https://twitter.com/wrappedbtc",
-	coingecko: "https://www.coingecko.com/coins/wrapped-bitcoin",
-};
-COIN_INFO[coin_E.WBTC2] = {
-	name: "WBTC2",
-	imgSrc: wbtcSvg,
-	desc: `Wrapped Bitcoin (WBTC2) is an Ethereum token that is intended to 
-	represent Bitcoin (BTC) on the Ethereum blockchain. 
-	This version of WBTC is still being actively supported on Compound.`,
+	represent Bitcoin (BTC) on the Ethereum blockchain.`,
 	whitepaper: "https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf",
 	website: "https://wbtc.network",
 	twitter: "https://twitter.com/wrappedbtc",
