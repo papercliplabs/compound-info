@@ -149,7 +149,8 @@ export default function TimeSeriesChart({
 		coinName = COIN_INFO[coinName].name;
 	}
 
-	const currentValue = data && data.length !== 0 ? data.slice(-1)[0][coinName] : "";
+	console.log(data);
+	const currentValue = data !== null && data.length !== 0 ? data.slice(-1)[0][coinName] ?? 0 : 0;
 	const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[dataSelector];
 
 	return (

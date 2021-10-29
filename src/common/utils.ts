@@ -39,6 +39,7 @@ export function formatDate(date: Date, withTime: boolean, short: boolean): strin
  * @returns nicely formatted number, for example if number is 11023 this will return 1.10K
  */
 export function formatNumber(number: number | string, unit?: string, decimals: number | null = null): string {
+	console.log(number);
 	const K = 1000;
 	const M = 1000000;
 	const B = 1000000000;

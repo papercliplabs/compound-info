@@ -8,7 +8,6 @@ export enum coin_E {
 	USDC,
 	USDT,
 	WBTC,
-	WBTC2,
 	AAVE,
 	MKR,
 	SUSHI,
@@ -53,7 +52,6 @@ export type coin_name_L =
 	| "USDC"
 	| "USDT"
 	| "WBTC"
-	| "WBTC2"
 	| "AAVE"
 	| "LINK"
 	| "MKR"
