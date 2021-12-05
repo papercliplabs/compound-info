@@ -6,7 +6,7 @@ import styled, { useTheme } from "styled-components";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
 import { ScrollRow } from "components/Row";
 import { COIN_INFO } from "common/constants";
-import { CoinButton } from "components/Button";
+import { TokenButtom } from "components/Button";
 import { Typography } from "theme";
 
 import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
