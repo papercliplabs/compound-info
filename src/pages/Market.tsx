@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import { useTheme } from "styled-components";
 
 import ApyChartContainer from "components/ApyChartContainer";
-import { useMarketSummaryData, useTimeSeriesData } from "data/hooks";
+import { useMarketSummaryData, useTestData, useTimeSeriesData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
@@ -23,6 +23,19 @@ import CoinSelectorTimerSeriesChart from "components/Chart/CoinSelectorTimeSerie
 import { COIN_INFO } from "common/constants";
 import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
 import { chart_config_S, line_info_S } from "common/interfaces";
+
+import {
+	Area,
+	AreaChart,
+	LineChart,
+	ResponsiveContainer,
+	XAxis,
+	Line,
+	YAxis,
+	Tooltip,
+	ReferenceLine,
+	CartesianGrid,
+} from "recharts";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -46,13 +59,19 @@ export default function Market({ match }): JSX.Element | null {
 
 	const coinName = match.params.coin; // From url
 	const coin = getCoinForCoinName(coinName);
-	console.log(coin);
 	const marketData = useMarketSummaryData(coin);
+
+	const testData = useTestData();
+	console.log(testData);
 
 	// Scroll to the top of the page
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [match]);
+
+	if (!testData) {
+		return null;
+	}
 
 	// Redirect to home if the param name doesn't match a coin
 	if (coin === null) {
@@ -63,8 +82,6 @@ export default function Market({ match }): JSX.Element | null {
 	if (!marketData) {
 		return null;
 	}
-
-	console.log(marketData);
 
 	const coinInfo = COIN_INFO[coin];
 	const etherscanLink = getEtherscanLink(marketData.cTokenAddress);
@@ -112,8 +129,16 @@ export default function Market({ match }): JSX.Element | null {
 		time_selector_E.ALL,
 	];
 
+	const testList = testData.data.markets[0].historicalDayData;
+	console.log(testList);
+
 	return (
 		<>
+			<LineChart width={300} height={100} data={testList}>
+				<Line type="monotone" dataKey="supplyApy" stroke="#8884d8" strokeWidth={2} dot={false} />
+				<XAxis dataKey="date" />
+				<Tooltip />
+			</LineChart>
 			<Row>
 				<Typography.body color="text2">
 					<StyledInternalLink to={"/"}>Market</StyledInternalLink>

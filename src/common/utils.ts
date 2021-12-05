@@ -1,6 +1,6 @@
-import { COIN_INFO, TIME_SERIES_DATA_SELECTOR_INFO } from "common/constants";
+import { TOKEN_INFO } from "common/constants";
 
-import { coin_E } from "common/enums";
+import { Token } from "common/enums";
 
 /**
  * Format date to nicely render it
@@ -39,7 +39,6 @@ export function formatDate(date: Date, withTime: boolean, short: boolean): strin
  * @returns nicely formatted number, for example if number is 11023 this will return 1.10K
  */
 export function formatNumber(number: number | string, unit?: string, decimals: number | null = null): string {
-	console.log(number);
 	const K = 1000;
 	const M = 1000000;
 	const B = 1000000000;
@@ -134,33 +133,33 @@ export function shortAddress(address: string): string {
  * Getter for the list of coin names
  * @returns list of coin names
  */
-export function getCoinNameList(): string[] {
-	return COIN_INFO.map((info) => info.name);
-}
+// export function getCoinNameList(): string[] {
+// 	return COIN_INFO.map((info) => info.name);
+// }
 
-/**
- * Getter for the list of all time series data selector keys
- * @returns list of all time series data selector keys
- */
-export function getTimeSeriesDataSelectorKeyList(): string[] {
-	return TIME_SERIES_DATA_SELECTOR_INFO.map((info) => info.key);
-}
+// /**
+//  * Getter for the list of all time series data selector keys
+//  * @returns list of all time series data selector keys
+//  */
+// export function getTimeSeriesDataSelectorKeyList(): string[] {
+// 	return TIME_SERIES_DATA_SELECTOR_INFO.map((info) => info.key);
+// }
 
 /**
  * Get the coin with the given coin name
  * @param coinName the coin name to get the coin for
  * @returns the coin for the coin name, or null if none exists
  */
-export function getCoinForCoinName(coinName: string): coin_E | null {
-	const filteredCoinInfo = COIN_INFO.filter((info) => info.name == coinName);
-	const coinInfo = filteredCoinInfo.length === 1 ? filteredCoinInfo[0] : null;
-	let coin: coin_E | null = null;
-	if (coinInfo !== null) {
-		coin = COIN_INFO.indexOf(coinInfo) as coin_E;
-	}
+// export function getCoinForCoinName(coinName: string): coin_E | null {
+// 	const filteredCoinInfo = COIN_INFO.filter((info) => info.name == coinName);
+// 	const coinInfo = filteredCoinInfo.length === 1 ? filteredCoinInfo[0] : null;
+// 	let coin: coin_E | null = null;
+// 	if (coinInfo !== null) {
+// 		coin = COIN_INFO.indexOf(coinInfo) as coin_E;
+// 	}
 
-	return coin;
-}
+// 	return coin;
+// }
 
 /**
  * Converts a camelCaseWord to SCREAMING_SNAKE_CASE

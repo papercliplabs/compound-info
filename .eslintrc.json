@@ -16,7 +16,8 @@
 		"prettier/prettier": "error",
 		"react/prop-types": 0,
 		"@typescript-eslint/no-empty-function": "off",
-		"@typescript-eslint/no-explicit-any": "off"
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/ban-ts-comment": "off"
 	},
 	"settings": {
 		"react": {

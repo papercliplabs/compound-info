@@ -4,7 +4,6 @@ import styled, { useTheme } from "styled-components";
 import { StyledInternalLink } from "components/Link";
 import Row from "components/Row";
 import Column from "components/Column";
-import GasTracker from "components/GasTracker";
 import { Typography } from "theme";
 import { HideSmall } from "components/shared";
 import { IconButton } from "components/Button/iconButton";
