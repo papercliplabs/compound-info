@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 import { Typography } from "theme";
-import { CoinLogo } from "components/Logo";
+import { TokenLogo } from "components/Logo";
 import { StyledInternalLink } from "components/Link";
 import closeIcon from "assets/closeIcon.svg";
 import { Token } from "common/enums";
@@ -99,7 +99,7 @@ export function TokenButton({
 	return (
 		<StyledCoinButton selectedColor={color} active={selected} onClick={open}>
 			<SelectedIndicator selectedColor={color} hidden={!selected} />
-			<CoinLogo token={token} />
+			<TokenLogo token={token} />
 			<CoinInfo>
 				{selected && allowDeselect ? (
 					<StyledInternalLink to={"/" + coinName}>

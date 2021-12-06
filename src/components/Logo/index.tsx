@@ -17,7 +17,7 @@ const Logo = styled.img<{
 
 export default Logo;
 
-export function CoinLogo({ token, size }: { token: Token; size?: string }): JSX.Element {
+export function TokenLogo({ token, size }: { token: Token; size?: string }): JSX.Element {
 	const imgSrc = TOKEN_INFO[token].imgSrc;
 
 	return <Logo src={imgSrc} size={size} />;

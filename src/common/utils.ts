@@ -130,6 +130,20 @@ export function shortAddress(address: string): string {
 }
 
 /**
+ * Get the Token corresponding to the underlying symbol
+ * @param underlyingSymbol underlying symbol to get the token for
+ * @return Token if it exists for the underlying symbol, otherwise undefined
+ */
+export function getTokenForUnderlyingSymbol(underlyingSymbol: string): Token | undefined {
+	if (underlyingSymbol in Token) {
+		const token = underlyingSymbol as Token;
+		return token;
+	} else {
+		return undefined;
+	}
+}
+
+/**
  * Getter for the list of coin names
  * @returns list of coin names
  */

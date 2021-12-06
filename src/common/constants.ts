@@ -269,17 +269,35 @@ export const MARKET_DATA_SELECTOR_INFO: MarketDataSelectorInfoList = {
 		description: "total supplied in the underlying asset",
 		unit: Unit.UNITLESS,
 	},
+	[MarketDataSelector.TOTAL_SUPPLY_USD]: {
+		key: MarketDataSelector.TOTAL_SUPPLY_USD,
+		name: "Supply",
+		description: "total supplied USD",
+		unit: Unit.USD,
+	},
 	[MarketDataSelector.TOTAL_BORROW]: {
 		key: MarketDataSelector.TOTAL_BORROW,
 		name: "Borrow",
 		description: "total borrowed in the underlying asset",
 		unit: Unit.UNITLESS,
 	},
+	[MarketDataSelector.TOTAL_BORROW_USD]: {
+		key: MarketDataSelector.TOTAL_BORROW_USD,
+		name: "Borrow",
+		description: "total borrowed in USD",
+		unit: Unit.USD,
+	},
 	[MarketDataSelector.TOTAL_RESERVES]: {
 		key: MarketDataSelector.TOTAL_RESERVES,
 		name: "Reserves",
 		description: "total reserves in the underlying asset",
 		unit: Unit.UNITLESS,
+	},
+	[MarketDataSelector.TOTAL_RESERVES_USD]: {
+		key: MarketDataSelector.TOTAL_RESERVES_USD,
+		name: "Reserves",
+		description: "total reserves in USD",
+		unit: Unit.USD,
 	},
 	[MarketDataSelector.UTALIZATION]: {
 		key: MarketDataSelector.UTALIZATION,

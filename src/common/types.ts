@@ -37,10 +37,24 @@ export type TimeSelectorInfoList = {
 };
 
 /**
- * Holds metadata for market or protocol data selectors
+ * Format of protocol data
  */
-export interface DataSelectorInfo {
-	key: string;
+export type ProtocolSummaryData = {
+	[selector in ProtocolDataSelector]: number;
+};
+
+/**
+ * Format of historical protocol data
+ */
+export interface ProtocolHistoricalData extends ProtocolSummaryData {
+	date: number;
+}
+
+/**
+ * Holds metadata for protocol data selectors
+ */
+export interface ProtocolDataSelectorInfo {
+	key: keyof ProtocolSummaryData;
 	name: string;
 	description: string;
 	unit: Unit;
@@ -50,43 +64,65 @@ export interface DataSelectorInfo {
  * List of protocol data selector info, one for each data selector
  */
 export type ProtocolDataSelectorInfoList = {
-	[selector in ProtocolDataSelector]: DataSelectorInfo;
+	[selector in ProtocolDataSelector]: ProtocolDataSelectorInfo;
 };
 
 /**
- * List of market data selector info, one for each data selector
+ * Format of shared market data from the subgraph
  */
-export type MarketDataSelectorInfoList = {
-	[selector in MarketDataSelector]: DataSelectorInfo;
-};
-
-/**
- * Format of protocol data
- */
-export type ProtocolData = {
-	[selector in ProtocolDataSelector]: number;
-};
-
-/**
- * Format of market data from the subgraph
- */
-export type MarketData = {
+type MarketCoreData = {
 	[selector in MarketDataSelector]: number;
 };
 
 /**
  * Format of market summary data from the subgraph
  */
-export interface MarketSummaryData extends MarketData {
+export interface MarketSummaryData extends MarketCoreData {
+	id: string; // cToken address
+	underlyingSymbol: string;
 	creationBlockNumber: number;
 	cTokenSymbol: string;
 	underlyingName: string;
 	underlyingAddress: string;
-	collatoralFactor: number;
+	collateralFactor: number;
 	reserveFactor: number;
 	cash: number;
 	usdcPerUnderlying: number;
 	usdcPerEth: number;
+}
+
+/**
+ * Format of historical market data
+ */
+export interface MarketHistoricalData extends MarketCoreData {
+	date: number;
+}
+
+/**
+ * Holds metadata for market data selectors
+ */
+export interface MarketDataSelectorInfo {
+	key: keyof MarketCoreData;
+	name: string;
+	description: string;
+	unit: Unit;
+}
+
+/**
+ * List of market data selector info, one for each data selector
+ */
+export type MarketDataSelectorInfoList = {
+	[selector in MarketDataSelector]: MarketDataSelectorInfo;
+};
+
+/**
+ * Holds metadata for market summary data selectors
+ */
+export interface MarketSummaryDataSelectorInfo {
+	key: keyof MarketSummaryData;
+	name: string;
+	description: string;
+	unit: Unit;
 }
 
 /**
@@ -111,6 +147,6 @@ export interface ChartConfig {
  * Line info for lines on time series charts
  */
 export interface LineInfo {
-	token: Token | "ALL"; // Allow ALL which will get the aggregate of the data
+	key: string;
 	color: string;
 }

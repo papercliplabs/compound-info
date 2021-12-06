@@ -2,29 +2,28 @@ import { compoundInfoSubgraphClient } from "data/apollo";
 import { gql } from "@apollo/client";
 
 import { PROTOCOL_ID } from "common/constants";
-import { ProtocolData } from "common/types";
+import { ProtocolHistoricalData } from "common/types";
 
 /// New
 const protocolHistoricalDataQuery = gql`
-	query protocolHistoricalData($id: Int!) {
-		protocol(id: $id) {
-			historicalWeekData {
-				totalSupplyUsd
-				totalBorrowUsd
-				totalReservesUsd
-				utalization
-			}
+	query protocolHistoricalData {
+		protocolWeekDatas(first: 1000) {
+			totalSupplyUsd
+			totalBorrowUsd
+			totalReservesUsd
+			utalization
+			date
 		}
 	}
 `;
 
 export type ProtocolSummaryRequestResult = {
-	protocol: {
-		historicalWeekData: ProtocolData[];
-	};
+	protocolWeekDatas: ProtocolHistoricalData[];
 };
 
-export async function requestProtocolHistoricalData(): Promise<ProtocolData[]> {
+export async function requestProtocolHistoricalData(): Promise<ProtocolHistoricalData[]> {
+	console.log("Requesting protocol historical data");
+
 	const { data, loading } = await compoundInfoSubgraphClient.query<ProtocolSummaryRequestResult>({
 		query: protocolHistoricalDataQuery,
 		variables: {
@@ -32,5 +31,5 @@ export async function requestProtocolHistoricalData(): Promise<ProtocolData[]> {
 		},
 	});
 
-	return data.protocol.historicalWeekData;
+	return data.protocolWeekDatas;
 }

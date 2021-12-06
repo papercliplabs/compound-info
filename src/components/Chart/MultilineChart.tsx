@@ -1,17 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from "recharts";
 
-import { formatNumber, formatDate } from "common/utils";
-import { SHORT_TERM_DAYS } from "common/constants";
-import { Typography, mediaQuerySizes, theme } from "theme";
+import { ChartConfig, LineInfo } from "common/types";
 
-import { coin_E } from "common/enums";
-import { line_info_S, chart_config_S, time_series_data_entry_S } from "common/interfaces";
-import { TIME_SERIES_DATA_SELECTOR_INFO, COIN_INFO } from "common/constants";
+import { formatNumber, formatDate } from "common/utils";
+import { Typography, mediaQuerySizes, theme } from "theme";
 
 // Used in custom labels and ticks
 const foreignObjectWidth = 150;
@@ -60,7 +56,7 @@ function CustomTooltip({
 	showTime,
 	showValue,
 	valueUnit,
-	coinKeys,
+	keys,
 	onHover,
 	coordinate,
 	viewBox,
@@ -70,7 +66,7 @@ function CustomTooltip({
 	showTime: boolean;
 	showValue: boolean;
 	valueUnit: string | null;
-	coinKeys: (coin_name_L | "ALL")[];
+	keys: string;
 	onHover: (hoverDate: number) => void;
 	coordinate: any;
 	viewBox: any;
@@ -79,7 +75,7 @@ function CustomTooltip({
 	const theme = useTheme();
 	const hoverData = payload && payload[0] ? payload[0].payload : null;
 	const hoverDate = hoverData ? hoverData.blockTime : null;
-	const value = hoverData ? hoverData[coinKeys[0]] : null;
+	const value = hoverData ? hoverData[keys[0]] : null;
 	const lastHoverData = useRef(-1);
 
 	// If hover date updates, let parent know (after render), gaurd spamming the same value to avoid infinite loop
@@ -172,34 +168,34 @@ function AvgLabel({ viewBox, avg }: { viewBox: any; avg: number | null }): JSX.E
 
 /**
  * React element to display a chart with multiple lines from data according to the lineInfoList
- * @param data data to display
+ * @param data data to display, this is
  * @param chartConfig the chart configuration
- * @param lineInfoList list of the line info for the lines to be plotted
+ * @param lineInfoList list of the line info for the lines to be plotted, the keys correspond to those in data
  * @param unit the unit of the data being shown, this is used for the tooltip value if it is configured to be shown
  * @returns react element which is a chart with multiple lines on it
  */
 export default function MultilineChart({
 	data,
-	chartConfig,
 	lineInfoList,
+	chartConfig,
 	unit,
 	onHover,
 }: {
-	data: time_series_data_entry_S[];
-	chartConfig: chart_config_S;
-	lineInfoList: line_info_S[];
+	data: Record<string, number>[];
+	lineInfoList: LineInfo[];
+	chartConfig: ChartConfig;
 	unit: string | null;
 	onHover: (hoverData: time_series_data_entry_S | null) => void;
 }): JSX.Element {
 	const theme = useTheme();
-	const [avg, setAvg] = useState<number | null>(null);
+	const [avg, setAvg] = useState<number | undefined>(undefined);
 
 	useEffect(() => {
 		// Only display avg if 1 coin is selected
 		if (!chartConfig.showAvg || lineInfoList.length !== 1 || !data || data.length === 0) {
 			setAvg(null);
 		} else {
-			const avg = getAvg(data, lineInfoList[0].coin);
+			const avg = getAvg(data, lineInfoList[0].key);
 			setAvg(avg);
 		}
 	}, [data, lineInfoList]);
@@ -215,23 +211,11 @@ export default function MultilineChart({
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
 
-	// Used in the tooltip to display the values
-	const coinKeys: (coin_name_L | "ALL")[] = [];
-
 	const lines = lineInfoList.map((lineInfo, i) => {
-		// Current value of the first entry in lineInfoList for the selected data
-		let coinName = lineInfo.coin; // This will be the coin name if it is "ALL"
-		if (typeof coinName !== "string") {
-			// If it is not ALL, this will find the name
-			coinName = COIN_INFO[coinName].name;
-		}
-
-		coinKeys.push(coinName);
-
 		return (
 			<Area
 				type="monotone"
-				dataKey={coinName}
+				dataKey={lineInfo.key}
 				stroke={lineInfo.color}
 				strokeWidth={2}
 				key={i}
@@ -247,9 +231,10 @@ export default function MultilineChart({
 	const showTime = shouldShowTime(data);
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
-	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
+	const xAxisTicks = []; //getXTicks(data, chartConfig.numberOfXAxisTicks);
 	const chartHeight = window.innerWidth < mediaQuerySizes.small ? 200 : 300;
 	const showValueInTooltip = chartConfig.showValueInTooltip && lineInfoList.length === 1; // Only show value if there is 1 entry
+	const keys = lineInfoList.map((info) => info.key);
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
@@ -296,7 +281,7 @@ export default function MultilineChart({
 								showTime={showTime}
 								showValue={showValueInTooltip}
 								valueUnit={unit}
-								coinKeys={coinKeys}
+								keys={keys}
 								onHover={onHover}
 							/>
 						}
@@ -316,18 +301,18 @@ export default function MultilineChart({
 }
 
 /**
- * Compute the average of the list of time series data entries for the specified coin
+ * Compute the average of the values of the specied key in data
  * @param data time series data entry list
- * @param coin coin to compute the average for
- * @returns average of the time series data entry list for the specifed coin
+ * @param key to compute the average for
+ * @returns average of the values at key in data
  */
-function getAvg(data: time_series_data_entry_S[], coin: coin_E): number | null {
+function getAvg(data: Record<string, number>[], key: string): number | null {
 	if (data.length === 0) {
 		return null;
 	}
 
-	let avg: number = data.reduce((acc: number, obj: time_series_data_entry_S) => {
-		const nextVal = obj[COIN_INFO[coin].name] ?? 0;
+	let avg: number = data.reduce((acc: number, obj) => {
+		const nextVal = obj[key] ?? 0;
 		return acc + nextVal;
 	}, 0);
 	avg /= data.length;
@@ -340,13 +325,14 @@ function getAvg(data: time_series_data_entry_S[], coin: coin_E): number | null {
  * @param data time series data entry list to check the time for
  * @returns true if that chart should show time on hover and xaxis (if configured to do so), false otherwise
  */
-function shouldShowTime(data: time_series_data_entry_S[]): boolean {
-	if (!data) return false;
+function shouldShowTime(data: Record<string, number>): boolean {
+	// if (!data) return false;
 
-	const lastDate = new Date(data.slice(-1)[0].blockTime);
-	const firstDate = new Date(data[0].blockTime);
-	const dayDiff = (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24); // ms diff converted to days
-	return dayDiff < SHORT_TERM_DAYS;
+	// const lastDate = new Date(data.slice(-1)[0].blockTime);
+	// const firstDate = new Date(data[0].blockTime);
+	// const dayDiff = (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24); // ms diff converted to days
+	// return dayDiff < SHORT_TERM_DAYS;
+	return false;
 }
 
 /**
@@ -355,15 +341,15 @@ function shouldShowTime(data: time_series_data_entry_S[]): boolean {
  * @param numberOfTicks number of ticks to show
  * @returns array of indicies in the time series data of the values to put on each tick
  */
-function getXTicks(data: time_series_data_entry_S[], numberOfTicks: number) {
-	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
+// function getXTicks(data: time_series_data_entry_S[], numberOfTicks: number) {
+// 	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
 
-	const ticks = Array(numberOfTicks);
-	const length = data.length;
-	for (let i = 0; i < numberOfTicks; i++) {
-		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
-		ticks[i] = data[index].blockTime;
-	}
+// 	const ticks = Array(numberOfTicks);
+// 	const length = data.length;
+// 	for (let i = 0; i < numberOfTicks; i++) {
+// 		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
+// 		ticks[i] = data[index].blockTime;
+// 	}
 
-	return ticks;
-}
+// 	return ticks;
+// }
