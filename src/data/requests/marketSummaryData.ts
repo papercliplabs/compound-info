@@ -5,10 +5,11 @@ import { Token } from "common/enums";
 import { MarketSummaryData } from "common/types";
 import { PROTOCOL_ID } from "common/constants";
 
-/// New
 const marketSummaryQuery = gql`
-	query marketSummaryData($underlyingSymbol: String!) {
-		markets(where: { underlyingSymbol: $underlyingSymbol }) {
+	query marketSummaryData {
+		markets {
+			id
+			underlyingSymbol
 			creationBlockNumber
 			cTokenSymbol
 			underlyingName
@@ -16,16 +17,17 @@ const marketSummaryQuery = gql`
 			collatoralFactor
 			reserveFactor
 			cash
-			usdcPerUnderlying
-			usdcPerEth
 			utalization
 			supplyApy
 			borrowApy
 			totalSupplyApy
 			totalBorrowApy
 			totalSupply
+			totalSupplyUsd
 			totalBorrow
+			totalBorrowUsd
 			totalReserves
+			totalReservesUsd
 			usdcPerUnderlying
 			usdcPerEth
 		}
@@ -36,13 +38,11 @@ export type MarketSummaryRequestResult = {
 	markets: MarketSummaryData[];
 };
 
-export async function requestMarketSummaryData(underlyingSymbol: Token): Promise<MarketSummaryData> {
+export async function requestMarketSummaryData(): Promise<MarketSummaryData[]> {
+	console.log("Requesting market summary data");
 	const { data, loading } = await compoundInfoSubgraphClient.query<MarketSummaryRequestResult>({
 		query: marketSummaryQuery,
-		variables: {
-			underlyingSymbol: underlyingSymbol,
-		},
 	});
 
-	return data.markets[0];
+	return data.markets;
 }

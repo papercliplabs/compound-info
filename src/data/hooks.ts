@@ -6,7 +6,7 @@ import { useGlobalStore } from "data/store";
 import { requestGasData, requestTimeSeriesData, requestSummaryData, requestTestData } from "data/requests";
 import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
-import { MarketSummaryData, ProtocolData } from "common/types";
+import { MarketSummaryData, MarketSummaryDataDict, ProtocolSummaryData, ProtocolHistoricalData } from "common/types";
 import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
 import { requestMarketSummaryData } from "data/requests/marketSummaryData";
@@ -203,7 +203,7 @@ import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 // 	return testData;
 // }
 
-export function useProtocolSummaryData(): ProtocolData {
+export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
 	const key = "protocolSummaryData";
 	const data = store[key];
@@ -224,7 +224,7 @@ export function useProtocolSummaryData(): ProtocolData {
 	return data;
 }
 
-export function useProtocolHistoricalData(): ProtocolData[] {
+export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
 	const [store, { updateStore }] = useGlobalStore();
 	const key = "protocolHistoricalData";
 	const data = store[key];
@@ -245,23 +245,37 @@ export function useProtocolHistoricalData(): ProtocolData[] {
 	return data;
 }
 
-export function useMarketSummaryData(underlyingSymbol: Token): MarketSummaryData {
+/**
+ * Hook to get market summary data for a token, or all tokens if no underlyingToken is passed
+ * @param token the underlying token of the market the summary data is wanted for
+ * @returns summary data for the market with the underlyingToken or undefined if there is not data for that token
+ * 			if no underlyingToken is specified, a list of all marketSummaryData is returned
+ */
+export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData | undefined | MarketSummaryData[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "marketSummaryData" + underlyingSymbol;
-	const data = store[key];
+	const key = "marketSummaryData";
+	let data = store[key];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
-				const data = await requestMarketSummaryData(underlyingSymbol);
-				console.log(data);
-				updateStore(key, data);
+				const allSummaryData = await requestMarketSummaryData();
+				updateStore(key, allSummaryData);
 			}
 		}
 
 		checkForData();
 	}, [data, updateStore]);
+
+	if (data && !!underlyingToken) {
+		data = data.filter((entry) => entry.underlyingSymbol == underlyingToken);
+		if (data.length === 0) {
+			return undefined;
+		} else {
+			return data[0];
+		}
+	}
 
 	return data;
 }

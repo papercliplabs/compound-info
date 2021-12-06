@@ -63,7 +63,7 @@ export default function App(): JSX.Element {
 			<StyledBody warningActive={dataError}>
 				<Switch>
 					<Route exact strict path="/" component={Overview} />
-					{/* <Route exact strict path="/:coin" component={Market} /> */}
+					<Route exact strict path="/:token" component={Market} />
 				</Switch>
 			</StyledBody>
 			<FooterWrapper>
