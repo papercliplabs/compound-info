@@ -289,7 +289,7 @@ export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData
 
 export function useMarketHistoricalData(): MarketHistoricalData[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "marketlHistoricalData";
+	const key = "marketHistoricalData";
 	const data = store[key];
 
 	useEffect(() => {
@@ -303,6 +303,8 @@ export function useMarketHistoricalData(): MarketHistoricalData[] {
 
 		checkForData();
 	}, [data, updateStore]);
+
+	console.log(data);
 
 	return data;
 }
