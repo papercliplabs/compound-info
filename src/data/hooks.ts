@@ -6,10 +6,17 @@ import { useGlobalStore } from "data/store";
 import { requestGasData, requestTimeSeriesData, requestSummaryData, requestTestData } from "data/requests";
 import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
-import { MarketSummaryData, MarketSummaryDataDict, ProtocolSummaryData, ProtocolHistoricalData } from "common/types";
+import {
+	MarketSummaryData,
+	MarketSummaryDataDict,
+	ProtocolSummaryData,
+	ProtocolHistoricalData,
+	MarketHistoricalData,
+} from "common/types";
 import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
 import { requestMarketSummaryData } from "data/requests/marketSummaryData";
+import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
 
 // Custom hooks which are used by the app to interface with the store
 
@@ -276,6 +283,26 @@ export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData
 			return data[0];
 		}
 	}
+
+	return data;
+}
+
+export function useMarketHistoricalData(): MarketHistoricalData[] {
+	const [store, { updateStore }] = useGlobalStore();
+	const key = "marketlHistoricalData";
+	const data = store[key];
+
+	useEffect(() => {
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const data = await requestMarketHistoricalData();
+				updateStore(key, data);
+			}
+		}
+
+		checkForData();
+	}, [data, updateStore]);
 
 	return data;
 }
