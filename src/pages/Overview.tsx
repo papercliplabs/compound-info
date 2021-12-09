@@ -34,6 +34,7 @@ export default function Overview(): JSX.Element | null {
 	const marketSummaryData = useMarketSummaryData();
 
 	console.log(protocolHistoricalData);
+	console.log(marketSummaryData);
 
 	// Scroll to the top of the page on first visit
 	useEffect(() => {
@@ -65,9 +66,9 @@ export default function Overview(): JSX.Element | null {
 
 	const chartConfig: chart_config_S = {
 		showAvg: false,
-		showXAxis: true,
+		showXAxis: false,
 		showYAxis: true,
-		showXTick: false,
+		showXTick: true,
 		showYTick: true,
 		showHorizontalGrid: false,
 		showVerticalGrid: false,
@@ -88,9 +89,10 @@ export default function Overview(): JSX.Element | null {
 			<ResponsiveRow gap={gap}>
 				<Card>
 					<MultilineChart
-						data={protocolHistoricalData}
+						data={protocolHistoricalData.slice(90, 100)}
 						lineInfoList={[{ key: "totalSupplyUsd", color: theme.color.lineChartColors[0] }]}
 						chartConfig={chartConfig}
+						dateKey="date"
 						onHover={() => {}}
 					/>
 					{/* <TimeSeriesChart
@@ -115,12 +117,18 @@ export default function Overview(): JSX.Element | null {
 					tooltipContent="Number of non-duplicate suppliers between all markets, this is also the total number of unique users since each borrower must be a supplier."
 					value={protocolSummaryData.numberOfUniqueSuppliers}
 				/> */}
-				{/* <StatCard
-					title={"Total unique borrowers"}
-					tooltipContent="Number of non-duplicate borrowers between all markets"
-					value={protocolSummaryData.numberOfUniqueBorrowers}
-				/> */}
-				<StatCard title={"Total Supplied"} tooltipContent="" value={protocolSummaryData.totalSupplyUsd} />
+				<StatCard
+					title={"Total Supplied"}
+					tooltipContent="Sum total of all supplied assets to the protocol in USD"
+					value={protocolSummaryData.totalSupplyUsd}
+					unit="$"
+				/>
+				<StatCard
+					title={"Total Borrowed"}
+					tooltipContent="Sum total of all borrowed assets to the protocol in USD"
+					value={protocolSummaryData.totalBorrowUsd}
+					unit="$"
+				/>
 				<ProgressCard
 					title={"Utilization"}
 					tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
@@ -128,7 +136,6 @@ export default function Overview(): JSX.Element | null {
 					unit="%"
 					size={60}
 				/>
-				<StatCard title={"Total Borrowed"} tooltipContent="" value={protocolSummaryData.totalBorrowUsd} />
 			</ResponsiveRow>
 			<Row>
 				<SectionTitle title="All Markets" width="auto" />

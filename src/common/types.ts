@@ -40,7 +40,7 @@ export type TimeSelectorInfoList = {
  * Format of protocol data
  */
 export type ProtocolSummaryData = {
-	[selector in ProtocolDataSelector]: number;
+	[selector in ProtocolDataSelector]: string;
 };
 
 /**
@@ -71,7 +71,7 @@ export type ProtocolDataSelectorInfoList = {
  * Format of shared market data from the subgraph
  */
 type MarketCoreData = {
-	[selector in MarketDataSelector]: number;
+	[selector in MarketDataSelector]: string;
 };
 
 /**
@@ -80,22 +80,23 @@ type MarketCoreData = {
 export interface MarketSummaryData extends MarketCoreData {
 	id: string; // cToken address
 	underlyingSymbol: string;
-	creationBlockNumber: number;
+	creationBlockNumber: string;
 	cTokenSymbol: string;
 	underlyingName: string;
 	underlyingAddress: string;
-	collateralFactor: number;
-	reserveFactor: number;
-	cash: number;
-	usdcPerUnderlying: number;
-	usdcPerEth: number;
+	collateralFactor: string;
+	reserveFactor: string;
+	cash: string;
+	usdcPerUnderlying: string;
+	usdcPerEth: string;
 }
+// TODO: change all numbers from the graph to strings!
 
 /**
  * Format of historical market data
  */
 export interface MarketHistoricalData extends MarketCoreData {
-	date: number;
+	date: string;
 }
 
 /**
@@ -150,3 +151,8 @@ export interface LineInfo {
 	key: string;
 	color: string;
 }
+
+/**
+ * All possible data selectors for time series
+ */
+export type DataSelector = ProtocolDataSelector | MarketDataSelector;

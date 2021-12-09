@@ -89,7 +89,7 @@ function TableRow({
 		return (
 			<RowEntry key={i} left={i === 0}>
 				{i === 0 && !!token && <TokenLogo token={token} />}
-				{formatNumber(marketData[columnInfo.key], columnInfo.unit)}
+				{formatNumber(marketData[columnInfo.key] ?? 0, columnInfo.unit)}
 			</RowEntry>
 		);
 	});
@@ -113,6 +113,7 @@ export default function TokenTable({
 	const [isAsc, setIsAsc] = useState<boolean>(false);
 
 	const sortedData = sortData(data, sortKey, isAsc);
+	console.log(sortedData);
 
 	// List of dataSelectorInfo, which is used for each column in the table
 	const columnInfoList: MarketSummaryDataSelectorInfo[] = useMemo(() => {
@@ -173,8 +174,11 @@ export default function TokenTable({
  * @returns sorted list of data
  */
 function sortData(data: MarketSummaryData[], key: keyof MarketSummaryData, asc: boolean): MarketSummaryData[] {
+	// TODO: this is doing a string sort, for some reason the numbers are string
 	const sortedData = [...data].sort((a, b) => {
-		const val = a[key] > b[key] ? 1 : -1;
+		const compVala = isNaN(Number(a[key])) ? a[key] : Number(a[key]);
+		const compValb = isNaN(Number(b[key])) ? b[key] : Number(b[key]);
+		const val = compVala > compValb ? 1 : -1;
 		return asc ? val : -val;
 	});
 	return sortedData;

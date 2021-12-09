@@ -3,6 +3,9 @@
 import React, { useState, useMemo, useCallback } from "react";
 import styled, { useTheme } from "styled-components";
 
+import { TimeSelector, DataResolution } from "common/enums";
+import { LineInfo, ChartConfig, DataSelector } from "common/types";
+
 import { useTimeSeriesData } from "data/hooks";
 import { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
 import MultilineChart from "components/Chart/MultilineChart";
@@ -10,10 +13,7 @@ import Column from "components/Column";
 import { ScrollRow, ResponsiveRow } from "components/Row";
 import { Typography } from "theme";
 import { TIME_SELECTOR_INFO, TIME_SERIES_DATA_SELECTOR_INFO, COIN_INFO } from "common/constants";
-import { formatNumber } from "common/utils";
-
-import { time_selector_E, time_series_data_selector_E } from "common/enums";
-import { chart_config_S, line_info_S } from "common/interfaces";
+import { formatNumber, getDataSelectorName, getDataSelectorUnit, getDataSelectorDescription } from "common/utils";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -40,49 +40,62 @@ const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
 
 /**
  * React element to display the multiline chart, with time selector and data selector buttons
+ * @param data chart data to display for each data resolution
  * @param chartConfig the chart configuration
  * @param lineInfoList list of the line info for the lines to be plotted
- * @param dataSelectors list of data selectors, if only 1 selector is give, buttons are not shown
+ * @param dataSelectors list of data selectors, if only 1 selector is give, buttons are not shown. If the selector is a MarketDataSelector or ProtocolDataSelector more info about it is shown
  * @param timeSelectors list of the time selectors to show buttons for, if empty or length 1 buttons are not shown, if empty ALL is selected
  * @param hoverDataCallback callback to recieve the hover data, this is the data hovered over for the coins in lineInfoList, and the last data point for the coins not in lastInfoList
  * @returns react element which is a time series chart, with a row of time selectors below the chart, and data selectors + current value above
  */
 export default function TimeSeriesChart({
+	data,
 	chartConfig,
 	lineInfoList,
-	dataSelectors,
-	timeSelectors,
+	dataSelectorOptions,
+	timeSelectorOptions,
 	hoverDataCallback,
 }: {
-	chartConfig: chart_config_S;
-	lineInfoList: line_info_S[];
-	dataSelectors: time_series_data_selector_E[];
-	timeSelectors: time_selector_E[];
-	hoverDataCallback?: (hoverData: time_series_data_entry_S) => void;
+	data: Record<keyof DataResolition, Record<string, any>[]>;
+	chartConfig: ChartConfig;
+	lineInfoList: LineInfo[];
+	dataSelectorOptions: string[];
+	timeSelectorOptions: TimeSelector[];
+	hoverDataCallback?: (hoverData: Record<string, any>) => void;
 }): JSX.Element | null {
 	const theme = useTheme();
-	const [timeSelector, setTimeSelector] = useState<time_selector_E>(
-		timeSelectors.length === 0 ? time_selector_E.ALL : timeSelectors.slice(-1)[0]
+	const [timeSelector, setTimeSelector] = useState<TimeSelector>(
+		timeSelectors.length === 0 ? TimeSelector.ALL : timeSelectors.slice(-1)[0]
 	);
-	const [dataSelector, setDataSelector] = useState<time_series_data_selector_E>(dataSelectors[0]);
+	const [dataSelector, setDataSelector] = useState<string>(dataSelectorOptions[0]);
 
 	// Jump to first data selector if they changed
-	if (!dataSelectors.includes(dataSelector)) {
-		setDataSelector(dataSelectors[0]);
+	if (!dataSelectorOptions.includes(dataSelector)) {
+		setDataSelector(dataSelectorOptions[0]);
 	}
 
-	const data = useTimeSeriesData(dataSelector, timeSelector);
+	// Data at the correct resolution for the time selected
+	const selectedData = useMemo(() => {
+		const resolution = TIME_SERIES_DATA_SELECTOR_INFO[timeSelector].resolution;
+		if (resolution in data) {
+			return data[resolution];
+		} else {
+			console.log("No data provided for the selected resolution");
+			return [];
+		}
+	});
 
 	const dataSelectorButtons = useMemo(() => {
-		if (dataSelectors.length <= 1) {
+		if (dataSelectorOptions.length <= 1) {
 			return null;
 		}
 
-		return dataSelectors.map((selector, i) => {
+		return dataSelectorOptions.map((selector, i) => {
+			const name = getDataSelectorName(selector);
 			return (
 				<OptionButton
 					key={i}
-					buttonContent={TIME_SERIES_DATA_SELECTOR_INFO[selector].displayName}
+					buttonContent={name}
 					active={dataSelector === selector}
 					onClick={() => setDataSelector(selector)}
 					flex={1}
@@ -90,7 +103,7 @@ export default function TimeSeriesChart({
 				/>
 			);
 		});
-	}, [dataSelector, dataSelectors, setDataSelector]);
+	}, [dataSelector, dataSelectorOptions, setDataSelector]);
 
 	const timeSelectorButtons = useMemo(() => {
 		if (timeSelectors.length <= 1) {
@@ -107,7 +120,7 @@ export default function TimeSeriesChart({
 				/>
 			);
 		});
-	}, [timeSelector, timeSelectors, setTimeSelector]);
+	}, [timeSelector, timeSelectorOptions, setTimeSelector]);
 
 	// For null hoverData, or entries with coins not in lineInfoList the data passed to the callback the most recent point
 	const handleHover = useCallback(
@@ -142,15 +155,10 @@ export default function TimeSeriesChart({
 	// 	return null;
 	// }
 
-	// Current value of the first entry in lineInfoList for the selected data
-	let coinName = lineInfoList[0].coin; // This will be the coin name if it is "ALL"
-	if (typeof coinName !== "string") {
-		// If it is not all, this will find the name
-		coinName = COIN_INFO[coinName].name;
-	}
-
-	const currentValue = data !== null && data.length !== 0 ? data.slice(-1)[0][coinName] ?? 0 : 0;
+	const currentValue = 0; //data !== null && data.length !== 0 ? data.slice(-1)[0][coinName] ?? 0 : 0;
 	const dataSelectorInfo = TIME_SERIES_DATA_SELECTOR_INFO[dataSelector];
+	const dataSelectorDescription = getDataSelectorDescription(dataSelector);
+	const dataSelectorUnit = getDataSelectorUnit(dataSelector);
 
 	return (
 		<StyledChartContainer>
@@ -158,8 +166,8 @@ export default function TimeSeriesChart({
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 					{chartConfig.showCurrentValue && (
 						<Column align="flex-start" overflow="visible" flex={1}>
-							<Typography.header color={theme.color.text2}>Current {dataSelectorInfo.description}</Typography.header>
-							<Typography.displayL>{formatNumber(currentValue, dataSelectorInfo.unit)}</Typography.displayL>
+							<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
+							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
 						</Column>
 					)}
 					{dataSelectors.length > 1 && <DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>}
@@ -170,7 +178,7 @@ export default function TimeSeriesChart({
 				chartConfig={chartConfig}
 				lineInfoList={lineInfoList}
 				onHover={handleHover}
-				unit={dataSelectorInfo.unit}
+				unit={dataSelectorUnit}
 			/>
 			<TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>
 		</StyledChartContainer>
