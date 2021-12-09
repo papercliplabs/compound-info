@@ -1,16 +1,17 @@
-import { TOKEN_INFO } from "common/constants";
+import { MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO, TOKEN_INFO } from "common/constants";
 
-import { Token } from "common/enums";
+import { ProtocolDataSelector, MarketDataSelector, Token } from "common/enums";
 
 /**
- * Format date to nicely render it
- * @param date date object to be formatteed
- * @param withTime if true, the time will be incluede at the end, otherwise the year is included
+ * Convert unix time in ms to a date
+ * @param dateInUnixSec the date represented in seconds since unix epoche
+ * @param includeTime if true, includes the time of day in the date
  * @param short if true, the month and year will be shorted to MM/YY and no time will be shown
- * @returns nicely formatted date
+ * @returns date in string format (ex: May 10, 2021, 1:00 AM)
  */
-export function formatDate(date: Date, withTime: boolean, short: boolean): string {
+export function formatDate(dateInUnixSec: number, includeTime: boolean, short: boolean): string {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	const date = new Date(dateInUnixSec * 1000); // date from ms since epoche
 	const monthIndex = date.getMonth();
 	const day = date.getDate();
 	const year = date.getFullYear().toString();
@@ -20,7 +21,7 @@ export function formatDate(date: Date, withTime: boolean, short: boolean): strin
 	if (short) {
 		formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
 	} else {
-		if (withTime) {
+		if (includeTime) {
 			const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
 			formattedDate += month + " " + day + " " + time;
 		} else {
@@ -94,6 +95,48 @@ export function formatNumber(number: number | string, unit?: string, decimals: n
 	formattedNum = unit ? (unitPostfix ? formattedNum + unit : unit + formattedNum) : formattedNum;
 
 	return formattedNum;
+}
+
+/**
+ * Get the name for the data selector if the meta data exists, otherwise just returns the selector
+ * @param selector selector key to get the name for
+ */
+export function getDataSelectorName(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].name;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].name;
+	} else {
+		return selector;
+	}
+}
+
+/**
+ * Get the unit for the data selector if the meta data exists, otherwise just returns empty string
+ * @param selector selector key to get the unit for
+ */
+export function getDataSelectorUnit(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].unit;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].unit;
+	} else {
+		return "";
+	}
+}
+
+/**
+ * Get the description for the data selector if the meta data exists, otherwise just returns empty string
+ * @param selector selector key to get the unit for
+ */
+export function getDataSelectorDescription(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].description;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].description;
+	} else {
+		return "";
+	}
 }
 
 /**

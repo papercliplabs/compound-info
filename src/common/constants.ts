@@ -211,7 +211,7 @@ export const TIME_SELECTOR_INFO: TimeSelectorInfoList = {
 	},
 };
 
-export const PROTOCOL_DATA_SELECTOR: ProtocolDataSelectorInfoList = {
+export const PROTOCOL_DATA_SELECTOR_INFO: ProtocolDataSelectorInfoList = {
 	[ProtocolDataSelector.TOTAL_SUPPLY_USD]: {
 		key: ProtocolDataSelector.TOTAL_SUPPLY_USD,
 		name: "Supply",

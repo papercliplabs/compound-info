@@ -4,7 +4,9 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from "recharts";
 
+import { TimeSelector } from "common/enums";
 import { ChartConfig, LineInfo } from "common/types";
+import { TIME_SELECTOR_INFO } from "common/constants";
 
 import { formatNumber, formatDate } from "common/utils";
 import { Typography, mediaQuerySizes, theme } from "theme";
@@ -57,6 +59,7 @@ function CustomTooltip({
 	showValue,
 	valueUnit,
 	keys,
+	dateKey,
 	onHover,
 	coordinate,
 	viewBox,
@@ -67,6 +70,7 @@ function CustomTooltip({
 	showValue: boolean;
 	valueUnit: string | null;
 	keys: string;
+	dateKey: string;
 	onHover: (hoverDate: number) => void;
 	coordinate: any;
 	viewBox: any;
@@ -74,7 +78,7 @@ function CustomTooltip({
 }): JSX.Element | null {
 	const theme = useTheme();
 	const hoverData = payload && payload[0] ? payload[0].payload : null;
-	const hoverDate = hoverData ? hoverData.blockTime : null;
+	const hoverDate = hoverData ? hoverData[dateKey] : null;
 	const value = hoverData ? hoverData[keys[0]] : null;
 	const lastHoverData = useRef(-1);
 
@@ -87,9 +91,8 @@ function CustomTooltip({
 	}, [onHover, hoverData]);
 
 	if (hoverDate) {
-		// Format the tooltip date
-		const date = new Date(hoverDate);
-		const formattedDate = formatDate(date, showTime, false);
+		console.log(showTime);
+		const formattedDate = formatDate(hoverDate, showTime, false);
 
 		// Bound the right side of tooltip
 		const rightX = coordinate.x + toolTipWidth / 2;
@@ -112,8 +115,7 @@ function CustomXTick({ x, y, payload, showTime, show }) {
 	const width = 40;
 
 	const theme = useTheme();
-	const date = new Date(payload.value);
-	const formattedDate = formatDate(date, showTime, true);
+	const formattedDate = formatDate(payload.value, showTime, true);
 
 	if (!show) {
 		return null;
@@ -127,7 +129,6 @@ function CustomXTick({ x, y, payload, showTime, show }) {
 			</StyledCustomXTick>
 		</foreignObject>
 	);
-	return null;
 }
 
 function CustomYTick({ x, y, payload, show }): JSX.Element | null {
@@ -147,7 +148,7 @@ function CustomYTick({ x, y, payload, show }): JSX.Element | null {
 	);
 }
 
-function AvgLabel({ viewBox, avg }: { viewBox: any; avg: number | null }): JSX.Element | null {
+function AvgLabel({ viewBox, avg, unit }: { viewBox: any; avg: number | null; unit: string }): JSX.Element | null {
 	if (!avg) {
 		return null;
 	}
@@ -160,32 +161,37 @@ function AvgLabel({ viewBox, avg }: { viewBox: any; avg: number | null }): JSX.E
 			height={foreignObjectHeight}
 		>
 			<StyledAvgLabel>
-				<Typography.caption>{formatNumber(avg, "%")} average</Typography.caption>
+				<Typography.caption>{formatNumber(avg, unit)} average</Typography.caption>
 			</StyledAvgLabel>
 		</foreignObject>
 	);
 }
 
 /**
- * React element to display a chart with multiple lines from data according to the lineInfoList
- * @param data data to display, this is
+ * React element to display a chart with multiple lines of from data over time according to the lineInfoList
+ * @param data data to display on the chart
  * @param chartConfig the chart configuration
  * @param lineInfoList list of the line info for the lines to be plotted, the keys correspond to those in data
- * @param unit the unit of the data being shown, this is used for the tooltip value if it is configured to be shown
+ * @param dateKey the key where the unix date in seconds is stored for the x axis
+ * @param unit the unit of the data being shown, all data points should be in the same unit
+ * @param onHover callback to pass the data that is currently being hovered over
+ * 				  this includes the date, and the value of all the data at that date
  * @returns react element which is a chart with multiple lines on it
  */
 export default function MultilineChart({
 	data,
-	lineInfoList,
 	chartConfig,
+	lineInfoList,
+	dateKey,
 	unit,
 	onHover,
 }: {
-	data: Record<string, number>[];
-	lineInfoList: LineInfo[];
+	data: Record<string, any>[];
 	chartConfig: ChartConfig;
+	lineInfoList: LineInfo[];
+	dateKey: string;
 	unit: string | null;
-	onHover: (hoverData: time_series_data_entry_S | null) => void;
+	onHover: (hoverData: Record<string, any> | null) => void;
 }): JSX.Element {
 	const theme = useTheme();
 	const [avg, setAvg] = useState<number | undefined>(undefined);
@@ -228,10 +234,10 @@ export default function MultilineChart({
 		);
 	});
 
-	const showTime = shouldShowTime(data);
+	const showTime = shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
-	const xAxisTicks = []; //getXTicks(data, chartConfig.numberOfXAxisTicks);
+	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
 	const chartHeight = window.innerWidth < mediaQuerySizes.small ? 200 : 300;
 	const showValueInTooltip = chartConfig.showValueInTooltip && lineInfoList.length === 1; // Only show value if there is 1 entry
 	const keys = lineInfoList.map((info) => info.key);
@@ -256,7 +262,7 @@ export default function MultilineChart({
 						</linearGradient>
 					</defs>
 					<XAxis
-						dataKey="blockTime"
+						dataKey={dateKey}
 						tick={<CustomXTick showTime={showTime} show={chartConfig.showXTick} />}
 						axisLine={chartConfig.showXAxis}
 						ticks={xAxisTicks}
@@ -264,7 +270,7 @@ export default function MultilineChart({
 						interval={"preserveStartEnd"}
 					/>
 					<YAxis
-						datekey="price"
+						datekey={lineInfoList[0]}
 						padding={{ top: 40 }} // Space for tooltip above the data
 						orientation="right"
 						tick={<CustomYTick show={chartConfig.showYTick} />}
@@ -280,6 +286,7 @@ export default function MultilineChart({
 								toolTipWidth={toolTipWidth}
 								showTime={showTime}
 								showValue={showValueInTooltip}
+								dateKey={dateKey}
 								valueUnit={unit}
 								keys={keys}
 								onHover={onHover}
@@ -289,7 +296,12 @@ export default function MultilineChart({
 						offset={toolTipOffset}
 					/>
 					{lines}
-					<ReferenceLine y={avg} stroke={theme.color.bg5} strokeDasharray="5 5" label={<AvgLabel avg={avg} />} />
+					<ReferenceLine
+						y={avg}
+						stroke={theme.color.bg5}
+						strokeDasharray="5 5"
+						label={<AvgLabel avg={avg} unit={unit} />}
+					/>
 				</AreaChart>
 			) : (
 				<NoDataWrapper>
@@ -312,7 +324,7 @@ function getAvg(data: Record<string, number>[], key: string): number | null {
 	}
 
 	let avg: number = data.reduce((acc: number, obj) => {
-		const nextVal = obj[key] ?? 0;
+		const nextVal = Number(obj[key]) ?? 0;
 		return acc + nextVal;
 	}, 0);
 	avg /= data.length;
@@ -322,17 +334,14 @@ function getAvg(data: Record<string, number>[], key: string): number | null {
 
 /**
  * Helper to compute if the data is over a short enough time frame to show the time of day in the tooltip and xaxis
- * @param data time series data entry list to check the time for
+ * @param newestDate oldest date in unix secconds
+ * @param oldestDate oldest date in unix secconds
  * @returns true if that chart should show time on hover and xaxis (if configured to do so), false otherwise
  */
-function shouldShowTime(data: Record<string, number>): boolean {
-	// if (!data) return false;
-
-	// const lastDate = new Date(data.slice(-1)[0].blockTime);
-	// const firstDate = new Date(data[0].blockTime);
-	// const dayDiff = (lastDate.getTime() - firstDate.getTime()) / (1000 * 60 * 60 * 24); // ms diff converted to days
-	// return dayDiff < SHORT_TERM_DAYS;
-	return false;
+function shouldShowTime(newestDate: number, oldestDate: number): boolean {
+	const secDiff = newestDate - oldestDate;
+	const dayDiff = secDiff / (60 * 60 * 24);
+	return dayDiff < TIME_SELECTOR_INFO[TimeSelector.ONE_WEEK].days; // If less than a week, show the time
 }
 
 /**
@@ -341,15 +350,15 @@ function shouldShowTime(data: Record<string, number>): boolean {
  * @param numberOfTicks number of ticks to show
  * @returns array of indicies in the time series data of the values to put on each tick
  */
-// function getXTicks(data: time_series_data_entry_S[], numberOfTicks: number) {
-// 	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
+function getXTicks(data: Record<string, number>[], numberOfTicks: number) {
+	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
 
-// 	const ticks = Array(numberOfTicks);
-// 	const length = data.length;
-// 	for (let i = 0; i < numberOfTicks; i++) {
-// 		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
-// 		ticks[i] = data[index].blockTime;
-// 	}
+	const ticks = Array(numberOfTicks);
+	const length = data.length;
+	for (let i = 0; i < numberOfTicks; i++) {
+		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
+		ticks[i] = data[index].blockTime;
+	}
 
-// 	return ticks;
-// }
+	return ticks;
+}
