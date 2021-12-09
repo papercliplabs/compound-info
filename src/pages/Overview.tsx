@@ -14,7 +14,12 @@ import TooltipText from "components/TooltipText";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
 import MultilineChart from "components/Chart/MultilineChart";
 
-import { useMarketSummaryData, useProtocolHistoricalData, useProtocolSummaryData } from "data/hooks";
+import {
+	useMarketHistoricalData,
+	useMarketSummaryData,
+	useProtocolHistoricalData,
+	useProtocolSummaryData,
+} from "data/hooks";
 import { MarketDataSelector, Token } from "common/enums";
 
 const TableCard = styled(Card)`
@@ -32,6 +37,8 @@ export default function Overview(): JSX.Element | null {
 	const protocolSummaryData = useProtocolSummaryData();
 	const protocolHistoricalData = useProtocolHistoricalData();
 	const marketSummaryData = useMarketSummaryData();
+
+	const temp = useMarketHistoricalData();
 
 	console.log(protocolHistoricalData);
 	console.log(marketSummaryData);
