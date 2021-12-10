@@ -2,9 +2,8 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
+import { DataResolution, MarketDataSelector, TimeSelector } from "common/enums";
 import { useGlobalStore } from "data/store";
-import { requestGasData, requestTimeSeriesData, requestSummaryData, requestTestData } from "data/requests";
-import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
 import {
 	MarketSummaryData,
@@ -12,11 +11,14 @@ import {
 	ProtocolSummaryData,
 	ProtocolHistoricalData,
 	MarketHistoricalData,
+	MarketHistoricalDataEntry,
 } from "common/types";
 import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
 import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
+import { TIME_SELECTOR_INFO } from "common/constants";
+import { Token } from "graphql";
 
 // Custom hooks which are used by the app to interface with the store
 
@@ -287,7 +289,16 @@ export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData
 	return data;
 }
 
-export function useMarketHistoricalData(): MarketHistoricalData[] {
+/**
+ * Hook to get historical market data for the time and data selected
+ * @param timeSelector time frame to get the data for, the resolution is derived from this
+ * @param dataSelector data type to get the data for
+ * @returns market historical data for the time frame (and corresponding resoltuion), and data type selected
+ */
+export function useMarketHistoricalData(
+	timeSelector: TimeSelector,
+	dataSelector: MarketDataSelector
+): Record<Token, number>[] {
 	const [store, { updateStore }] = useGlobalStore();
 	const key = "marketHistoricalData";
 	const data = store[key];
@@ -306,5 +317,31 @@ export function useMarketHistoricalData(): MarketHistoricalData[] {
 
 	console.log(data);
 
-	return data;
+	let queriedData = [];
+	if (data) {
+		// Get the correct resolution
+		const resolution = TIME_SELECTOR_INFO[timeSelector].resolution;
+		queriedData = data[resolution];
+
+		// Get the correct data type
+		queriedData = queriedData.map((entry) => entry[dataSelector]);
+		console.log(queriedData);
+
+		// Filter on time
+		const days = TIME_SELECTOR_INFO[timeSelector].days;
+
+		// undefined if ALL so don't filter if thats the case
+		if (days) {
+			const filterSecs = days * 24 * 60 * 60;
+			const nowSec = parseInt(new Date() / 1000);
+			const cutoffSecs = nowSec - filterSecs;
+			queriedData = queriedData.filter((entry) => {
+				return entry.date > cutoffSecs;
+			});
+		}
+
+		console.log(queriedData);
+	}
+
+	return queriedData;
 }

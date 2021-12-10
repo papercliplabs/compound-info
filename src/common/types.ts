@@ -156,3 +156,10 @@ export interface LineInfo {
  * All possible data selectors for time series
  */
 export type DataSelector = ProtocolDataSelector | MarketDataSelector;
+
+/**
+ * Data entry for market historical data
+ */
+export type MarketHistoricalDataEntry = {
+	[selector in MarketDataSelector]: Record<Token, number>;
+};

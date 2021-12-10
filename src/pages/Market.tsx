@@ -22,18 +22,8 @@ import TimeSeriesChart from "components/Chart/TimeSeriesChart";
 import CoinSelectorTimerSeriesChart from "components/Chart/CoinSelectorTimeSeriesChart";
 import MultilineChart from "components/Chart/MultilineChart";
 
-import {
-	Area,
-	AreaChart,
-	LineChart,
-	ResponsiveContainer,
-	XAxis,
-	Line,
-	YAxis,
-	Tooltip,
-	ReferenceLine,
-	CartesianGrid,
-} from "recharts";
+import { ChartConfig } from "common/types";
+import { MarketDataSelector, TimeSelector } from "common/enums";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -100,29 +90,29 @@ export default function Market({ match }): JSX.Element | null {
 	// 	? [time_series_data_selector_E.TOTAL_SUPPLY_APY, time_series_data_selector_E.TOTAL_BORROW_APY]
 	// 	: [time_series_data_selector_E.SUPPLY_APY, time_series_data_selector_E.BORROW_APY];
 
-	// const timeSeriesChartConfig: chart_config_S = {
-	// 	showAvg: false,
-	// 	showXAxis: false,
-	// 	showYAxis: false,
-	// 	showXTick: false,
-	// 	showYTick: false,
-	// 	showHorizontalGrid: false,
-	// 	showVerticalGrid: false,
-	// 	showAreaGradient: true,
-	// 	numberOfXAxisTicks: 3,
-	// 	showCurrentValue: true,
-	// 	animate: true,
-	// 	showValueInTooltip: true,
-	// };
+	const timeSeriesChartConfig: ChartConfig = {
+		showAvg: false,
+		showXAxis: false,
+		showYAxis: false,
+		showXTick: false,
+		showYTick: false,
+		showHorizontalGrid: false,
+		showVerticalGrid: false,
+		showAreaGradient: true,
+		numberOfXAxisTicks: 3,
+		showCurrentValue: true,
+		animate: true,
+		showValueInTooltip: true,
+	};
 
-	// const timeSelectors = [
-	// 	time_selector_E.ONE_DAY,
-	// 	time_selector_E.ONE_WEEK,
-	// 	time_selector_E.ONE_MONTH,
-	// 	time_selector_E.THREE_MONTHS,
-	// 	time_selector_E.ONE_YEAR,
-	// 	time_selector_E.ALL,
-	// ];
+	const timeSelectorOptions = [
+		TimeSelector.ONE_DAY,
+		TimeSelector.ONE_WEEK,
+		TimeSelector.ONE_MONTH,
+		TimeSelector.THREE_MONTHS,
+		TimeSelector.ONE_YEAR,
+		TimeSelector.ALL,
+	];
 
 	return (
 		<>
@@ -150,6 +140,16 @@ export default function Market({ match }): JSX.Element | null {
 						</Row>
 					</Row>
 					<Card>
+						<TimeSeriesChart
+							chartConfig={timeSeriesChartConfig}
+							lineInfoList={[
+								{ key: "DAI", color: "red" },
+								{ key: "UNI", color: "blue" },
+							]}
+							dataSelectorOptions={[MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY]}
+							timeSelectorOptions={timeSelectorOptions}
+							hoverDataCallback={() => {}}
+						/>
 						{/* <CoinSelectorTimerSeriesChart
 							chartConfig={coinSelectorChartConfig}
 							dataSelectors={coinSelectorChartDataSelectors}

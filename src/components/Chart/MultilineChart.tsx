@@ -186,7 +186,7 @@ export default function MultilineChart({
 	unit,
 	onHover,
 }: {
-	data: Record<string, any>[];
+	data: Record<string, number>[];
 	chartConfig: ChartConfig;
 	lineInfoList: LineInfo[];
 	dateKey: string;
@@ -213,6 +213,11 @@ export default function MultilineChart({
 			strokeDasharray: "5,5",
 		};
 	}, [theme]);
+
+	console.log(data);
+	if (!data || data.length == 0) {
+		return null;
+	}
 
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
