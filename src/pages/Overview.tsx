@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styled, { useTheme } from "styled-components";
 
+import { TimeSelector, MarketDataSelector } from "common/enums";
+
 import { Typography } from "theme";
 import compoundLogo from "assets/compoundLogo.svg";
 import Logo from "components/Logo";
@@ -20,7 +22,6 @@ import {
 	useProtocolHistoricalData,
 	useProtocolSummaryData,
 } from "data/hooks";
-import { MarketDataSelector, Token } from "common/enums";
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.lg};
@@ -38,7 +39,9 @@ export default function Overview(): JSX.Element | null {
 	const protocolHistoricalData = useProtocolHistoricalData();
 	const marketSummaryData = useMarketSummaryData();
 
-	const temp = useMarketHistoricalData();
+	const temp = useMarketHistoricalData(TimeSelector.ONE_WEEK, MarketDataSelector.SUPPLY_APY);
+
+	console.log(temp);
 
 	console.log(protocolHistoricalData);
 	console.log(marketSummaryData);

@@ -2,7 +2,8 @@
 import { compoundInfoSubgraphClient } from "data/apollo";
 import { gql } from "@apollo/client";
 
-import { DataResolution } from "common/enums";
+import { DataResolution, MarketDataSelector, Token } from "common/enums";
+import { MarketHistoricalDataEntry } from "common/types";
 
 const PAGE_LENGTH = 1000; // Max of 1000
 
@@ -106,7 +107,11 @@ const marketHistoricalHourQuery = gql`
  * @param dateGreaterThan only take data with the date in seconds since unix epooch greater than this
  * @return the formatted query results
  */
-async function performPagenationRequest(query: DocumentNode, key: string, dateGreaterThan: number): any {
+async function performPagenationRequest(
+	query: DocumentNode,
+	key: string,
+	dateGreaterThan: number
+): Promise<MarketHistoricalDataEntry> {
 	console.log("Performing request: " + key);
 
 	const outputData = [];
@@ -147,7 +152,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, dateGr
 
 		for (let i = 0; i < len; i++) {
 			// Finished gathering all data for that date
-			if (historicalData[i].date !== currentDate) {
+			if (Number(historicalData[i].date) !== currentDate) {
 				// On the first run through, currentDate will be 0, so lets not load anything
 				if (currentDate != 0) {
 					// Load accumulated values
@@ -185,27 +190,29 @@ async function performPagenationRequest(query: DocumentNode, key: string, dateGr
 				usdcPerUnderlyingEntry = { date: currentDate };
 
 				// Update date
-				currentDate = historicalData[i].date;
+				currentDate = Number(historicalData[i].date);
 			}
 
 			const tokenSymbol = historicalData[i].market.underlyingSymbol;
 
 			// Load accumulators
-			supplyApyEntry[tokenSymbol] = Number(historicalData[i].supplyApy).toFixed(4);
-			borrowApyEntry[tokenSymbol] = Number(historicalData[i].borrowApy).toFixed(4);
-			totalSupplyApyEntry[tokenSymbol] = Number(historicalData[i].totalSupplyApy).toFixed(4);
-			totalBorrowApyEntry[tokenSymbol] = Number(historicalData[i].totalBorrowApy).toFixed(4);
-			totalSupplyEntry[tokenSymbol] = Number(historicalData[i].totalSupply).toFixed(4);
-			totalSupplyUsdEntry[tokenSymbol] = Number(historicalData[i].totalSupplyUsd).toFixed(2);
-			totalBorrowEntry[tokenSymbol] = Number(historicalData[i].totalBorrow).toFixed(4);
-			totalBorrowUsdEntry[tokenSymbol] = Number(historicalData[i].totalBorrowUsd).toFixed(2);
-			totalReservesEntry[tokenSymbol] = Number(historicalData[i].totalReserves).toFixed(4);
-			totalReservesUsdEntry[tokenSymbol] = Number(historicalData[i].totalReservesUsd).toFixed(4);
-			utalizationEntry[tokenSymbol] = Number(historicalData[i].utalization).toFixed(4);
-			usdcPerUnderlyingEntry[tokenSymbol] = Number(historicalData[i].usdcPerUnderlying).toFixed(2);
+			if (tokenSymbol in Token) {
+				// TOOD: this type casting is inefficient
+				supplyApyEntry[tokenSymbol] = Number(Number(historicalData[i].supplyApy).toFixed(4));
+				borrowApyEntry[tokenSymbol] = Number(Number(historicalData[i].borrowApy).toFixed(4));
+				totalSupplyApyEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupplyApy).toFixed(4));
+				totalBorrowApyEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrowApy).toFixed(4));
+				totalSupplyEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupply).toFixed(4));
+				totalSupplyUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupplyUsd).toFixed(2));
+				totalBorrowEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrow).toFixed(4));
+				totalBorrowUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrowUsd).toFixed(2));
+				totalReservesEntry[tokenSymbol] = Number(Number(historicalData[i].totalReserves).toFixed(4));
+				totalReservesUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalReservesUsd).toFixed(4));
+				utalizationEntry[tokenSymbol] = Number(Number(historicalData[i].utalization).toFixed(4));
+				usdcPerUnderlyingEntry[tokenSymbol] = Number(Number(historicalData[i].usdcPerUnderlying).toFixed(2));
+			}
 		}
 
-		console.log(skip);
 		// If less than 1000 results were returned we found everything
 		allFound = len !== PAGE_LENGTH;
 		skip += PAGE_LENGTH;
@@ -214,7 +221,12 @@ async function performPagenationRequest(query: DocumentNode, key: string, dateGr
 	return outputData;
 }
 
-export async function requestMarketHistoricalData() {
+/**
+ * Request for market historical data
+ * @returns market historical data for each data resoltion
+ * 			the values are records with token names as keys
+ */
+export async function requestMarketHistoricalData(): Record<keyof MarketDataSelector, MarketHistoricalDataEntry[]> {
 	console.log("Requesting historical market data");
 
 	const now = parseInt(Date.now() / 1000); // Unix timestamp in seconds
@@ -243,22 +255,3 @@ export async function requestMarketHistoricalData() {
 		[DataResolution.HOUR]: hourData,
 	};
 }
-
-// uni: markets(where: { underlyingSymbol: "UNI" }) {
-// 	id
-// 	historicalHourData(frist: 1000) {
-// 		supplyApy
-// 		totalSupplyApy
-// 		totalSupply
-// 		date
-// 	}
-// }
-// dai: markets(where: { underlyingSymbol: "DAI" }) {
-// 	id
-// 	historicalHourData(first: 1000) {
-// 		supplyApy
-// 		totalSupplyApy
-// 		totalSupply
-// 		date
-// 	}
-// }
