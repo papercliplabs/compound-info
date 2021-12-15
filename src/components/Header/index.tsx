@@ -7,6 +7,8 @@ import Column from "components/Column";
 import { Typography } from "theme";
 import { HideSmall } from "components/shared";
 import { IconButton } from "components/Button/iconButton";
+import { useDataStatus } from "data/hooks";
+import { formatDate, formatNumber } from "common/utils";
 
 const StyledHeader = styled(Row)`
 	width: 100%;
@@ -29,13 +31,18 @@ const DataErrorBanner = styled(Row)`
 export default function Header({ showDataErrorWarning }: { showDataErrorWarning: boolean }): JSX.Element {
 	const theme = useTheme();
 
+	const { dataError, lastSyncedDate } = useDataStatus();
+
 	return (
 		<>
-			<DataErrorBanner>
-				<Typography.header color={theme.color.warning1}>
-					This site is currently experiencing data issues and we are actively working on a fix.
-				</Typography.header>
-			</DataErrorBanner>
+			{dataError && (
+				<DataErrorBanner>
+					<Typography.header color={theme.color.warning1}>
+						This site is currently experiencing data issues, the last synced data is from{" "}
+						{formatDate(lastSyncedDate, false, false)}
+					</Typography.header>
+				</DataErrorBanner>
+			)}
 			<StyledHeader>
 				<StyledInternalLink to="/">
 					<Typography.displayL>Compound Info</Typography.displayL>

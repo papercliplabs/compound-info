@@ -91,7 +91,6 @@ function CustomTooltip({
 	}, [onHover, hoverData]);
 
 	if (hoverDate) {
-		console.log(showTime);
 		const formattedDate = formatDate(hoverDate, showTime, false);
 
 		// Bound the right side of tooltip
@@ -131,9 +130,13 @@ function CustomXTick({ x, y, payload, showTime, show }) {
 	);
 }
 
-function CustomYTick({ x, y, payload, show }): JSX.Element | null {
+function CustomYTick({ x, y, payload, show, unit }): JSX.Element | null {
 	const theme = useTheme();
-	const formattedValue = formatNumber(payload.value, "%", 2); // TODO: make so it can take generic values
+	let decimals = 2;
+	if (payload.value > 100) {
+		decimals = 0;
+	}
+	const formattedValue = formatNumber(payload.value, unit, decimals); // TODO: make so it can take generic values
 
 	if (!show) {
 		return null;
@@ -214,10 +217,7 @@ export default function MultilineChart({
 		};
 	}, [theme]);
 
-	console.log(data);
-	if (!data || data.length == 0) {
-		return null;
-	}
+	const dataError = !data || data.length === 0;
 
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
@@ -229,6 +229,7 @@ export default function MultilineChart({
 				dataKey={lineInfo.key}
 				stroke={lineInfo.color}
 				strokeWidth={2}
+				connectNulls={true}
 				key={i}
 				dot={false}
 				activeDot={activeDotConfig}
@@ -239,7 +240,7 @@ export default function MultilineChart({
 		);
 	});
 
-	const showTime = shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
+	const showTime = !dataError && shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
 	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
@@ -249,7 +250,7 @@ export default function MultilineChart({
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			{data && data.lenght !== 0 ? (
+			{!dataError ? (
 				<AreaChart
 					margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
 					data={data}
@@ -278,7 +279,7 @@ export default function MultilineChart({
 						datekey={lineInfoList[0]}
 						padding={{ top: 40 }} // Space for tooltip above the data
 						orientation="right"
-						tick={<CustomYTick show={chartConfig.showYTick} />}
+						tick={<CustomYTick show={chartConfig.showYTick} unit={unit} />}
 						axisLine={chartConfig.showYAxis}
 						width={chartConfig.showYTick ? 55 : 0}
 						tickLine={false}
@@ -328,11 +329,19 @@ function getAvg(data: Record<string, number>[], key: string): number | null {
 		return null;
 	}
 
+	// Count for the number of values contributing to the average
+	let count = 0;
+
 	let avg: number = data.reduce((acc: number, obj) => {
-		const nextVal = Number(obj[key]) ?? 0;
-		return acc + nextVal;
+		if (obj[key]) {
+			const nextVal = Number(obj[key]) ?? 0;
+			count += 1;
+			return acc + nextVal;
+		} else {
+			return acc;
+		}
 	}, 0);
-	avg /= data.length;
+	avg /= count;
 
 	return avg;
 }

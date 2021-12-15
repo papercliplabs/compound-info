@@ -39,7 +39,7 @@ export function formatDate(dateInUnixSec: number, includeTime: boolean, short: b
  * @param decimals the number of decimals to keep after formatting, if not specified it will keep 2
  * @returns nicely formatted number, for example if number is 11023 this will return 1.10K
  */
-export function formatNumber(number: number | string, unit?: string, decimals: number | null = null): string {
+export function formatNumber(num: number | string, unit?: string, decimals: number | null = null): string {
 	const K = 1000;
 	const M = 1000000;
 	const B = 1000000000;
@@ -48,14 +48,14 @@ export function formatNumber(number: number | string, unit?: string, decimals: n
 
 	let postFix = "";
 	let unitPostfix = false;
-	let formattedNum = number;
+	let formattedNum = num;
 
 	// If it is represented as a sting, convert to number first
 	if (typeof formattedNum === "string") {
 		formattedNum = parseFloat(formattedNum);
 
 		if (isNaN(formattedNum)) {
-			return number as string; // It isn't a number
+			return num as string; // It isn't a number
 		}
 	}
 

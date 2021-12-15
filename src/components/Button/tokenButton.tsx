@@ -9,7 +9,7 @@ import { Token } from "common/enums";
 import { TOKEN_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
 
-const StyledCoinButton = styled.button<{
+const StyledTokenButton = styled.button<{
 	active: boolean;
 	selectedColor: string;
 }>`
@@ -97,7 +97,7 @@ export function TokenButton({
 	const open = selected ? undefined : clickCallback;
 	const coinName = TOKEN_INFO[token].symbol;
 	return (
-		<StyledCoinButton selectedColor={color} active={selected} onClick={open}>
+		<StyledTokenButton selectedColor={color} active={selected} onClick={open}>
 			<SelectedIndicator selectedColor={color} hidden={!selected} />
 			<TokenLogo token={token} />
 			<CoinInfo>
@@ -113,6 +113,6 @@ export function TokenButton({
 				<Typography.caption useDefaultLineHeight>{formatNumber(value, "%")}</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
-		</StyledCoinButton>
+		</StyledTokenButton>
 	);
 }

@@ -86,9 +86,12 @@ export interface MarketSummaryData extends MarketCoreData {
 	underlyingAddress: string;
 	collateralFactor: string;
 	reserveFactor: string;
+	borrowCap: string;
 	cash: string;
 	usdcPerUnderlying: string;
 	usdcPerEth: string;
+	availableLiquidity: string;
+	availableLiquidityUsd: string;
 }
 // TODO: change all numbers from the graph to strings!
 
@@ -139,7 +142,6 @@ export interface ChartConfig {
 	showVerticalGrid: boolean;
 	showAreaGradient: boolean; // Only will show is only 1 line is on the chart
 	numberOfXAxisTicks: number; // Only relevent when showXAxis is true
-	showCurrentValue: boolean; // The big number in the corner above the graph, if false the data selector buttons will span the entire row
 	animate: boolean;
 	showValueInTooltip: boolean;
 }

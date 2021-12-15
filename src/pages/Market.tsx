@@ -19,7 +19,7 @@ import { TokenLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
-import CoinSelectorTimerSeriesChart from "components/Chart/CoinSelectorTimeSeriesChart";
+import TokenSelectorTimeSeriesChart from "components/Chart/TokenSelectorTimeSeriesChart";
 import MultilineChart from "components/Chart/MultilineChart";
 
 import { ChartConfig } from "common/types";
@@ -70,37 +70,34 @@ export default function Market({ match }): JSX.Element | null {
 	const cTokenAddress = summaryData.id;
 	const etherscanLink = getEtherscanLink(cTokenAddress);
 
-	console.log(etherscanLink);
-	// const coinSelectorChartConfig: chart_config_S = {
-	// 	showAvg: true,
-	// 	showXAxis: false,
-	// 	showYAxis: false,
-	// 	showXTick: false,
-	// 	showYTick: true,
-	// 	showHorizontalGrid: true,
-	// 	showVerticalGrid: false,
-	// 	showAreaGradient: true,
-	// 	numberOfXAxisTicks: 2,
-	// 	showCurrentValue: true,
-	// 	animate: true,
-	// 	showValueInTooltip: false,
-	// };
-
-	// const coinSelectorChartDataSelectors = includeComp
-	// 	? [time_series_data_selector_E.TOTAL_SUPPLY_APY, time_series_data_selector_E.TOTAL_BORROW_APY]
-	// 	: [time_series_data_selector_E.SUPPLY_APY, time_series_data_selector_E.BORROW_APY];
-
-	const timeSeriesChartConfig: ChartConfig = {
-		showAvg: false,
+	const tokenSelectorChartConfig: chart_config_S = {
+		showAvg: true,
 		showXAxis: false,
 		showYAxis: false,
 		showXTick: false,
-		showYTick: false,
-		showHorizontalGrid: false,
+		showYTick: true,
+		showHorizontalGrid: true,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 3,
-		showCurrentValue: true,
+		numberOfXAxisTicks: 2,
+		animate: true,
+		showValueInTooltip: false,
+	};
+
+	const tokenSelectorChartDataSelectors = includeComp
+		? [MarketDataSelector.TOTAL_SUPPLY_APY, MarketDataSelector.TOTAL_BORROW_APY]
+		: [MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY];
+
+	const timeSeriesChartConfig: ChartConfig = {
+		showAvg: true,
+		showXAxis: false,
+		showYAxis: false,
+		showXTick: false,
+		showYTick: true,
+		showHorizontalGrid: true,
+		showVerticalGrid: false,
+		showAreaGradient: true,
+		numberOfXAxisTicks: 2,
 		animate: true,
 		showValueInTooltip: true,
 	};
@@ -140,22 +137,12 @@ export default function Market({ match }): JSX.Element | null {
 						</Row>
 					</Row>
 					<Card>
-						<TimeSeriesChart
-							chartConfig={timeSeriesChartConfig}
-							lineInfoList={[
-								{ key: "DAI", color: "red" },
-								{ key: "UNI", color: "blue" },
-							]}
-							dataSelectorOptions={[MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY]}
+						<TokenSelectorTimeSeriesChart
+							chartConfig={tokenSelectorChartConfig}
+							dataSelectorOptions={tokenSelectorChartDataSelectors}
 							timeSelectorOptions={timeSelectorOptions}
-							hoverDataCallback={() => {}}
+							mainToken={token}
 						/>
-						{/* <CoinSelectorTimerSeriesChart
-							chartConfig={coinSelectorChartConfig}
-							dataSelectors={coinSelectorChartDataSelectors}
-							timeSelectors={timeSelectors}
-							mainCoin={coin}
-						/> */}
 					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
@@ -183,46 +170,61 @@ export default function Market({ match }): JSX.Element | null {
 									tooltipContent="The number of wallets currently borrowing this asset."
 									value={summaryData.numberOfBorrowers}
 								/> */}
-							</Column>
-							<Column gap={theme.spacing.lg}>
 								<StatRow
 									title={"Collateral factor"}
 									tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
 									value={summaryData.collatoralFactor}
 									unit="%"
 								/>
+							</Column>
+							<Column gap={theme.spacing.lg}>
 								<StatRow
 									title={"Total borrow"}
 									tooltipContent="The total amount of funds borrowed from the market. (USD)"
 									value={summaryData.totalBorrow * summaryData.usdcPerUnderlying}
 									unit="$"
 								/>
-								{/* <StatRow
+								<StatRow
 									title={"Borrow cap"}
 									tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
-									value={marketData.borrowCapUsd ? marketData.borrowCapUsd : "No limit"}
+									value={summaryData.borrowCap !== "0" ? summaryData.borrowCap : "No limit"}
 								/>
 								<StatRow
 									title={"Available liquidity"}
 									tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
-									value={marketData.availableLiquidityUsd}
+									value={summaryData.availableLiquidityUsd}
 									unit="$"
-								/> */}
+								/>
 							</Column>
 						</ResponsiveRow>
 					</Card>
 					<SectionTitle title={"Supply, Borrow and Reserves"} />
 					<Card>
-						{/* <TimeSeriesChart
+						<TimeSeriesChart
 							chartConfig={timeSeriesChartConfig}
-							lineInfoList={[{ coin: coin, color: theme.color.lineChartColors[1] }]}
-							dataSelectors={[
-								time_series_data_selector_E.SUPPLY_USD,
-								time_series_data_selector_E.BORROW_USD,
-								time_series_data_selector_E.RESERVES_USD,
+							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
+							dataSelectorOptions={[
+								MarketDataSelector.TOTAL_SUPPLY,
+								MarketDataSelector.TOTAL_BORROW,
+								MarketDataSelector.TOTAL_RESERVES,
 							]}
-							timeSelectors={timeSelectors}
-						/> */}
+							token={token}
+							timeSelectorOptions={timeSelectorOptions}
+						/>
+					</Card>
+					<Card>
+						<TimeSeriesChart
+							chartConfig={timeSeriesChartConfig}
+							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
+							dataSelectorOptions={[
+								MarketDataSelector.USDC_PER_UNDERLYING,
+								MarketDataSelector.TOTAL_SUPPLY_USD,
+								MarketDataSelector.TOTAL_BORROW_USD,
+								MarketDataSelector.TOTAL_RESERVES_USD,
+							]}
+							token={token}
+							timeSelectorOptions={timeSelectorOptions}
+						/>
 					</Card>
 					<SectionTitle title={"About " + token} />
 					<CoinInfoCard

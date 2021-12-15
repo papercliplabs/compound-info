@@ -16,6 +16,7 @@ const marketSummaryQuery = gql`
 			underlyingAddress
 			collatoralFactor
 			reserveFactor
+			borrowCap
 			cash
 			utalization
 			supplyApy
@@ -28,6 +29,8 @@ const marketSummaryQuery = gql`
 			totalBorrowUsd
 			totalReserves
 			totalReservesUsd
+			availableLiquidity
+			availableLiquidityUsd
 			usdcPerUnderlying
 			usdcPerEth
 		}

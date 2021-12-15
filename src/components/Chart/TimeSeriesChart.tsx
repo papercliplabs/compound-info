@@ -1,24 +1,18 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import React, { useState, useMemo, useCallback } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { TimeSelector, DataResolution, MarketDataSelector } from "common/enums";
-import { LineInfo, ChartConfig, DataSelector } from "common/types";
+import { TimeSelector, MarketDataSelector, Token } from "common/enums";
+import { LineInfo, ChartConfig } from "common/types";
 
-import { useMarketHistoricalData, useTimeSeriesData } from "data/hooks";
+import { useMarketHistoricalData } from "data/hooks";
 import { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
 import MultilineChart from "components/Chart/MultilineChart";
 import Column from "components/Column";
 import { ScrollRow, ResponsiveRow } from "components/Row";
 import { Typography } from "theme";
-import {
-	TIME_SELECTOR_INFO,
-	TIME_SERIES_DATA_SELECTOR_INFO,
-	COIN_INFO,
-	MARKET_DATA_SELECTOR_INFO,
-} from "common/constants";
-import { formatNumber, getDataSelectorName, getDataSelectorUnit, getDataSelectorDescription } from "common/utils";
+import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO } from "common/constants";
+import { formatNumber } from "common/utils";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -45,8 +39,8 @@ const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
 
 /**
  * React element to display the multiline chart, with time selector and data selector buttons
- * @param data chart data to display for each data resolution
  * @param chartConfig the chart configuration
+ * @param token the core token of this chart, if this is set the current value will be shown in the top left, otherwise it will be hidden
  * @param lineInfoList list of the line info for the lines to be plotted
  * @param dataSelectorOptions list of data selectors, if only 1 selector is provided buttons are not shown.
  * @param timeSelectorOptions list of the time selectors to show buttons for, if only 1 selector is provided no buttons are shown
@@ -55,12 +49,14 @@ const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
  */
 export default function TimeSeriesChart({
 	chartConfig,
+	token,
 	lineInfoList,
 	dataSelectorOptions,
 	timeSelectorOptions,
 	hoverDataCallback,
 }: {
 	chartConfig: ChartConfig;
+	token?: Token;
 	lineInfoList: LineInfo[];
 	dataSelectorOptions: MarketDataSelector[];
 	timeSelectorOptions: TimeSelector[];
@@ -69,14 +65,18 @@ export default function TimeSeriesChart({
 	const theme = useTheme();
 	const [timeSelector, setTimeSelector] = useState<TimeSelector>(timeSelectorOptions.slice(-1)[0]);
 	const [dataSelector, setDataSelector] = useState<string>(dataSelectorOptions[0]);
+	const [dataSelectorIndex, setDataSelectorIndex] = useState<number>(0); // Used when the data selector options change
 
-	// Jump to first data selector if they changed
+	// Select new data selector if they changed
 	if (!dataSelectorOptions.includes(dataSelector)) {
-		setDataSelector(dataSelectorOptions[0]);
+		if (dataSelectorOptions.length > dataSelectorIndex) {
+			setDataSelector(dataSelectorOptions[dataSelectorIndex]);
+		} else {
+			setDataSelector(dataSelectorOptions[0]);
+			setDataSelectorIndex(0);
+		}
 	}
 
-	console.log(timeSelector);
-	console.log(dataSelector);
 	const selectedData = useMarketHistoricalData(timeSelector, dataSelector);
 
 	const dataSelectorButtons = useMemo(() => {
@@ -89,15 +89,18 @@ export default function TimeSeriesChart({
 			return (
 				<OptionButton
 					key={i}
-					buttonContent={MARKET_DATA_SELECTOR_INFO[dataSelector].name}
+					buttonContent={MARKET_DATA_SELECTOR_INFO[selector].name}
 					active={dataSelector === selector}
-					onClick={() => setDataSelector(selector)}
+					onClick={() => {
+						setDataSelector(selector);
+						setDataSelectorIndex(i);
+					}}
 					flex={1}
 					variant
 				/>
 			);
 		});
-	}, [dataSelector, dataSelectorOptions, setDataSelector]);
+	}, [dataSelector, dataSelectorOptions, setDataSelector, setDataSelectorIndex]);
 
 	const timeSelectorButtons = useMemo(() => {
 		if (timeSelectorOptions.length <= 1) {
@@ -119,25 +122,22 @@ export default function TimeSeriesChart({
 
 	// For null hoverData, or entries with coins not in lineInfoList the data passed to the callback the most recent point
 	const handleHover = useCallback(
-		(hoverData: time_series_data_entry_S | null) => {
-			// if (!data) {
-			// 	return;
-			// }
-			// const callbackData = JSON.parse(JSON.stringify(data.slice(-1)[0])); // deep copy of most recent
-			// // Update the data of coins in lineInfoList to the hover data
-			// if (hoverData && hoverDataCallback) {
-			// 	for (let i = 0; i < lineInfoList.length; i++) {
-			// 		let coinName = lineInfoList[i].coin; // This will be the coin name if it is "ALL"
-			// 		if (typeof coinName !== "string") {
-			// 			// If it is not all, this will find the name
-			// 			coinName = COIN_INFO[coinName].name;
-			// 		}
-			// 		callbackData[coinName] = hoverData[coinName];
-			// 	}
-			// }
-			// if (hoverDataCallback) {
-			// 	hoverDataCallback(callbackData);
-			// }
+		(hoverData: any) => {
+			if (!selectedData) {
+				return;
+			}
+			const callbackData = JSON.parse(JSON.stringify(selectedData.slice(-1)[0])); // deep copy of most recent
+
+			// Update the data of coins in lineInfoList to the hover data
+			if (hoverData && hoverDataCallback) {
+				for (let i = 0; i < lineInfoList.length; i++) {
+					const key = lineInfoList[i].key; // This will be the coin name if it is "ALL"
+					callbackData[key] = hoverData[key];
+				}
+			}
+			if (hoverDataCallback) {
+				hoverDataCallback(callbackData);
+			}
 		},
 		[selectedData, hoverDataCallback, lineInfoList] // lineInfoList here causes infinite loop since it updates on this useCallback
 	);
@@ -146,15 +146,15 @@ export default function TimeSeriesChart({
 	// 	return null;
 	// }
 
-	const currentValue = 0; //data !== null && data.length !== 0 ? data.slice(-1)[0][coinName] ?? 0 : 0;
+	const currentValue = selectedData && selectedData.length > 0 ? selectedData.slice(-1)[0][token] ?? "-" : "-";
 	const dataSelectorDescription = MARKET_DATA_SELECTOR_INFO[dataSelector].description;
 	const dataSelectorUnit = MARKET_DATA_SELECTOR_INFO[dataSelector].unit;
 
 	return (
 		<StyledChartContainer>
-			{(chartConfig.showCurrentValue || dataSelectorOptions.length > 1) && (
+			{(!!token || dataSelectorOptions.length > 1) && (
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
-					{chartConfig.showCurrentValue && (
+					{!!token && (
 						<Column align="flex-start" overflow="visible" flex={1}>
 							<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
 							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
@@ -166,6 +166,7 @@ export default function TimeSeriesChart({
 			<MultilineChart
 				data={selectedData}
 				chartConfig={chartConfig}
+				dateKey="date"
 				lineInfoList={lineInfoList}
 				onHover={handleHover}
 				unit={dataSelectorUnit}

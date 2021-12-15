@@ -5,6 +5,9 @@ import { gql } from "@apollo/client";
 import { DataResolution, MarketDataSelector, Token } from "common/enums";
 import { MarketHistoricalDataEntry } from "common/types";
 
+import { dummyMarketHistoricalData } from "data/requests/dummyData";
+import { working } from "data/requests/test";
+
 const PAGE_LENGTH = 1000; // Max of 1000
 
 const marketHistoricalWeekQuery = gql`
@@ -105,7 +108,7 @@ const marketHistoricalHourQuery = gql`
  * @param query the query to perform
  * @param key the key to use to get to the data (marketWeekDatas, marketDayDatas or marketHourDatas)
  * @param dateGreaterThan only take data with the date in seconds since unix epooch greater than this
- * @return the formatted query results
+ * @return the formatted query results, the last entry of the results is the most recent values
  */
 async function performPagenationRequest(
 	query: DocumentNode,
@@ -115,6 +118,21 @@ async function performPagenationRequest(
 	console.log("Performing request: " + key);
 
 	const outputData = [];
+
+	// Latest values, this is used to stick onto the end of hour data
+	const nowSec = parseInt(new Date() / 1000);
+	const supplyApyLatestEntry = { date: nowSec };
+	const borrowApyLatestEntry = { date: nowSec };
+	const totalSupplyApyLatestEntry = { date: nowSec };
+	const totalBorrowApyLatestEntry = { date: nowSec };
+	const totalSupplyLatestEntry = { date: nowSec };
+	const totalSupplyUsdLatestEntry = { date: nowSec };
+	const totalBorrowLatestEntry = { date: nowSec };
+	const totalBorrowUsdLatestEntry = { date: nowSec };
+	const totalReservesLatestEntry = { date: nowSec };
+	const totalReservesUsdLatestEntry = { date: nowSec };
+	const utalizationLatestEntry = { date: nowSec };
+	const usdcPerUnderlyingLatestEntry = { date: nowSec };
 
 	// Accumulators
 	let supplyApyEntry = {};
@@ -210,12 +228,45 @@ async function performPagenationRequest(
 				totalReservesUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalReservesUsd).toFixed(4));
 				utalizationEntry[tokenSymbol] = Number(Number(historicalData[i].utalization).toFixed(4));
 				usdcPerUnderlyingEntry[tokenSymbol] = Number(Number(historicalData[i].usdcPerUnderlying).toFixed(2));
+
+				// Update the latest values for this symbol
+				supplyApyLatestEntry[tokenSymbol] = supplyApyEntry[tokenSymbol];
+				borrowApyLatestEntry[tokenSymbol] = borrowApyEntry[tokenSymbol];
+				totalSupplyApyLatestEntry[tokenSymbol] = totalSupplyApyEntry[tokenSymbol];
+				totalBorrowApyLatestEntry[tokenSymbol] = totalBorrowApyEntry[tokenSymbol];
+				totalSupplyLatestEntry[tokenSymbol] = totalSupplyEntry[tokenSymbol];
+				totalSupplyUsdLatestEntry[tokenSymbol] = totalSupplyUsdEntry[tokenSymbol];
+				totalBorrowLatestEntry[tokenSymbol] = totalBorrowEntry[tokenSymbol];
+				totalBorrowUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
+				totalReservesLatestEntry[tokenSymbol] = totalReservesEntry[tokenSymbol];
+				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
+				utalizationLatestEntry[tokenSymbol] = utalizationEntry[tokenSymbol];
+				usdcPerUnderlyingLatestEntry[tokenSymbol] = usdcPerUnderlyingEntry[tokenSymbol];
 			}
 		}
 
 		// If less than 1000 results were returned we found everything
 		allFound = len !== PAGE_LENGTH;
 		skip += PAGE_LENGTH;
+	}
+
+	const finalEntry = {
+		supplyApy: supplyApyLatestEntry,
+		borrowApy: borrowApyLatestEntry,
+		totalSupplyApy: totalSupplyApyLatestEntry,
+		totalBorrowApy: totalBorrowApyLatestEntry,
+		totalSupply: totalSupplyLatestEntry,
+		totalSupplyUsd: totalSupplyUsdLatestEntry,
+		totalBorrow: totalBorrowLatestEntry,
+		totalBorrowUsd: totalBorrowUsdLatestEntry,
+		totalReserves: totalReservesLatestEntry,
+		totalReservesUsd: totalReservesUsdLatestEntry,
+		utalization: utalizationLatestEntry,
+		usdcPerUnderlying: usdcPerUnderlyingLatestEntry,
+	};
+
+	if (key === "marketHourDatas" && outputData.length > 0) {
+		outputData.push(finalEntry);
 	}
 
 	return outputData;
@@ -241,6 +292,12 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 		"marketHourDatas",
 		hourDataGreaterThanDate
 	);
+
+	// Add on the last entry in hour data to week and day data so the last point is the most recent
+	if (hourData.length > 0) {
+		weekData.push(hourData.slice(-1)[0]);
+		dayData.push(hourData.slice(-1)[0]);
+	}
 
 	console.log("WEEK");
 	console.log(weekData);
