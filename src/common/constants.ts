@@ -336,3 +336,5 @@ export const URLS = {
 
 // ID where the protocol mapping
 export const PROTOCOL_ID = 1;
+
+export const DATA_BEHIND_TIME_THRESHOLD_S = 60 * 60 * 24 * 1; // 1 day

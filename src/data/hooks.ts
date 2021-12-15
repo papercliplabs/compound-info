@@ -17,200 +17,8 @@ import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
 import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
-import { TIME_SELECTOR_INFO } from "common/constants";
+import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
 import { Token } from "graphql";
-
-// Custom hooks which are used by the app to interface with the store
-
-/**
- * Hook to get time series data for the specified data and time selector
- * @param dataSelector data selector to get the data for
- * @param timeSelector time selector to get the data for
- * @returns time series data for the specified data and time selector, or null if none is available
- */
-// export function useTimeSeriesData(
-// 	dataSelector: time_series_data_selector_E,
-// 	timeSelector: time_selector_E
-// ): timer_series_data_S[] | null {
-// 	const [store, { updateStore }] = useGlobalStore();
-// 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-// 	const timeSeriesDataKey = "timeSeriesData";
-// 	const timeSeriesData = store[timeSeriesDataKey];
-
-// 	useEffect(() => {
-// 		async function checkForData() {
-// 			// Fetch the time series data if it hasn't been fetched already:
-// 			if (!timeSeriesData) {
-// 				const data = await requestTimeSeriesData();
-// 				updateStore(timeSeriesDataKey, data);
-// 			}
-// 		}
-
-// 		checkForData();
-// 	}, [timeSeriesData, updateStore]);
-
-// 	useEffect(() => {
-// 		if (timeSeriesData) {
-// 			const newQueriedData = queryTimeSeriesData(timeSeriesData, dataSelector, timeSelector);
-// 			setQueriedData(newQueriedData);
-// 		}
-// 	}, [dataSelector, timeSelector, timeSeriesData, setQueriedData]);
-
-// 	return queriedData;
-// }
-
-/**
- * Hook to get market summary data about a coin(s)
- * @param coin the coin the summary data is wanted for, if not provided a list of all the summary data will be returned
- * @returns summary data for the specified coin if the data exists for it, otherwise null, or a list of all summary data is no coin is specified
- */
-// export function useMarketSummaryData(coin?: coin_E): market_summary_data_S | market_summary_data_S[] | null {
-// 	const [store, { updateStore }] = useGlobalStore();
-// 	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-// 	const marketSummaryDataList = store[marketSummaryDataKey];
-
-// 	useEffect(() => {
-// 		async function checkForData() {
-// 			// Fetch the data if it hasn't been fetched already:
-// 			if (!marketSummaryDataList) {
-// 				const response = await requestSummaryData();
-
-// 				// Store all the data returned by the request
-// 				if (response) {
-// 					updateStore(marketSummaryDataKey, response[0]);
-// 					updateStore(protocolSummaryDataKey, response[1]);
-// 					updateStore(ethToUsdKey, response[2]);
-// 				} else {
-// 					updateStore(marketSummaryDataKey, null);
-// 					updateStore(protocolSummaryDataKey, null);
-// 					updateStore(ethToUsdKey, null);
-// 				}
-// 			}
-// 		}
-
-// 		checkForData();
-// 	}, [marketSummaryDataList, updateStore]);
-
-// 	useEffect(() => {
-// 		if (marketSummaryDataList) {
-// 			let queriedData = marketSummaryDataList;
-// 			if (coin !== null && coin !== undefined) {
-// 				queriedData = querySummaryData(queriedData, coin);
-// 			}
-// 			setQueriedData(queriedData);
-// 		}
-// 	}, [coin, marketSummaryDataList]);
-
-// 	return queriedData;
-// }
-
-/**
- * Hook to get protocol summary data
- * @returns protocol summary data, or null if it is not available
- */
-// export function useProtocolSummaryData(): protocol_summary_data_S | null {
-// 	// const [store, { updateStore }] = useGlobalStore();
-// 	// const protocolSummaryData = store[protocolSummaryDataKey];
-
-// 	// useEffect(() => {
-// 	// 	async function checkForData() {
-// 	// 		// Fetch the data if it hasn't been fetched already:
-// 	// 		if (!protocolSummaryData) {
-// 	// 			const response = await requestSummaryData();
-
-// 	// 			// Store all the data returned by the request
-// 	// 			if (response) {
-// 	// 				updateStore(marketSummaryDataKey, response[0]);
-// 	// 				updateStore(protocolSummaryDataKey, response[1]);
-// 	// 				updateStore(ethToUsdKey, response[2]);
-// 	// 			} else {
-// 	// 				updateStore(marketSummaryDataKey, null);
-// 	// 				updateStore(protocolSummaryDataKey, null);
-// 	// 				updateStore(ethToUsdKey, null);
-// 	// 			}
-// 	// 		}
-// 	// 	}
-
-// 	// 	checkForData();
-// 	// }, [protocolSummaryData, updateStore]);
-
-// 	return protocolSummaryData;
-// }
-
-// export function useProtocolSummaryData():
-
-/**
- * Hook to get the eth to usd conversion
- * @returns eth to usd converion, or null if unavailable
- */
-// export function useEthToUsd(): number | null {
-// 	const [store, { updateStore }] = useGlobalStore();
-// 	const ethToUsd = store[ethToUsdKey];
-
-// 	useEffect(() => {
-// 		async function checkForData() {
-// 			// Fetch the data if it hasn't been fetched already:
-// 			if (!ethToUsd) {
-// 				const response = await requestSummaryData();
-
-// 				// Store all the data returned by the request
-// 				if (response) {
-// 					updateStore(marketSummaryDataKey, response[0]);
-// 					updateStore(protocolSummaryDataKey, response[1]);
-// 					updateStore(ethToUsdKey, response[2]);
-// 				} else {
-// 					updateStore(marketSummaryDataKey, null);
-// 					updateStore(protocolSummaryDataKey, null);
-// 					updateStore(ethToUsdKey, null);
-// 				}
-// 			}
-// 		}
-
-// 		checkForData();
-// 	}, [ethToUsd, updateStore]);
-
-// 	return ethToUsd;
-// }
-
-// export function useGasData() {
-// 	const [store, { updateStore }] = useGlobalStore();
-// 	const key = "gasData";
-// 	const gasData = store[key];
-
-// 	useEffect(() => {
-// 		async function checkForData() {
-// 			// Fetch the data if it hasn't been fetched already:
-// 			if (!gasData) {
-// 				const data = await requestGasData();
-// 				updateStore(key, data);
-// 			}
-// 		}
-
-// 		checkForData();
-// 	}, [gasData, updateStore]);
-
-// 	return gasData;
-// }
-
-// export function useTestData(): any {
-// 	const [store, { updateStore }] = useGlobalStore();
-// 	const testDataKey = "testKey";
-// 	const testData = store[testDataKey];
-
-// 	useEffect(() => {
-// 		async function checkForData() {
-// 			// Fetch the time series data if it hasn't been fetched already:
-// 			if (!testData) {
-// 				const data = await requestTestData();
-// 				console.log(data);
-// 				updateStore(testDataKey, data);
-// 			}
-// 		}
-
-// 		checkForData();
-// 	}, [testData, updateStore]);
-// 	return testData;
-// }
 
 export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
@@ -222,7 +30,6 @@ export function useProtocolSummaryData(): ProtocolSummaryData {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const data = await requestProtocolSummaryData();
-				console.log(data);
 				updateStore(key, data);
 			}
 		}
@@ -243,7 +50,6 @@ export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const data = await requestProtocolHistoricalData();
-				console.log(data);
 				updateStore(key, data);
 			}
 		}
@@ -315,8 +121,6 @@ export function useMarketHistoricalData(
 		checkForData();
 	}, [data, updateStore]);
 
-	console.log(data);
-
 	let queriedData = [];
 	if (data) {
 		// Get the correct resolution
@@ -325,7 +129,6 @@ export function useMarketHistoricalData(
 
 		// Get the correct data type
 		queriedData = queriedData.map((entry) => entry[dataSelector]);
-		console.log(queriedData);
 
 		// Filter on time
 		const days = TIME_SELECTOR_INFO[timeSelector].days;
@@ -339,9 +142,37 @@ export function useMarketHistoricalData(
 				return entry.date > cutoffSecs;
 			});
 		}
-
-		console.log(queriedData);
 	}
 
 	return queriedData;
+}
+
+export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
+	const [store, { _ }] = useGlobalStore();
+	const marketHistoricalDataKey = "marketHistoricalData";
+	const marketHistoricalData = store[marketHistoricalDataKey];
+	let dataMissing = false;
+	let dataBehind = false;
+	let lastSyncedDate = 0;
+
+	if (!!marketHistoricalData) {
+		const weekData = marketHistoricalData[DataResolution.WEEK];
+		const dayData = marketHistoricalData[DataResolution.DAY];
+		const hourData = marketHistoricalData[DataResolution.HOUR];
+
+		dataMissing = weekData.length === 0 || dayData.length === 0 || hourData.length === 0;
+
+		const weekLatestDate = weekData.length > 0 ? weekData[weekData.length - 1].supplyApy.date : 0;
+		const dayLatestDate = dayData.length > 0 ? dayData[dayData.length - 1].supplyApy.date : 0;
+		const hourLatestDate = hourData.length > 0 ? hourData[hourData.length - 1].supplyApy.date : 0;
+
+		lastSyncedDate = Math.max(weekLatestDate, dayLatestDate, hourLatestDate);
+
+		const now = new Date() / 1000; // in sec since unix epoche
+		if (DATA_BEHIND_TIME_THRESHOLD_S < now - lastSyncedDate) {
+			dataBehind = true;
+		}
+	}
+
+	return { dataError: dataMissing || dataBehind, lastSyncedDate: lastSyncedDate };
 }

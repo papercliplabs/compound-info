@@ -113,7 +113,6 @@ export default function TokenTable({
 	const [isAsc, setIsAsc] = useState<boolean>(false);
 
 	const sortedData = sortData(data, sortKey, isAsc);
-	console.log(sortedData);
 
 	// List of dataSelectorInfo, which is used for each column in the table
 	const columnInfoList: MarketSummaryDataSelectorInfo[] = useMemo(() => {
