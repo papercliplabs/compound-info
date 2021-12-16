@@ -28,7 +28,7 @@ const DataErrorBanner = styled(Row)`
 	text-align: center;
 `;
 
-export default function Header({ showDataErrorWarning }: { showDataErrorWarning: boolean }): JSX.Element {
+export default function Header(): JSX.Element {
 	const theme = useTheme();
 
 	const { dataError, lastSyncedDate } = useDataStatus();

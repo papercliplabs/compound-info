@@ -20,17 +20,21 @@ import { requestMarketHistoricalData } from "data/requests/marketHistoricalData"
 import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
 import { Token } from "graphql";
 
+const protocolSummaryDataKey = "protocolSummaryData";
+const protocolHistoricalDataKey = "protocolHistoricalData";
+const marketSummaryDataKey = "marketSummaryData";
+const marketHistoricalDataKey = "marketHistoricalData";
+
 export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "protocolSummaryData";
-	const data = store[key];
+	const data = store[protocolSummaryDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const data = await requestProtocolSummaryData();
-				updateStore(key, data);
+				updateStore(protocolSummaryDataKey, data);
 			}
 		}
 
@@ -42,15 +46,14 @@ export function useProtocolSummaryData(): ProtocolSummaryData {
 
 export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "protocolHistoricalData";
-	const data = store[key];
+	const data = store[protocolHistoricalDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const data = await requestProtocolHistoricalData();
-				updateStore(key, data);
+				updateStore(protocolHistoricalDataKey, data);
 			}
 		}
 
@@ -68,15 +71,14 @@ export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
  */
 export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData | undefined | MarketSummaryData[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "marketSummaryData";
-	let data = store[key];
+	let data = store[marketSummaryDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const allSummaryData = await requestMarketSummaryData();
-				updateStore(key, allSummaryData);
+				updateStore(marketSummaryDataKey, allSummaryData);
 			}
 		}
 
@@ -106,15 +108,14 @@ export function useMarketHistoricalData(
 	dataSelector: MarketDataSelector
 ): Record<Token, number>[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const key = "marketHistoricalData";
-	const data = store[key];
+	const data = store[marketHistoricalDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
 			if (!data) {
 				const data = await requestMarketHistoricalData();
-				updateStore(key, data);
+				updateStore(marketHistoricalDataKey, data);
 			}
 		}
 
@@ -175,4 +176,30 @@ export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } 
 	}
 
 	return { dataError: dataMissing || dataBehind, lastSyncedDate: lastSyncedDate };
+}
+
+/**
+ * Trigger all fetches the first time this is called
+ */
+export function usePrefetchData() {
+	const [_, { updateStore }] = useGlobalStore();
+
+	useEffect(() => {
+		async function fetchData() {
+			// Fetch the data if it hasn't been fetched already
+			const protocolSummaryData = await requestProtocolSummaryData();
+			updateStore(protocolSummaryDataKey, protocolSummaryData);
+
+			const protocolHistoricalData = await requestProtocolHistoricalData();
+			updateStore(protocolHistoricalDataKey, protocolHistoricalData);
+
+			const marketSummaryData = await requestMarketSummaryData();
+			updateStore(marketSummaryDataKey, marketSummaryData);
+
+			const marketHistoricalData = await requestMarketHistoricalData();
+			updateStore(marketHistoricalDataKey, marketHistoricalData);
+		}
+
+		fetchData();
+	}, []);
 }
