@@ -63,8 +63,7 @@ export function IconButton({}) {
 					</Row>
 					<Break />
 					<Typography.caption>
-						Powered by <StyledExternalLink href={URLS.FLIPSIDE} content="Flipside Crypto" /> and{" "}
-						<StyledExternalLink href={URLS.COMPOUND_DOCS} content="Compound API" />
+						Powered by <StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} content="The Graph" />
 					</Typography.caption>
 				</Card>
 			</Overlay>

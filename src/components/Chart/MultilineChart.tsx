@@ -15,6 +15,7 @@ import Loader from "components/Loader";
 // Used in custom labels and ticks
 const foreignObjectWidth = 150;
 const foreignObjectHeight = 25;
+const yAxisWidth = 55; // When y axis is shown
 
 const activeDotConfig = {
 	r: 5, // dot radius
@@ -113,7 +114,7 @@ function CustomTooltip({
 }
 
 // TODO: The x position is broken/wrong from recharts using my custom tick array
-function CustomXTick({ x, y, payload, showTime, show }) {
+function CustomXTick({ x, y, payload, showTime, yAxisShown, show, index, visibleTicksCount }) {
 	const width = 40;
 
 	const theme = useTheme();
@@ -123,9 +124,23 @@ function CustomXTick({ x, y, payload, showTime, show }) {
 		return null;
 	}
 
+	let xPosition = x - width / 2;
+
+	if (index === 0) {
+		// Left end point
+		xPosition -= width / 2;
+	} else if (index === visibleTicksCount - 1) {
+		// Right end point
+		if (yAxisShown) {
+			xPosition += width - yAxisWidth;
+		} else {
+			xPosition += width / 2;
+		}
+	}
+
 	// Render foreignObject first, as this allows us to render html and not just svg
 	return (
-		<foreignObject x={x - width / 2} y={y - 5} width={width} height={foreignObjectHeight}>
+		<foreignObject x={xPosition} y={y - 5} width={width} height={foreignObjectHeight}>
 			<StyledCustomXTick>
 				<Typography.subheader color={theme.color.text2}>{formattedDate}</Typography.subheader>
 			</StyledCustomXTick>
@@ -146,7 +161,7 @@ function CustomYTick({ x, y, payload, show, unit }): JSX.Element | null {
 	}
 
 	return (
-		<foreignObject x={x} y={y - 15} width={foreignObjectWidth} height={foreignObjectHeight}>
+		<foreignObject x={x} y={y - 15} width={yAxisWidth} height={foreignObjectHeight}>
 			<StyledCustomYTick>
 				<Typography.subheader color={theme.color.text2}>{formattedValue}</Typography.subheader>
 			</StyledCustomYTick>
@@ -248,11 +263,15 @@ export default function MultilineChart({
 		);
 	});
 
-	const showTime = dataLoaded && shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
+	const maxDate = dataLoaded ? data[data.length - 1][dateKey] : 0;
+	const minDate = dataLoaded ? data[0][dateKey] : 0;
+
+	const showTime = shouldShowTime(maxDate, minDate);
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
-	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
-	const chartHeight = window.innerWidth < mediaQuerySizes.small ? 200 : 300;
+	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks, dateKey);
+	const chartHeight =
+		window.innerWidth < mediaQuerySizes.small ? (chartConfig.baseChartHeightPx * 2) / 3 : chartConfig.baseChartHeightPx;
 	const showValueInTooltip = chartConfig.showValueInTooltip && lineInfoList.length === 1; // Only show value if there is 1 entry
 	const keys = lineInfoList.map((info) => info.key);
 
@@ -260,7 +279,12 @@ export default function MultilineChart({
 		<ResponsiveContainer width="100%" height={chartHeight}>
 			{dataLoaded ? (
 				<AreaChart
-					margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
+					margin={{
+						left: 10,
+						top: chartConfig.showValueInTooltip ? 25 : -1,
+						right: 10,
+						bottom: chartConfig.showXTick ? 0 : -15,
+					}}
 					data={data}
 				>
 					<CartesianGrid
@@ -277,11 +301,13 @@ export default function MultilineChart({
 					</defs>
 					<XAxis
 						dataKey={dateKey}
-						tick={<CustomXTick showTime={showTime} show={chartConfig.showXTick} />}
+						tick={<CustomXTick showTime={showTime} show={chartConfig.showXTick} yAxisShown={chartConfig.showYTick} />}
 						axisLine={chartConfig.showXAxis}
 						ticks={xAxisTicks}
-						tickLine={chartConfig.showXTick}
+						tickLine={false}
 						interval={"preserveStartEnd"}
+						type="number"
+						domain={[minDate, maxDate]}
 					/>
 					<YAxis
 						datekey={lineInfoList[0]}
@@ -289,7 +315,7 @@ export default function MultilineChart({
 						orientation="right"
 						tick={<CustomYTick show={chartConfig.showYTick} unit={unit} />}
 						axisLine={chartConfig.showYAxis}
-						width={chartConfig.showYTick ? 55 : 0}
+						width={chartConfig.showYTick ? yAxisWidth : 0}
 						tickLine={false}
 					/>
 					<Tooltip
@@ -378,14 +404,14 @@ function shouldShowTime(newestDate: number, oldestDate: number): boolean {
  * @param numberOfTicks number of ticks to show
  * @returns array of indicies in the time series data of the values to put on each tick
  */
-function getXTicks(data: Record<string, number>[], numberOfTicks: number) {
+function getXTicks(data: Record<Token, number>[], numberOfTicks: number, dateKey: string) {
 	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
 
 	const ticks = Array(numberOfTicks);
 	const length = data.length;
 	for (let i = 0; i < numberOfTicks; i++) {
 		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
-		ticks[i] = data[index].blockTime;
+		ticks[i] = data[index][dateKey];
 	}
 
 	return ticks;

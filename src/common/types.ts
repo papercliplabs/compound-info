@@ -144,6 +144,7 @@ export interface ChartConfig {
 	numberOfXAxisTicks: number; // Only relevent when showXAxis is true
 	animate: boolean;
 	showValueInTooltip: boolean;
+	baseChartHeightPx: number; // Chart height in px for large screens
 }
 
 /**

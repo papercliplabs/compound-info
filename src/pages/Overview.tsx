@@ -39,12 +39,7 @@ export default function Overview(): JSX.Element | null {
 	const protocolHistoricalData = useProtocolHistoricalData();
 	const marketSummaryData = useMarketSummaryData();
 
-	const temp = useMarketHistoricalData(TimeSelector.ONE_WEEK, MarketDataSelector.SUPPLY_APY);
-
-	console.log(temp);
-
-	console.log(protocolHistoricalData);
-	console.log(marketSummaryData);
+	// const temp = useMarketHistoricalData(TimeSelector.ONE_WEEK, MarketDataSelector.SUPPLY_APY);
 
 	// Scroll to the top of the page on first visit
 	useEffect(() => {
@@ -87,6 +82,7 @@ export default function Overview(): JSX.Element | null {
 		showCurrentValue: true,
 		animate: true,
 		showValueInTooltip: true,
+		baseChartHeightPx: 200,
 	};
 
 	return (

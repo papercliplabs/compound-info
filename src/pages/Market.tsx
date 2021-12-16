@@ -54,7 +54,6 @@ export default function Market({ match }): JSX.Element | null {
 	}, [match]);
 
 	const summaryData = useMarketSummaryData(token);
-	console.log(summaryData);
 	// const marketData = useMarketSummaryData(coin);
 
 	if (!token) {
@@ -70,36 +69,38 @@ export default function Market({ match }): JSX.Element | null {
 	const cTokenAddress = summaryData.id;
 	const etherscanLink = getEtherscanLink(cTokenAddress);
 
-	const tokenSelectorChartConfig: chart_config_S = {
+	const tokenSelectorChartConfig: ChartConfig = {
 		showAvg: true,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: false,
+		showXTick: true,
 		showYTick: true,
 		showHorizontalGrid: true,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 2,
+		numberOfXAxisTicks: 3,
 		animate: true,
 		showValueInTooltip: false,
+		baseChartHeightPx: 300,
 	};
 
 	const tokenSelectorChartDataSelectors = includeComp
 		? [MarketDataSelector.TOTAL_SUPPLY_APY, MarketDataSelector.TOTAL_BORROW_APY]
 		: [MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY];
 
-	const timeSeriesChartConfig: ChartConfig = {
-		showAvg: true,
+	const supplyBorrowReservesChartConfig: ChartConfig = {
+		showAvg: false,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: false,
-		showYTick: true,
-		showHorizontalGrid: true,
+		showXTick: true,
+		showYTick: false,
+		showHorizontalGrid: false,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 2,
+		numberOfXAxisTicks: 3,
 		animate: true,
 		showValueInTooltip: true,
+		baseChartHeightPx: 200,
 	};
 
 	const timeSelectorOptions = [
@@ -146,7 +147,7 @@ export default function Market({ match }): JSX.Element | null {
 					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
-						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
+						<ResponsiveRow gap={theme.spacing.xxl} gapSmall={theme.spacing.lg}>
 							<Column gap={theme.spacing.lg}>
 								<StatRow
 									title={"Token price"}
@@ -201,7 +202,7 @@ export default function Market({ match }): JSX.Element | null {
 					<SectionTitle title={"Supply, Borrow and Reserves"} />
 					<Card>
 						<TimeSeriesChart
-							chartConfig={timeSeriesChartConfig}
+							chartConfig={supplyBorrowReservesChartConfig}
 							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
 							dataSelectorOptions={[
 								MarketDataSelector.TOTAL_SUPPLY,
@@ -214,10 +215,9 @@ export default function Market({ match }): JSX.Element | null {
 					</Card>
 					<Card>
 						<TimeSeriesChart
-							chartConfig={timeSeriesChartConfig}
+							chartConfig={supplyBorrowReservesChartConfig}
 							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
 							dataSelectorOptions={[
-								MarketDataSelector.USDC_PER_UNDERLYING,
 								MarketDataSelector.TOTAL_SUPPLY_USD,
 								MarketDataSelector.TOTAL_BORROW_USD,
 								MarketDataSelector.TOTAL_RESERVES_USD,
