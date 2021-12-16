@@ -193,6 +193,9 @@ async function performPagenationRequest(
 					outputData.push(entry);
 				}
 
+				// Update date
+				currentDate = Number(historicalData[i].date);
+
 				// Reset accumulators
 				supplyApyEntry = { date: currentDate };
 				borrowApyEntry = { date: currentDate };
@@ -206,9 +209,6 @@ async function performPagenationRequest(
 				totalReservesUsdEntry = { date: currentDate };
 				utalizationEntry = { date: currentDate };
 				usdcPerUnderlyingEntry = { date: currentDate };
-
-				// Update date
-				currentDate = Number(historicalData[i].date);
 			}
 
 			const tokenSymbol = historicalData[i].market.underlyingSymbol;

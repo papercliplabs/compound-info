@@ -331,7 +331,8 @@ export const URLS = {
 	COMPOUND_FINANCE: "https://compound.finance",
 	COMPOUND_GRANTS: "https://twitter.com/compoundgrants",
 	GITHUB: "https://github.com/papercliplabs/compound-info",
-	SUBGRAPH: process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_URL as string,
+	SUBGRAPH_API: process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_URL as string,
+	SUBGRAPH_FRONT_END: "https://thegraph.com/hosted-service/subgraph/papercliplabs/compound-info?version=current",
 };
 
 // ID where the protocol mapping

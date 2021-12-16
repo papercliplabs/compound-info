@@ -58,6 +58,7 @@ declare module "styled-components" {
 			md: string;
 			lg: string;
 			xl: string;
+			xxl: string;
 		};
 
 		shadow: {

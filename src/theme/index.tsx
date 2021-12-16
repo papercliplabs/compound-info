@@ -78,6 +78,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 			md: "16px",
 			lg: "24px",
 			xl: "40px",
+			xxl: "60px",
 		},
 
 		shadow: {
