@@ -10,6 +10,7 @@ import { TIME_SELECTOR_INFO } from "common/constants";
 
 import { formatNumber, formatDate } from "common/utils";
 import { Typography, mediaQuerySizes, theme } from "theme";
+import Loader from "components/Loader";
 
 // Used in custom labels and ticks
 const foreignObjectWidth = 150;
@@ -19,6 +20,8 @@ const activeDotConfig = {
 	r: 5, // dot radius
 	strokeWidth: 0,
 };
+
+const dataLoadTimeoutMs = 3000; // ms before it is considered we have a data error
 
 const StyledTooltip = styled.div`
 	text-align: center;
@@ -198,6 +201,13 @@ export default function MultilineChart({
 }): JSX.Element {
 	const theme = useTheme();
 	const [avg, setAvg] = useState<number | undefined>(undefined);
+	const [dataLoadTimeout, setDataLoadTimeout] = useState<boolean>(false);
+
+	const dataLoaded = data && data.length !== 0;
+
+	useEffect(() => {
+		setTimeout(() => setDataLoadTimeout(true), dataLoadTimeoutMs);
+	}, []);
 
 	useEffect(() => {
 		// Only display avg if 1 coin is selected
@@ -216,8 +226,6 @@ export default function MultilineChart({
 			strokeDasharray: "5,5",
 		};
 	}, [theme]);
-
-	const dataError = !data || data.length === 0;
 
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
@@ -240,7 +248,7 @@ export default function MultilineChart({
 		);
 	});
 
-	const showTime = !dataError && shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
+	const showTime = dataLoaded && shouldShowTime(Number(data[data.length - 1][dateKey]), Number(data[0][dateKey]));
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
 	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks);
@@ -250,7 +258,7 @@ export default function MultilineChart({
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			{!dataError ? (
+			{dataLoaded ? (
 				<AreaChart
 					margin={{ left: 0, top: chartConfig.showValueInTooltip ? 25 : -1, bottom: chartConfig.showXTick ? 0 : -15 }}
 					data={data}
@@ -310,9 +318,15 @@ export default function MultilineChart({
 					/>
 				</AreaChart>
 			) : (
-				<NoDataWrapper>
-					<Typography.header color={theme.color.text2}>Error loading data</Typography.header>
-				</NoDataWrapper>
+				<>
+					{dataLoadTimeout ? (
+						<NoDataWrapper>
+							<Typography.header color={theme.color.text2}>Error loading data</Typography.header>
+						</NoDataWrapper>
+					) : (
+						<Loader size="100px" />
+					)}
+				</>
 			)}
 		</ResponsiveContainer>
 	);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Market from "pages/Market";
 import styled from "styled-components";
 import { HashRouter, Route, Switch } from "react-router-dom";
@@ -7,6 +7,10 @@ import GoogleAnalyticsReporter from "components/analytics/GoogleAnalyticsReporte
 import Header from "components/Header";
 import Footer from "components/Footer";
 import Overview from "pages/Overview";
+import Loader from "components/Loader";
+import { usePrefetchData } from "data/hooks";
+
+const loadingScreenTimeMs = 1500; // ms to hold in loading screen on app load
 
 const HeaderWrapper = styled.div`
 	position: fixed;
@@ -26,16 +30,14 @@ const FooterWrapper = styled.div`
 	}
 `;
 
-const StyledBody = styled.div<{
-	warningActive: boolean;
-}>`
+const StyledBody = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
 	padding: 40px;
-	padding-top: ${({ warningActive }) => (warningActive ? "150px" : "100px")};
+	padding-top: 150px;
 	column-gap: ${({ theme }) => theme.spacing.md};
 	row-gap: ${({ theme }) => theme.spacing.md};
 
@@ -52,23 +54,36 @@ const StyledBody = styled.div<{
 `;
 
 export default function App(): JSX.Element {
-	const dataError = true;
+	const [loading, setLoading] = useState<boolean>(true);
+
+	// Triggers data fetching on the first call during the loading state
+	usePrefetchData();
+
+	useEffect(() => {
+		setTimeout(() => setLoading(false), loadingScreenTimeMs);
+	}, []);
 
 	return (
-		<HashRouter>
-			<Route component={GoogleAnalyticsReporter} />
-			<HeaderWrapper>
-				<Header showDataErrorWarning={dataError} />
-			</HeaderWrapper>
-			<StyledBody warningActive={dataError}>
-				<Switch>
-					<Route exact strict path="/" component={Overview} />
-					<Route exact strict path="/:token" component={Market} />
-				</Switch>
-			</StyledBody>
-			<FooterWrapper>
-				<Footer />
-			</FooterWrapper>
-		</HashRouter>
+		<>
+			{loading ? (
+				<Loader size="200px" />
+			) : (
+				<HashRouter>
+					<Route component={GoogleAnalyticsReporter} />
+					<HeaderWrapper>
+						<Header />
+					</HeaderWrapper>
+					<StyledBody>
+						<Switch>
+							<Route exact strict path="/" component={Overview} />
+							<Route exact strict path="/:token" component={Market} />
+						</Switch>
+					</StyledBody>
+					<FooterWrapper>
+						<Footer />
+					</FooterWrapper>
+				</HashRouter>
+			)}
+		</>
 	);
 }
