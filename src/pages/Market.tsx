@@ -23,7 +23,7 @@ import TokenSelectorTimeSeriesChart from "components/Chart/TokenSelectorTimeSeri
 import MultilineChart from "components/Chart/MultilineChart";
 
 import { ChartConfig } from "common/types";
-import { MarketDataSelector, TimeSelector } from "common/enums";
+import { DataType, MarketDataSelector, TimeSelector } from "common/enums";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -44,6 +44,7 @@ export default function Market({ match }): JSX.Element | null {
 	const theme = useTheme();
 	const gap = theme.spacing.md;
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
+	const [showInUsd, setShowInUsd] = useState<boolean>(false);
 
 	const underlyingSymbol = match.params.token; // From url
 	const token = getTokenForUnderlyingSymbol(underlyingSymbol);
@@ -84,11 +85,17 @@ export default function Market({ match }): JSX.Element | null {
 		baseChartHeightPx: 300,
 	};
 
-	const tokenSelectorChartDataSelectors = includeComp
+	const apyChartDataSelectors = includeComp
 		? [MarketDataSelector.TOTAL_SUPPLY_APY, MarketDataSelector.TOTAL_BORROW_APY]
 		: [MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY];
 
-	const supplyBorrowReservesChartConfig: ChartConfig = {
+	const supplyBorrowReservesChartDataSelectors = showInUsd
+		? [MarketDataSelector.TOTAL_SUPPLY_USD, MarketDataSelector.TOTAL_BORROW_USD, MarketDataSelector.TOTAL_RESERVES_USD]
+		: [MarketDataSelector.TOTAL_SUPPLY, MarketDataSelector.TOTAL_BORROW, MarketDataSelector.TOTAL_RESERVES];
+
+	const tokenPriceDataSelectors = [MarketDataSelector.USDC_PER_UNDERLYING];
+
+	const lowerChartsConfig: ChartConfig = {
 		showAvg: false,
 		showXAxis: false,
 		showYAxis: false,
@@ -140,7 +147,7 @@ export default function Market({ match }): JSX.Element | null {
 					<Card>
 						<TokenSelectorTimeSeriesChart
 							chartConfig={tokenSelectorChartConfig}
-							dataSelectorOptions={tokenSelectorChartDataSelectors}
+							dataSelectorOptions={apyChartDataSelectors}
 							timeSelectorOptions={timeSelectorOptions}
 							mainToken={token}
 						/>
@@ -199,29 +206,33 @@ export default function Market({ match }): JSX.Element | null {
 							</Column>
 						</ResponsiveRow>
 					</Card>
-					<SectionTitle title={"Supply, Borrow and Reserves"} />
+					<Row>
+						<SectionTitle width="auto" title={"Supply, Borrow and Reserves"} />
+						<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
+							<TooltipText
+								baseText={<Typography.body color="text2">USD equivilent</Typography.body>}
+								tooltipContent="Toggle to convert to total number of tokens supplied, borrowed and in reserves to the USD equivilent values. That is, the number of tokens, times the token value at that time."
+							/>
+							<ToggleButton active={showInUsd} onClick={() => setShowInUsd(!showInUsd)} />
+						</Row>
+					</Row>
 					<Card>
 						<TimeSeriesChart
-							chartConfig={supplyBorrowReservesChartConfig}
+							chartConfig={lowerChartsConfig}
 							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
-							dataSelectorOptions={[
-								MarketDataSelector.TOTAL_SUPPLY,
-								MarketDataSelector.TOTAL_BORROW,
-								MarketDataSelector.TOTAL_RESERVES,
-							]}
+							dataType={DataType.MARKET}
+							dataSelectorOptions={supplyBorrowReservesChartDataSelectors}
 							token={token}
 							timeSelectorOptions={timeSelectorOptions}
 						/>
 					</Card>
+					<SectionTitle title={"Token price in USD"} />
 					<Card>
 						<TimeSeriesChart
-							chartConfig={supplyBorrowReservesChartConfig}
+							chartConfig={lowerChartsConfig}
 							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
-							dataSelectorOptions={[
-								MarketDataSelector.TOTAL_SUPPLY_USD,
-								MarketDataSelector.TOTAL_BORROW_USD,
-								MarketDataSelector.TOTAL_RESERVES_USD,
-							]}
+							dataType={DataType.MARKET}
+							dataSelectorOptions={tokenPriceDataSelectors}
 							token={token}
 							timeSelectorOptions={timeSelectorOptions}
 						/>

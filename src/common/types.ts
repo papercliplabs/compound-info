@@ -54,7 +54,7 @@ export interface ProtocolHistoricalData extends ProtocolSummaryData {
  * Holds metadata for protocol data selectors
  */
 export interface ProtocolDataSelectorInfo {
-	key: keyof ProtocolSummaryData;
+	key: ProtocolDataSelector;
 	name: string;
 	description: string;
 	unit: Unit;
@@ -71,7 +71,7 @@ export type ProtocolDataSelectorInfoList = {
  * Format of shared market data from the subgraph
  */
 type MarketCoreData = {
-	[selector in MarketDataSelector]: string;
+	[selector in MarketDataSelector]: number;
 };
 
 /**
@@ -88,25 +88,22 @@ export interface MarketSummaryData extends MarketCoreData {
 	reserveFactor: string;
 	borrowCap: string;
 	cash: string;
-	usdcPerUnderlying: string;
-	usdcPerEth: string;
 	availableLiquidity: string;
 	availableLiquidityUsd: string;
 }
-// TODO: change all numbers from the graph to strings!
 
 /**
  * Format of historical market data
  */
 export interface MarketHistoricalData extends MarketCoreData {
-	date: string;
+	date: number;
 }
 
 /**
  * Holds metadata for market data selectors
  */
 export interface MarketDataSelectorInfo {
-	key: keyof MarketCoreData;
+	key: MarketDataSelector;
 	name: string;
 	description: string;
 	unit: Unit;

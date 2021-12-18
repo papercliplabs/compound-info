@@ -2,16 +2,16 @@
 import React, { useState, useMemo, useCallback } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { TimeSelector, MarketDataSelector, Token } from "common/enums";
+import { TimeSelector, DataSelector, Token, DataType } from "common/enums";
 import { LineInfo, ChartConfig } from "common/types";
 
-import { useMarketHistoricalData } from "data/hooks";
+import { useHistoricalData } from "data/hooks";
 import { OptionButton, OptionButtonVariantBackdrop } from "components/Button";
 import MultilineChart from "components/Chart/MultilineChart";
 import Column from "components/Column";
 import { ScrollRow, ResponsiveRow } from "components/Row";
 import { Typography } from "theme";
-import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO } from "common/constants";
+import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
 
 const StyledChartContainer = styled.div`
@@ -42,7 +42,8 @@ const DataSelectorRow = styled(OptionButtonVariantBackdrop)`
  * @param chartConfig the chart configuration
  * @param token the core token of this chart, if this is set the current value will be shown in the top left, otherwise it will be hidden
  * @param lineInfoList list of the line info for the lines to be plotted
- * @param dataSelectorOptions list of data selectors, if only 1 selector is provided buttons are not shown.
+ * @param dataType type of the data, this determines the data source to use
+ * @param dataSelectorOptions list of data selectors, if only 1 selector is provided buttons are not shown, this should be a selector for the dataType
  * @param timeSelectorOptions list of the time selectors to show buttons for, if only 1 selector is provided no buttons are shown
  * @param hoverDataCallback callback to recieve the hover data, this is the data hovered over for the coins in lineInfoList, and the last data point for the coins not in lastInfoList
  * @returns react element which is a time series chart, with a row of time selectors below the chart, and data selectors + current value above
@@ -51,6 +52,7 @@ export default function TimeSeriesChart({
 	chartConfig,
 	token,
 	lineInfoList,
+	dataType,
 	dataSelectorOptions,
 	timeSelectorOptions,
 	hoverDataCallback,
@@ -58,7 +60,8 @@ export default function TimeSeriesChart({
 	chartConfig: ChartConfig;
 	token?: Token;
 	lineInfoList: LineInfo[];
-	dataSelectorOptions: MarketDataSelector[];
+	dataType: DataType;
+	dataSelectorOptions: DataSelector[];
 	timeSelectorOptions: TimeSelector[];
 	hoverDataCallback?: (hoverData: Record<string, any>) => void;
 }): JSX.Element | null {
@@ -77,7 +80,11 @@ export default function TimeSeriesChart({
 		}
 	}
 
-	const selectedData = useMarketHistoricalData(timeSelector, dataSelector);
+	const selectedData = useHistoricalData(dataType, timeSelector, dataSelector);
+
+	console.log(selectedData);
+
+	const dataSelectorInfo = DataType.PROTOCOL === dataType ? PROTOCOL_DATA_SELECTOR_INFO : MARKET_DATA_SELECTOR_INFO;
 
 	const dataSelectorButtons = useMemo(() => {
 		if (dataSelectorOptions.length <= 1) {
@@ -89,7 +96,7 @@ export default function TimeSeriesChart({
 			return (
 				<OptionButton
 					key={i}
-					buttonContent={MARKET_DATA_SELECTOR_INFO[selector].name}
+					buttonContent={dataSelectorInfo[selector].name}
 					active={dataSelector === selector}
 					onClick={() => {
 						setDataSelector(selector);
@@ -142,24 +149,21 @@ export default function TimeSeriesChart({
 		[selectedData, hoverDataCallback, lineInfoList] // lineInfoList here causes infinite loop since it updates on this useCallback
 	);
 
-	// if (!data || lineInfoList.length === 0) {
-	// 	return null;
-	// }
-
-	const currentValue = selectedData && selectedData.length > 0 ? selectedData.slice(-1)[0][token] ?? "-" : "-";
-	const dataSelectorDescription = MARKET_DATA_SELECTOR_INFO[dataSelector].description;
-	const dataSelectorUnit = MARKET_DATA_SELECTOR_INFO[dataSelector].unit;
+	const currentValue =
+		selectedData && selectedData.length > 0
+			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? "-"
+			: "-";
+	const dataSelectorDescription = dataSelectorInfo[dataSelector].description;
+	const dataSelectorUnit = dataSelectorInfo[dataSelector].unit;
 
 	return (
 		<StyledChartContainer>
-			{(!!token || dataSelectorOptions.length > 1) && (
+			{dataSelectorOptions.length > 0 && (
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
-					{!!token && (
-						<Column align="flex-start" overflow="visible" flex={1}>
-							<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
-							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
-						</Column>
-					)}
+					<Column align="flex-start" overflow="visible" flex={1}>
+						<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
+						<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+					</Column>
 					{dataSelectorOptions.length > 1 && <DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>}
 				</ResponsiveRow>
 			)}

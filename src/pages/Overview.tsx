@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { TimeSelector, MarketDataSelector } from "common/enums";
+import { TimeSelector, MarketDataSelector, ProtocolDataSelector, DataType } from "common/enums";
 
 import { Typography } from "theme";
 import compoundLogo from "assets/compoundLogo.svg";
@@ -16,12 +16,7 @@ import TooltipText from "components/TooltipText";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
 import MultilineChart from "components/Chart/MultilineChart";
 
-import {
-	useMarketHistoricalData,
-	useMarketSummaryData,
-	useProtocolHistoricalData,
-	useProtocolSummaryData,
-} from "data/hooks";
+import { useHistoricalData, useMarketSummaryData, useProtocolSummaryData } from "data/hooks";
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.lg};
@@ -36,7 +31,6 @@ export default function Overview(): JSX.Element | null {
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
 
 	const protocolSummaryData = useProtocolSummaryData();
-	const protocolHistoricalData = useProtocolHistoricalData();
 	const marketSummaryData = useMarketSummaryData();
 
 	// const temp = useMarketHistoricalData(TimeSelector.ONE_WEEK, MarketDataSelector.SUPPLY_APY);
@@ -65,20 +59,20 @@ export default function Overview(): JSX.Element | null {
 		}
 	}, [includeComp]);
 
-	if (!protocolSummaryData || !protocolHistoricalData || !marketSummaryData) {
+	if (!protocolSummaryData || !marketSummaryData) {
 		return null; // Loading data still
 	}
 
 	const chartConfig: chart_config_S = {
 		showAvg: false,
 		showXAxis: false,
-		showYAxis: true,
+		showYAxis: false,
 		showXTick: true,
-		showYTick: true,
+		showYTick: false,
 		showHorizontalGrid: false,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 2,
+		numberOfXAxisTicks: 3,
 		showCurrentValue: true,
 		animate: true,
 		showValueInTooltip: true,
@@ -93,28 +87,23 @@ export default function Overview(): JSX.Element | null {
 			</Row>
 			<SectionTitle title="Compound Overview" />
 			<ResponsiveRow gap={gap}>
-				<Card>
-					<MultilineChart
-						data={protocolHistoricalData.slice(90, 100)}
-						lineInfoList={[{ key: "totalSupplyUsd", color: theme.color.lineChartColors[0] }]}
+				<Card height="100%">
+					<TimeSeriesChart
 						chartConfig={chartConfig}
-						dateKey="date"
-						onHover={() => {}}
+						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[0] }]}
+						dataType={DataType.PROTOCOL}
+						dataSelectorOptions={[ProtocolDataSelector.TOTAL_SUPPLY_USD, ProtocolDataSelector.TOTAL_BORROW_USD]}
+						timeSelectorOptions={[TimeSelector.ALL]}
 					/>
-					{/* <TimeSeriesChart
-						chartConfig={chartConfig}
-						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[0] }]}
-						dataSelectors={[time_series_data_selector_E.SUPPLY_USD, time_series_data_selector_E.BORROW_USD]}
-						timeSelectors={[time_selector_E.ALL]}
-					/> */}
 				</Card>
-				<Card>
-					{/* <TimeSeriesChart
+				<Card height="100%">
+					<TimeSeriesChart
 						chartConfig={chartConfig}
-						lineInfoList={[{ coin: "ALL", color: theme.color.lineChartColors[1] }]}
-						dataSelectors={[time_series_data_selector_E.RESERVES_USD]}
-						timeSelectors={[time_selector_E.ALL]}
-					/> */}
+						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[1] }]}
+						dataType={DataType.PROTOCOL}
+						dataSelectorOptions={[ProtocolDataSelector.TOTAL_RESERVES_USD]}
+						timeSelectorOptions={[TimeSelector.ALL]}
+					/>
 				</Card>
 			</ResponsiveRow>
 			<ResponsiveRow gap={gap}>

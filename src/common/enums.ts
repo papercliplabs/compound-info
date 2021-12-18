@@ -70,6 +70,14 @@ export enum MarketDataSelector {
 }
 
 /**
+ * Types of data selectors
+ */
+export enum DataType {
+	PROTOCOL = 0,
+	MARKET,
+}
+
+/**
  * Units for data used within the app
  */
 export enum Unit {
