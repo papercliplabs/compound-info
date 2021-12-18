@@ -266,19 +266,19 @@ export const MARKET_DATA_SELECTOR_INFO: MarketDataSelectorInfoList = {
 	[MarketDataSelector.TOTAL_SUPPLY]: {
 		key: MarketDataSelector.TOTAL_SUPPLY,
 		name: "Supply",
-		description: "total supplied in the underlying asset",
+		description: "total tokens supplied",
 		unit: Unit.UNITLESS,
 	},
 	[MarketDataSelector.TOTAL_SUPPLY_USD]: {
 		key: MarketDataSelector.TOTAL_SUPPLY_USD,
 		name: "Supply",
-		description: "total supplied USD",
+		description: "total supplied in USD",
 		unit: Unit.USD,
 	},
 	[MarketDataSelector.TOTAL_BORROW]: {
 		key: MarketDataSelector.TOTAL_BORROW,
 		name: "Borrow",
-		description: "total borrowed in the underlying asset",
+		description: "total tokens borrowed",
 		unit: Unit.UNITLESS,
 	},
 	[MarketDataSelector.TOTAL_BORROW_USD]: {
@@ -290,7 +290,7 @@ export const MARKET_DATA_SELECTOR_INFO: MarketDataSelectorInfoList = {
 	[MarketDataSelector.TOTAL_RESERVES]: {
 		key: MarketDataSelector.TOTAL_RESERVES,
 		name: "Reserves",
-		description: "total reserves in the underlying asset",
+		description: "total tokens in reserves",
 		unit: Unit.UNITLESS,
 	},
 	[MarketDataSelector.TOTAL_RESERVES_USD]: {
@@ -308,13 +308,13 @@ export const MARKET_DATA_SELECTOR_INFO: MarketDataSelectorInfoList = {
 	[MarketDataSelector.USDC_PER_UNDERLYING]: {
 		key: MarketDataSelector.USDC_PER_UNDERLYING,
 		name: "USD per underlying",
-		description: "Value of the underlying asset in USDC",
+		description: "value of the underlying asset in USDC",
 		unit: Unit.USD,
 	},
 	[MarketDataSelector.USDC_PER_ETH]: {
 		key: MarketDataSelector.USDC_PER_ETH,
 		name: "USD per ETH",
-		description: "Value of ETH in USDC",
+		description: "value of ETH in USDC",
 		unit: Unit.USD,
 	},
 };

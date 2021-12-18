@@ -11,6 +11,7 @@ import { TIME_SELECTOR_INFO } from "common/constants";
 import { formatNumber, formatDate } from "common/utils";
 import { Typography, mediaQuerySizes, theme } from "theme";
 import Loader from "components/Loader";
+import { Token } from "graphql";
 
 // Used in custom labels and ticks
 const foreignObjectWidth = 150;
@@ -264,21 +265,37 @@ export default function MultilineChart({
 	});
 
 	const maxDate = dataLoaded ? data[data.length - 1][dateKey] : 0;
-	const minDate = dataLoaded ? data[0][dateKey] : 0;
+	const { minDate, minDateIndex } = useMemo(() => {
+		return dataLoaded
+			? findMinDate(
+					data,
+					lineInfoList.map((entry) => entry.key),
+					dateKey
+			  )
+			: { minDate: 0, minDateIndex: 0 };
+	}, [data, lineInfoList, dateKey]);
+
+	const xAxisTicks = useMemo(() => {
+		return getXTicks(data, chartConfig.numberOfXAxisTicks, dateKey, minDateIndex);
+	}, [data, chartConfig.numberOfXAxisTicks, dateKey, minDateIndex]);
+
+	const chartHeight =
+		window.innerWidth < mediaQuerySizes.small ? (chartConfig.baseChartHeightPx * 2) / 3 : chartConfig.baseChartHeightPx;
+
+	const keys = useMemo(() => {
+		return lineInfoList.map((info) => info.key);
+	}, [lineInfoList]);
 
 	const showTime = shouldShowTime(maxDate, minDate);
 	const toolTipWidth = showTime ? 150 : 90;
 	const toolTipOffset = -toolTipWidth / 2; // Center it on the cursor
-	const xAxisTicks = getXTicks(data, chartConfig.numberOfXAxisTicks, dateKey);
-	const chartHeight =
-		window.innerWidth < mediaQuerySizes.small ? (chartConfig.baseChartHeightPx * 2) / 3 : chartConfig.baseChartHeightPx;
 	const showValueInTooltip = chartConfig.showValueInTooltip && lineInfoList.length === 1; // Only show value if there is 1 entry
-	const keys = lineInfoList.map((info) => info.key);
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
 			{dataLoaded ? (
 				<AreaChart
+					height={chartHeight}
 					margin={{
 						left: 10,
 						top: chartConfig.showValueInTooltip ? 25 : -1,
@@ -308,6 +325,7 @@ export default function MultilineChart({
 						interval={"preserveStartEnd"}
 						type="number"
 						domain={[minDate, maxDate]}
+						allowDataOverflow={true}
 					/>
 					<YAxis
 						datekey={lineInfoList[0]}
@@ -317,6 +335,7 @@ export default function MultilineChart({
 						axisLine={chartConfig.showYAxis}
 						width={chartConfig.showYTick ? yAxisWidth : 0}
 						tickLine={false}
+						type="number"
 					/>
 					<Tooltip
 						cursor={cursorConfig}
@@ -399,18 +418,43 @@ function shouldShowTime(newestDate: number, oldestDate: number): boolean {
 }
 
 /**
+ * Find the minimum date with the first valid piece of data with a key in lineInfoList
+ * @param data the data to query for the min data
+ * @param lineInfoList list of line info
+ * @return the minimum date and index of that date corresponding to the value at dateKey in the first data entry with a data key in lineInfoList
+ */
+function findMinDate(
+	data: Record<string, number>[],
+	dataKeys: Token[],
+	dateKey: string
+): { minDate: number; minDateIndex: number } {
+	for (let i = 0; i < data.length; i++) {
+		const keysInData = Object.keys(data[i]);
+		for (let j = 0; j < dataKeys.length; j++) {
+			if (keysInData.includes(dataKeys[j])) {
+				return { minDate: data[i][dateKey], minDateIndex: i };
+			}
+		}
+	}
+
+	// Not found
+	return { minDate: 0, minDateIndex: 0 };
+}
+
+/**
  * Helper to compute the tick indicies in the data given the number of ticks to show
  * @param data time series data
  * @param numberOfTicks number of ticks to show
+ * @param startIndex the minimum index of data that will be shown, this is used as the left endpoint when calculating the x tick position
  * @returns array of indicies in the time series data of the values to put on each tick
  */
-function getXTicks(data: Record<Token, number>[], numberOfTicks: number, dateKey: string) {
+function getXTicks(data: Record<Token, number>[], numberOfTicks: number, dateKey: string, startIndex: number) {
 	if (!data || numberOfTicks === 0 || numberOfTicks > data.length) return [];
 
 	const ticks = Array(numberOfTicks);
-	const length = data.length;
+	const length = data.length - startIndex;
 	for (let i = 0; i < numberOfTicks; i++) {
-		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1));
+		const index = Math.floor((i / (numberOfTicks - 1)) * (length - 1)) + startIndex;
 		ticks[i] = data[index][dateKey];
 	}
 

@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 
-import { Token, MarketDataSelector, TimeSelector } from "common/enums";
+import { Token, MarketDataSelector, TimeSelector, DataType } from "common/enums";
 import { ChartConfig, LineInfo } from "common/types";
 import { TOKEN_INFO } from "common/constants";
 
@@ -212,6 +212,7 @@ export default function TokenSelectorTimeSeriesChart({
 				chartConfig={chartConfig}
 				token={mainToken}
 				lineInfoList={lineInfoList}
+				dataType={DataType.MARKET}
 				dataSelectorOptions={dataSelectorOptions}
 				timeSelectorOptions={timeSelectorOptions}
 				hoverDataCallback={handleHoverData}

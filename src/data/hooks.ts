@@ -2,7 +2,7 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
-import { DataResolution, MarketDataSelector, TimeSelector } from "common/enums";
+import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector } from "common/enums";
 import { useGlobalStore } from "data/store";
 
 import {
@@ -44,7 +44,12 @@ export function useProtocolSummaryData(): ProtocolSummaryData {
 	return data;
 }
 
-export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
+/**
+ * Hook to get protocol historical data, the resolution is fixed to weekly
+ * @param dataSelector data type to get the data for
+ * @returns protocol historical data, [{date: number, value: number}]
+ */
+function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): ProtocolHistoricalData[] {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolHistoricalDataKey];
 
@@ -60,7 +65,15 @@ export function useProtocolHistoricalData(): ProtocolHistoricalData[] {
 		checkForData();
 	}, [data, updateStore]);
 
-	return data;
+	let queriedData = [];
+	if (data) {
+		// Get the correct data type
+		queriedData = data.map((entry) => {
+			return { date: entry.date, value: entry[dataSelector] };
+		});
+	}
+
+	return queriedData;
 }
 
 /**
@@ -103,7 +116,7 @@ export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData
  * @param dataSelector data type to get the data for
  * @returns market historical data for the time frame (and corresponding resoltuion), and data type selected
  */
-export function useMarketHistoricalData(
+function useMarketHistoricalData(
 	timeSelector: TimeSelector,
 	dataSelector: MarketDataSelector
 ): Record<Token, number>[] {
@@ -146,6 +159,26 @@ export function useMarketHistoricalData(
 	}
 
 	return queriedData;
+}
+
+/**
+ * General hook to use market or protocol historical data bsed on the data selector type
+ * @param historicalDataType type of the data selector, this determines the source to use
+ * @param timeSelector time frame to get the data for, the resolution is derived from this, currently ignored if the type is protocol
+ * @param dataSelector data type to get the data for, this must match the data type
+ * @returns market or protocol historical data for the time frame (and corresponding resoltuion), and data type selected
+ */
+export function useHistoricalData(
+	dataType: DataType,
+	timeSelector: TimeSelector,
+	dataSelector: MarketDataSelector
+): Record<string, number>[] {
+	const protocolHistoricalData = useProtocolHistoricalData(dataSelector);
+	const marketHistoricalData = useMarketHistoricalData(timeSelector, dataSelector);
+
+	console.log(protocolHistoricalData);
+
+	return DataType.PROTOCOL === dataType ? protocolHistoricalData : marketHistoricalData;
 }
 
 export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
