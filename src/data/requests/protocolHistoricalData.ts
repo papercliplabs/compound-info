@@ -20,7 +20,7 @@ const protocolHistoricalDataQuery = gql`
 			totalSupplyUsd
 			totalBorrowUsd
 			totalReservesUsd
-			utalization
+			utilization
 			date
 		}
 	}
@@ -61,7 +61,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, dateGr
 				totalSupplyUsd: Number(Number(historicalData[i].totalSupplyUsd).toFixed(2)),
 				totalBorrowUsd: Number(Number(historicalData[i].totalBorrowUsd).toFixed(2)),
 				totalReservesUsd: Number(Number(historicalData[i].totalReservesUsd).toFixed(4)),
-				utalization: Number(Number(historicalData[i].utalization).toFixed(4)),
+				utilization: Number(Number(historicalData[i].utilization).toFixed(4)),
 			};
 
 			outputData.push(entry);

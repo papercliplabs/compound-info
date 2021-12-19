@@ -14,11 +14,11 @@ const marketSummaryQuery = gql`
 			cTokenSymbol
 			underlyingName
 			underlyingAddress
-			collatoralFactor
+			collateralFactor
 			reserveFactor
 			borrowCap
 			cash
-			utalization
+			utilization
 			supplyApy
 			borrowApy
 			totalSupplyApy
