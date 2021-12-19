@@ -127,7 +127,7 @@ export default function Overview(): JSX.Element | null {
 				<ProgressCard
 					title={"Utilization"}
 					tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
-					value={protocolSummaryData.utalization}
+					value={protocolSummaryData.utilization}
 					unit="%"
 					size={60}
 				/>

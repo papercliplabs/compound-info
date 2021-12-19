@@ -47,7 +47,7 @@ export enum ProtocolDataSelector {
 	TOTAL_SUPPLY_USD = "totalSupplyUsd",
 	TOTAL_BORROW_USD = "totalBorrowUsd",
 	TOTAL_RESERVES_USD = "totalReservesUsd",
-	UTALIZATION = "utalization",
+	UTILIZATION = "utilization",
 }
 
 /**
@@ -64,7 +64,7 @@ export enum MarketDataSelector {
 	TOTAL_BORROW_USD = "totalBorrowUsd",
 	TOTAL_RESERVES = "totalReserves",
 	TOTAL_RESERVES_USD = "totalReservesUsd",
-	UTALIZATION = "utalization",
+	UTILIZATION = "utilization",
 	USDC_PER_UNDERLYING = "usdcPerUnderlying",
 	USDC_PER_ETH = "usdcPerEth",
 }

@@ -34,7 +34,7 @@ const marketHistoricalWeekQuery = gql`
 			totalBorrowUsd
 			totalReserves
 			totalReservesUsd
-			utalization
+			utilization
 			usdcPerUnderlying
 			usdcPerEth
 		}
@@ -65,7 +65,7 @@ const marketHistoricalDayQuery = gql`
 			totalBorrowUsd
 			totalReserves
 			totalReservesUsd
-			utalization
+			utilization
 			usdcPerUnderlying
 			usdcPerEth
 		}
@@ -96,7 +96,7 @@ const marketHistoricalHourQuery = gql`
 			totalBorrowUsd
 			totalReserves
 			totalReservesUsd
-			utalization
+			utilization
 			usdcPerUnderlying
 			usdcPerEth
 		}
@@ -131,7 +131,7 @@ async function performPagenationRequest(
 	const totalBorrowUsdLatestEntry = { date: nowSec };
 	const totalReservesLatestEntry = { date: nowSec };
 	const totalReservesUsdLatestEntry = { date: nowSec };
-	const utalizationLatestEntry = { date: nowSec };
+	const utilizationLatestEntry = { date: nowSec };
 	const usdcPerUnderlyingLatestEntry = { date: nowSec };
 
 	// Accumulators
@@ -145,7 +145,7 @@ async function performPagenationRequest(
 	let totalBorrowUsdEntry = {};
 	let totalReservesEntry = {};
 	let totalReservesUsdEntry = {};
-	let utalizationEntry = {};
+	let utilizationEntry = {};
 	let usdcPerUnderlyingEntry = {};
 
 	let allFound = false;
@@ -185,7 +185,7 @@ async function performPagenationRequest(
 						totalBorrowUsd: totalBorrowUsdEntry,
 						totalReserves: totalReservesEntry,
 						totalReservesUsd: totalReservesUsdEntry,
-						utalization: utalizationEntry,
+						utilization: utilizationEntry,
 						usdcPerUnderlying: usdcPerUnderlyingEntry,
 					};
 
@@ -207,7 +207,7 @@ async function performPagenationRequest(
 				totalBorrowUsdEntry = { date: currentDate };
 				totalReservesEntry = { date: currentDate };
 				totalReservesUsdEntry = { date: currentDate };
-				utalizationEntry = { date: currentDate };
+				utilizationEntry = { date: currentDate };
 				usdcPerUnderlyingEntry = { date: currentDate };
 			}
 
@@ -226,7 +226,7 @@ async function performPagenationRequest(
 				totalBorrowUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrowUsd).toFixed(2));
 				totalReservesEntry[tokenSymbol] = Number(Number(historicalData[i].totalReserves).toFixed(4));
 				totalReservesUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalReservesUsd).toFixed(4));
-				utalizationEntry[tokenSymbol] = Number(Number(historicalData[i].utalization).toFixed(4));
+				utilizationEntry[tokenSymbol] = Number(Number(historicalData[i].utilization).toFixed(4));
 				usdcPerUnderlyingEntry[tokenSymbol] = Number(Number(historicalData[i].usdcPerUnderlying).toFixed(2));
 
 				// Update the latest values for this symbol
@@ -240,7 +240,7 @@ async function performPagenationRequest(
 				totalBorrowUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
 				totalReservesLatestEntry[tokenSymbol] = totalReservesEntry[tokenSymbol];
 				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
-				utalizationLatestEntry[tokenSymbol] = utalizationEntry[tokenSymbol];
+				utilizationLatestEntry[tokenSymbol] = utilizationEntry[tokenSymbol];
 				usdcPerUnderlyingLatestEntry[tokenSymbol] = usdcPerUnderlyingEntry[tokenSymbol];
 			}
 		}
@@ -261,7 +261,7 @@ async function performPagenationRequest(
 		totalBorrowUsd: totalBorrowUsdLatestEntry,
 		totalReserves: totalReservesLatestEntry,
 		totalReservesUsd: totalReservesUsdLatestEntry,
-		utalization: utalizationLatestEntry,
+		utilization: utilizationLatestEntry,
 		usdcPerUnderlying: usdcPerUnderlyingLatestEntry,
 	};
 

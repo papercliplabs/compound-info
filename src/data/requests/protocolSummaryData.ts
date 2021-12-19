@@ -11,7 +11,7 @@ const protocolSummaryQuery = gql`
 			totalSupplyUsd
 			totalBorrowUsd
 			totalReservesUsd
-			utalization
+			utilization
 		}
 	}
 `;

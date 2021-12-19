@@ -181,7 +181,7 @@ export default function Market({ match }): JSX.Element | null {
 								<StatRow
 									title={"Collateral factor"}
 									tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
-									value={summaryData.collatoralFactor}
+									value={summaryData.collateralFactor}
 									unit="%"
 								/>
 							</Column>
@@ -257,10 +257,10 @@ export default function Market({ match }): JSX.Element | null {
 					<ProgressCard
 						title={"Utilization"}
 						tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
-						value={summaryData.utalization}
+						value={summaryData.utilization}
 						unit="%"
 						size={60}
-						progressPercent={summaryData.utalization}
+						progressPercent={summaryData.utilization}
 					/>
 					<StatCard
 						title={"Reserves"}

@@ -230,10 +230,10 @@ export const PROTOCOL_DATA_SELECTOR_INFO: ProtocolDataSelectorInfoList = {
 		description: "total reserves in USD",
 		unit: Unit.USD,
 	},
-	[ProtocolDataSelector.UTALIZATION]: {
-		key: ProtocolDataSelector.UTALIZATION,
+	[ProtocolDataSelector.UTILIZATION]: {
+		key: ProtocolDataSelector.UTILIZATION,
 		name: "Utalization",
-		description: "utalization (supply / borrow)",
+		description: "utilization (supply / borrow)",
 		unit: Unit.PERCENT,
 	},
 };
@@ -299,10 +299,10 @@ export const MARKET_DATA_SELECTOR_INFO: MarketDataSelectorInfoList = {
 		description: "total reserves in USD",
 		unit: Unit.USD,
 	},
-	[MarketDataSelector.UTALIZATION]: {
-		key: MarketDataSelector.UTALIZATION,
+	[MarketDataSelector.UTILIZATION]: {
+		key: MarketDataSelector.UTILIZATION,
 		name: "Utalization",
-		description: "utalization (supply / borrow)",
+		description: "utilization (supply / borrow)",
 		unit: Unit.PERCENT,
 	},
 	[MarketDataSelector.USDC_PER_UNDERLYING]: {
