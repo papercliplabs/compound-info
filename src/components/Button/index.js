@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 export * from "./optionButton";
-export * from "./coinButton";
+export * from "./tokenButton";
 export * from "./sortButton";
 export * from "./toggleButton";
 

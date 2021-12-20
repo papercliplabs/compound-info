@@ -2,184 +2,237 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
+import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector } from "common/enums";
 import { useGlobalStore } from "data/store";
-import { requestGasData, requestTimeSeriesData, requestSummaryData } from "data/requests";
-import { queryTimeSeriesData, querySummaryData } from "data/queries";
 
-import { market_summary_data_S, time_selector_info_S } from "common/interfaces";
-import { coin_E, time_series_data_selector_E, time_selector_E } from "common/enums";
-import { timer_series_data_S } from "../common/interfaces";
+import {
+	MarketSummaryData,
+	MarketSummaryDataDict,
+	ProtocolSummaryData,
+	ProtocolHistoricalData,
+	MarketHistoricalData,
+	MarketHistoricalDataEntry,
+} from "common/types";
+import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
+import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
+import { requestMarketSummaryData } from "data/requests/marketSummaryData";
+import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
+import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
+import { Token } from "graphql";
 
-const marketSummaryDataKey = "marketSummaryDataList";
 const protocolSummaryDataKey = "protocolSummaryData";
-const ethToUsdKey = "ethToUsd";
+const protocolHistoricalDataKey = "protocolHistoricalData";
+const marketSummaryDataKey = "marketSummaryData";
+const marketHistoricalDataKey = "marketHistoricalData";
 
-// Custom hooks which are used by the app to interface with the store
-
-/**
- * Hook to get time series data for the specified data and time selector
- * @param dataSelector data selector to get the data for
- * @param timeSelector time selector to get the data for
- * @returns time series data for the specified data and time selector, or null if none is available
- */
-export function useTimeSeriesData(
-	dataSelector: time_series_data_selector_E,
-	timeSelector: time_selector_E
-): timer_series_data_S[] | null {
+export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
-	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const timeSeriesDataKey = "timeSeriesData";
-	const timeSeriesData = store[timeSeriesDataKey];
+	const data = store[protocolSummaryDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
-			// Fetch the time series data if it hasn't been fetched already:
-			if (!timeSeriesData) {
-				const data = await requestTimeSeriesData();
-				updateStore(timeSeriesDataKey, data);
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const data = await requestProtocolSummaryData();
+				updateStore(protocolSummaryDataKey, data);
 			}
 		}
 
 		checkForData();
-	}, [timeSeriesData, updateStore]);
+	}, [data, updateStore]);
+
+	return data;
+}
+
+/**
+ * Hook to get protocol historical data, the resolution is fixed to weekly
+ * @param dataSelector data type to get the data for
+ * @returns protocol historical data, [{date: number, value: number}]
+ */
+function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): ProtocolHistoricalData[] {
+	const [store, { updateStore }] = useGlobalStore();
+	const data = store[protocolHistoricalDataKey];
 
 	useEffect(() => {
-		if (timeSeriesData) {
-			const newQueriedData = queryTimeSeriesData(timeSeriesData, dataSelector, timeSelector);
-			setQueriedData(newQueriedData);
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const data = await requestProtocolHistoricalData();
+				updateStore(protocolHistoricalDataKey, data);
+			}
 		}
-	}, [dataSelector, timeSelector, timeSeriesData, setQueriedData]);
+
+		checkForData();
+	}, [data, updateStore]);
+
+	let queriedData = [];
+	if (data) {
+		// Get the correct data type
+		queriedData = data.map((entry) => {
+			return { date: entry.date, value: entry[dataSelector] };
+		});
+	}
 
 	return queriedData;
 }
 
 /**
- * Hook to get market summary data about a coin(s)
- * @param coin the coin the summary data is wanted for, if not provided a list of all the summary data will be returned
- * @returns summary data for the specified coin if the data exists for it, otherwise null, or a list of all summary data is no coin is specified
+ * Hook to get market summary data for a token, or all tokens if no underlyingToken is passed
+ * @param token the underlying token of the market the summary data is wanted for
+ * @returns summary data for the market with the underlyingToken or undefined if there is not data for that token
+ * 			if no underlyingToken is specified, a list of all marketSummaryData is returned
  */
-export function useMarketSummaryData(coin?: coin_E): market_summary_data_S | market_summary_data_S[] | null {
+export function useMarketSummaryData(underlyingToken?: Token): MarketSummaryData | undefined | MarketSummaryData[] {
 	const [store, { updateStore }] = useGlobalStore();
-	const [queriedData, setQueriedData] = useState(null); // Store most recent queried data to avoid updates if query doesn't change
-	const marketSummaryDataList = store[marketSummaryDataKey];
+	let data = store[marketSummaryDataKey];
 
 	useEffect(() => {
 		async function checkForData() {
-			// Fetch the data if it hasn't been fetched already:
-			if (!marketSummaryDataList) {
-				const response = await requestSummaryData();
-
-				// Store all the data returned by the request
-				if (response) {
-					updateStore(marketSummaryDataKey, response[0]);
-					updateStore(protocolSummaryDataKey, response[1]);
-					updateStore(ethToUsdKey, response[2]);
-				} else {
-					updateStore(marketSummaryDataKey, null);
-					updateStore(protocolSummaryDataKey, null);
-					updateStore(ethToUsdKey, null);
-				}
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const allSummaryData = await requestMarketSummaryData();
+				updateStore(marketSummaryDataKey, allSummaryData);
 			}
 		}
 
 		checkForData();
-	}, [marketSummaryDataList, updateStore]);
+	}, [data, updateStore]);
+
+	if (data && !!underlyingToken) {
+		data = data.filter((entry) => entry.underlyingSymbol == underlyingToken);
+		if (data.length === 0) {
+			return undefined;
+		} else {
+			return data[0];
+		}
+	}
+
+	return data;
+}
+
+/**
+ * Hook to get historical market data for the time and data selected
+ * @param timeSelector time frame to get the data for, the resolution is derived from this
+ * @param dataSelector data type to get the data for
+ * @returns market historical data for the time frame (and corresponding resoltuion), and data type selected
+ */
+function useMarketHistoricalData(
+	timeSelector: TimeSelector,
+	dataSelector: MarketDataSelector
+): Record<Token, number>[] {
+	const [store, { updateStore }] = useGlobalStore();
+	const data = store[marketHistoricalDataKey];
 
 	useEffect(() => {
-		if (marketSummaryDataList) {
-			let queriedData = marketSummaryDataList;
-			if (coin !== null && coin !== undefined) {
-				queriedData = querySummaryData(queriedData, coin);
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const data = await requestMarketHistoricalData();
+				updateStore(marketHistoricalDataKey, data);
 			}
-			setQueriedData(queriedData);
 		}
-	}, [coin, marketSummaryDataList]);
+
+		checkForData();
+	}, [data, updateStore]);
+
+	let queriedData = [];
+	if (data) {
+		// Get the correct resolution
+		const resolution = TIME_SELECTOR_INFO[timeSelector].resolution;
+		queriedData = data[resolution];
+
+		// Get the correct data type
+		queriedData = queriedData.map((entry) => entry[dataSelector]);
+
+		// Filter on time
+		const days = TIME_SELECTOR_INFO[timeSelector].days;
+
+		// undefined if ALL so don't filter if thats the case
+		if (days) {
+			const filterSecs = days * 24 * 60 * 60;
+			const nowSec = parseInt(new Date() / 1000);
+			const cutoffSecs = nowSec - filterSecs;
+			queriedData = queriedData.filter((entry) => {
+				return entry.date > cutoffSecs;
+			});
+		}
+	}
 
 	return queriedData;
 }
 
 /**
- * Hook to get protocol summary data
- * @returns protocol summary data, or null if it is not available
+ * General hook to use market or protocol historical data bsed on the data selector type
+ * @param historicalDataType type of the data selector, this determines the source to use
+ * @param timeSelector time frame to get the data for, the resolution is derived from this, currently ignored if the type is protocol
+ * @param dataSelector data type to get the data for, this must match the data type
+ * @returns market or protocol historical data for the time frame (and corresponding resoltuion), and data type selected
  */
-export function useProtocolSummaryData(): protocol_summary_data_S | null {
-	const [store, { updateStore }] = useGlobalStore();
-	const protocolSummaryData = store[protocolSummaryDataKey];
+export function useHistoricalData(
+	dataType: DataType,
+	timeSelector: TimeSelector,
+	dataSelector: MarketDataSelector
+): Record<string, number>[] {
+	const protocolHistoricalData = useProtocolHistoricalData(dataSelector);
+	const marketHistoricalData = useMarketHistoricalData(timeSelector, dataSelector);
 
-	useEffect(() => {
-		async function checkForData() {
-			// Fetch the data if it hasn't been fetched already:
-			if (!protocolSummaryData) {
-				const response = await requestSummaryData();
+	console.log(protocolHistoricalData);
 
-				// Store all the data returned by the request
-				if (response) {
-					updateStore(marketSummaryDataKey, response[0]);
-					updateStore(protocolSummaryDataKey, response[1]);
-					updateStore(ethToUsdKey, response[2]);
-				} else {
-					updateStore(marketSummaryDataKey, null);
-					updateStore(protocolSummaryDataKey, null);
-					updateStore(ethToUsdKey, null);
-				}
-			}
+	return DataType.PROTOCOL === dataType ? protocolHistoricalData : marketHistoricalData;
+}
+
+export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
+	const [store, { _ }] = useGlobalStore();
+	const marketHistoricalDataKey = "marketHistoricalData";
+	const marketHistoricalData = store[marketHistoricalDataKey];
+	let dataMissing = false;
+	let dataBehind = false;
+	let lastSyncedDate = 0;
+
+	if (!!marketHistoricalData) {
+		const weekData = marketHistoricalData[DataResolution.WEEK];
+		const dayData = marketHistoricalData[DataResolution.DAY];
+		const hourData = marketHistoricalData[DataResolution.HOUR];
+
+		dataMissing = weekData.length === 0 || dayData.length === 0 || hourData.length === 0;
+
+		const weekLatestDate = weekData.length > 0 ? weekData[weekData.length - 1].supplyApy.date : 0;
+		const dayLatestDate = dayData.length > 0 ? dayData[dayData.length - 1].supplyApy.date : 0;
+		const hourLatestDate = hourData.length > 0 ? hourData[hourData.length - 1].supplyApy.date : 0;
+
+		lastSyncedDate = Math.max(weekLatestDate, dayLatestDate, hourLatestDate);
+
+		const now = new Date() / 1000; // in sec since unix epoche
+		if (DATA_BEHIND_TIME_THRESHOLD_S < now - lastSyncedDate) {
+			dataBehind = true;
 		}
+	}
 
-		checkForData();
-	}, [protocolSummaryData, updateStore]);
-
-	return protocolSummaryData;
+	return { dataError: dataMissing || dataBehind, lastSyncedDate: lastSyncedDate };
 }
 
 /**
- * Hook to get the eth to usd conversion
- * @returns eth to usd converion, or null if unavailable
+ * Trigger all fetches the first time this is called
  */
-export function useEthToUsd(): number | null {
-	const [store, { updateStore }] = useGlobalStore();
-	const ethToUsd = store[ethToUsdKey];
+export function usePrefetchData() {
+	const [_, { updateStore }] = useGlobalStore();
 
 	useEffect(() => {
-		async function checkForData() {
-			// Fetch the data if it hasn't been fetched already:
-			if (!ethToUsd) {
-				const response = await requestSummaryData();
+		async function fetchData() {
+			// Fetch the data if it hasn't been fetched already
+			const protocolSummaryData = await requestProtocolSummaryData();
+			updateStore(protocolSummaryDataKey, protocolSummaryData);
 
-				// Store all the data returned by the request
-				if (response) {
-					updateStore(marketSummaryDataKey, response[0]);
-					updateStore(protocolSummaryDataKey, response[1]);
-					updateStore(ethToUsdKey, response[2]);
-				} else {
-					updateStore(marketSummaryDataKey, null);
-					updateStore(protocolSummaryDataKey, null);
-					updateStore(ethToUsdKey, null);
-				}
-			}
+			const protocolHistoricalData = await requestProtocolHistoricalData();
+			updateStore(protocolHistoricalDataKey, protocolHistoricalData);
+
+			const marketSummaryData = await requestMarketSummaryData();
+			updateStore(marketSummaryDataKey, marketSummaryData);
+
+			const marketHistoricalData = await requestMarketHistoricalData();
+			updateStore(marketHistoricalDataKey, marketHistoricalData);
 		}
 
-		checkForData();
-	}, [ethToUsd, updateStore]);
-
-	return ethToUsd;
-}
-
-export function useGasData() {
-	const [store, { updateStore }] = useGlobalStore();
-	const key = "gasData";
-	const gasData = store[key];
-
-	useEffect(() => {
-		async function checkForData() {
-			// Fetch the data if it hasn't been fetched already:
-			if (!gasData) {
-				const data = await requestGasData();
-				updateStore(key, data);
-			}
-		}
-
-		checkForData();
-	}, [gasData, updateStore]);
-
-	return gasData;
+		fetchData();
+	}, []);
 }

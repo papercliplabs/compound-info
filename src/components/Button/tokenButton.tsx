@@ -2,14 +2,14 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 import { Typography } from "theme";
-import { CoinLogo } from "components/Logo";
+import { TokenLogo } from "components/Logo";
 import { StyledInternalLink } from "components/Link";
 import closeIcon from "assets/closeIcon.svg";
-import { coin_E } from "common/enums";
-import { COIN_INFO } from "common/constants";
+import { Token } from "common/enums";
+import { TOKEN_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
 
-const StyledCoinButton = styled.button<{
+const StyledTokenButton = styled.button<{
 	active: boolean;
 	selectedColor: string;
 }>`
@@ -79,29 +79,27 @@ const HoverText = styled.span`
 	}
 `;
 
-export function CoinButton({
-	coin,
+export function TokenButton({
+	token,
 	value,
-	unit,
 	color,
 	selected,
 	allowDeselect,
 	clickCallback,
 }: {
-	coin: coin_E;
+	token: Token;
 	value: number;
-	unit: string | null;
 	color: string;
 	selected: boolean;
 	allowDeselect: boolean;
 	clickCallback: () => void;
 }): JSX.Element | null {
 	const open = selected ? undefined : clickCallback;
-	const coinName = COIN_INFO[coin].name;
+	const coinName = TOKEN_INFO[token].symbol;
 	return (
-		<StyledCoinButton selectedColor={color} active={selected} onClick={open}>
+		<StyledTokenButton selectedColor={color} active={selected} onClick={open}>
 			<SelectedIndicator selectedColor={color} hidden={!selected} />
-			<CoinLogo coin={coin} />
+			<TokenLogo token={token} />
 			<CoinInfo>
 				{selected && allowDeselect ? (
 					<StyledInternalLink to={"/" + coinName}>
@@ -115,6 +113,6 @@ export function CoinButton({
 				<Typography.caption useDefaultLineHeight>{formatNumber(value, "%")}</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
-		</StyledCoinButton>
+		</StyledTokenButton>
 	);
 }

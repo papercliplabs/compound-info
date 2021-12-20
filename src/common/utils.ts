@@ -1,16 +1,17 @@
-import { COIN_INFO, TIME_SERIES_DATA_SELECTOR_INFO } from "common/constants";
+import { MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO, TOKEN_INFO } from "common/constants";
 
-import { coin_E } from "common/enums";
+import { ProtocolDataSelector, MarketDataSelector, Token } from "common/enums";
 
 /**
- * Format date to nicely render it
- * @param date date object to be formatteed
- * @param withTime if true, the time will be incluede at the end, otherwise the year is included
+ * Convert unix time in ms to a date
+ * @param dateInUnixSec the date represented in seconds since unix epoche
+ * @param includeTime if true, includes the time of day in the date
  * @param short if true, the month and year will be shorted to MM/YY and no time will be shown
- * @returns nicely formatted date
+ * @returns date in string format (ex: May 10, 2021, 1:00 AM)
  */
-export function formatDate(date: Date, withTime: boolean, short: boolean): string {
+export function formatDate(dateInUnixSec: number, includeTime: boolean, short: boolean): string {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	const date = new Date(dateInUnixSec * 1000); // date from ms since epoche
 	const monthIndex = date.getMonth();
 	const day = date.getDate();
 	const year = date.getFullYear().toString();
@@ -20,7 +21,7 @@ export function formatDate(date: Date, withTime: boolean, short: boolean): strin
 	if (short) {
 		formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
 	} else {
-		if (withTime) {
+		if (includeTime) {
 			const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
 			formattedDate += month + " " + day + " " + time;
 		} else {
@@ -38,7 +39,7 @@ export function formatDate(date: Date, withTime: boolean, short: boolean): strin
  * @param decimals the number of decimals to keep after formatting, if not specified it will keep 2
  * @returns nicely formatted number, for example if number is 11023 this will return 1.10K
  */
-export function formatNumber(number: number | string, unit?: string, decimals: number | null = null): string {
+export function formatNumber(num: number | string, unit?: string, decimals: number | null = null): string {
 	const K = 1000;
 	const M = 1000000;
 	const B = 1000000000;
@@ -47,14 +48,14 @@ export function formatNumber(number: number | string, unit?: string, decimals: n
 
 	let postFix = "";
 	let unitPostfix = false;
-	let formattedNum = number;
+	let formattedNum = num;
 
 	// If it is represented as a sting, convert to number first
 	if (typeof formattedNum === "string") {
 		formattedNum = parseFloat(formattedNum);
 
 		if (isNaN(formattedNum)) {
-			return number as string; // It isn't a number
+			return num as string; // It isn't a number
 		}
 	}
 
@@ -97,6 +98,48 @@ export function formatNumber(number: number | string, unit?: string, decimals: n
 }
 
 /**
+ * Get the name for the data selector if the meta data exists, otherwise just returns the selector
+ * @param selector selector key to get the name for
+ */
+export function getDataSelectorName(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].name;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].name;
+	} else {
+		return selector;
+	}
+}
+
+/**
+ * Get the unit for the data selector if the meta data exists, otherwise just returns empty string
+ * @param selector selector key to get the unit for
+ */
+export function getDataSelectorUnit(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].unit;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].unit;
+	} else {
+		return "";
+	}
+}
+
+/**
+ * Get the description for the data selector if the meta data exists, otherwise just returns empty string
+ * @param selector selector key to get the unit for
+ */
+export function getDataSelectorDescription(selector: string): string {
+	if (selector in MarketDataSelector) {
+		return MARKET_DATA_SELECTOR_INFO[selector as MarketDataSelector].description;
+	} else if (selector in ProtocolDataSelector) {
+		return PROTOCOL_DATA_SELECTOR_INFO[selector as ProtocolDataSelector].description;
+	} else {
+		return "";
+	}
+}
+
+/**
  * Convert from wei to gwei, 1 gwei = 10^9 wei
  * @param wei the number of wei to be converted
  * @returns the equivilent number of gwei
@@ -130,36 +173,50 @@ export function shortAddress(address: string): string {
 }
 
 /**
- * Getter for the list of coin names
- * @returns list of coin names
+ * Get the Token corresponding to the underlying symbol
+ * @param underlyingSymbol underlying symbol to get the token for
+ * @return Token if it exists for the underlying symbol, otherwise undefined
  */
-export function getCoinNameList(): string[] {
-	return COIN_INFO.map((info) => info.name);
+export function getTokenForUnderlyingSymbol(underlyingSymbol: string): Token | undefined {
+	if (underlyingSymbol in Token) {
+		const token = underlyingSymbol as Token;
+		return token;
+	} else {
+		return undefined;
+	}
 }
 
 /**
- * Getter for the list of all time series data selector keys
- * @returns list of all time series data selector keys
+ * Getter for the list of coin names
+ * @returns list of coin names
  */
-export function getTimeSeriesDataSelectorKeyList(): string[] {
-	return TIME_SERIES_DATA_SELECTOR_INFO.map((info) => info.key);
-}
+// export function getCoinNameList(): string[] {
+// 	return COIN_INFO.map((info) => info.name);
+// }
+
+// /**
+//  * Getter for the list of all time series data selector keys
+//  * @returns list of all time series data selector keys
+//  */
+// export function getTimeSeriesDataSelectorKeyList(): string[] {
+// 	return TIME_SERIES_DATA_SELECTOR_INFO.map((info) => info.key);
+// }
 
 /**
  * Get the coin with the given coin name
  * @param coinName the coin name to get the coin for
  * @returns the coin for the coin name, or null if none exists
  */
-export function getCoinForCoinName(coinName: string): coin_E | null {
-	const filteredCoinInfo = COIN_INFO.filter((info) => info.name == coinName);
-	const coinInfo = filteredCoinInfo.length === 1 ? filteredCoinInfo[0] : null;
-	let coin: coin_E | null = null;
-	if (coinInfo !== null) {
-		coin = COIN_INFO.indexOf(coinInfo) as coin_E;
-	}
+// export function getCoinForCoinName(coinName: string): coin_E | null {
+// 	const filteredCoinInfo = COIN_INFO.filter((info) => info.name == coinName);
+// 	const coinInfo = filteredCoinInfo.length === 1 ? filteredCoinInfo[0] : null;
+// 	let coin: coin_E | null = null;
+// 	if (coinInfo !== null) {
+// 		coin = COIN_INFO.indexOf(coinInfo) as coin_E;
+// 	}
 
-	return coin;
-}
+// 	return coin;
+// }
 
 /**
  * Converts a camelCaseWord to SCREAMING_SNAKE_CASE
