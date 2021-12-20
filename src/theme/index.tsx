@@ -49,6 +49,9 @@ export function theme(darkMode: boolean): DefaultTheme {
 			linkInternal: darkMode ? "#00CD8F" : "#0095D5",
 			linkExternal: darkMode ? "#808994" : "#586069",
 
+			warning1: "#E1E15B",
+			warning2: "#27291D",
+
 			// The colors used for coin selection, and chart lines, these will only be this many allowed selected at a time, first is used as base color for charts and progress bar
 			lineChartColors: darkMode
 				? ["#00CD8F", "#885FB1", "#0095D5", "#F9A234", "#FF7EA8"]
@@ -75,6 +78,7 @@ export function theme(darkMode: boolean): DefaultTheme {
 			md: "16px",
 			lg: "24px",
 			xl: "40px",
+			xxl: "60px",
 		},
 
 		shadow: {

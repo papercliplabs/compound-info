@@ -4,25 +4,26 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Redirect } from "react-router-dom";
 import { useTheme } from "styled-components";
 
+import { TOKEN_INFO } from "common/constants";
+
+import { formatNumber, getEtherscanLink, getTokenForUnderlyingSymbol, shortAddress } from "common/utils";
 import ApyChartContainer from "components/ApyChartContainer";
-import { useMarketSummaryData, useTimeSeriesData } from "data/hooks";
+import { useMarketSummaryData, useTestData, useTimeSeriesData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
 import { Typography } from "theme";
-import { APY_DATA_SELECTORS, TIME_SERIES_DATA_SELECTORS, TIME_SELECTORS } from "common/constants";
-import { formatNumber, getCoinForCoinName, getEtherscanLink, shortAddress } from "common/utils";
 import { StyledInternalLink, StyledExternalLink } from "components/Link";
 import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
-import { CoinLogo } from "components/Logo";
+import { TokenLogo } from "components/Logo";
 import TooltipText from "components/TooltipText";
 import { ToggleButton } from "components/Button";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
-import CoinSelectorTimerSeriesChart from "components/Chart/CoinSelectorTimeSeriesChart";
+import TokenSelectorTimeSeriesChart from "components/Chart/TokenSelectorTimeSeriesChart";
+import MultilineChart from "components/Chart/MultilineChart";
 
-import { COIN_INFO } from "common/constants";
-import { coin_E, time_selector_E, time_series_data_selector_E } from "common/enums";
-import { chart_config_S, line_info_S } from "common/interfaces";
+import { ChartConfig } from "common/types";
+import { DataType, MarketDataSelector, TimeSelector } from "common/enums";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -43,73 +44,79 @@ export default function Market({ match }): JSX.Element | null {
 	const theme = useTheme();
 	const gap = theme.spacing.md;
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
+	const [showInUsd, setShowInUsd] = useState<boolean>(false);
 
-	const coinName = match.params.coin; // From url
-	const coin = getCoinForCoinName(coinName);
-	console.log(coin);
-	const marketData = useMarketSummaryData(coin);
+	const underlyingSymbol = match.params.token; // From url
+	const token = getTokenForUnderlyingSymbol(underlyingSymbol);
 
 	// Scroll to the top of the page
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, [match]);
 
-	// Redirect to home if the param name doesn't match a coin
-	if (coin === null) {
+	const summaryData = useMarketSummaryData(token);
+	// const marketData = useMarketSummaryData(coin);
+
+	if (!token) {
 		return <Redirect to={"/"} />;
 	}
 
-	// Still loading data
-	if (!marketData) {
+	// Loading data
+	if (!summaryData || Array.isArray(summaryData)) {
 		return null;
 	}
 
-	console.log(marketData);
+	const tokenInfo = TOKEN_INFO[token];
+	const cTokenAddress = summaryData.id;
+	const etherscanLink = getEtherscanLink(cTokenAddress);
 
-	const coinInfo = COIN_INFO[coin];
-	const etherscanLink = getEtherscanLink(marketData.cTokenAddress);
-
-	const coinSelectorChartConfig: chart_config_S = {
+	const tokenSelectorChartConfig: ChartConfig = {
 		showAvg: true,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: false,
+		showXTick: true,
 		showYTick: true,
 		showHorizontalGrid: true,
 		showVerticalGrid: false,
 		showAreaGradient: true,
-		numberOfXAxisTicks: 2,
-		showCurrentValue: true,
+		numberOfXAxisTicks: 3,
 		animate: true,
 		showValueInTooltip: false,
+		baseChartHeightPx: 300,
 	};
 
-	const coinSelectorChartDataSelectors = includeComp
-		? [time_series_data_selector_E.TOTAL_SUPPLY_APY, time_series_data_selector_E.TOTAL_BORROW_APY]
-		: [time_series_data_selector_E.SUPPLY_APY, time_series_data_selector_E.BORROW_APY];
+	const apyChartDataSelectors = includeComp
+		? [MarketDataSelector.TOTAL_SUPPLY_APY, MarketDataSelector.TOTAL_BORROW_APY]
+		: [MarketDataSelector.SUPPLY_APY, MarketDataSelector.BORROW_APY];
 
-	const timeSeriesChartConfig: chart_config_S = {
+	const supplyBorrowReservesChartDataSelectors = showInUsd
+		? [MarketDataSelector.TOTAL_SUPPLY_USD, MarketDataSelector.TOTAL_BORROW_USD, MarketDataSelector.TOTAL_RESERVES_USD]
+		: [MarketDataSelector.TOTAL_SUPPLY, MarketDataSelector.TOTAL_BORROW, MarketDataSelector.TOTAL_RESERVES];
+
+	const tokenPriceDataSelectors = [MarketDataSelector.USDC_PER_UNDERLYING];
+
+	const lowerChartsConfig: ChartConfig = {
 		showAvg: false,
 		showXAxis: false,
 		showYAxis: false,
-		showXTick: false,
+		showXTick: true,
 		showYTick: false,
 		showHorizontalGrid: false,
 		showVerticalGrid: false,
 		showAreaGradient: true,
 		numberOfXAxisTicks: 3,
-		showCurrentValue: true,
 		animate: true,
 		showValueInTooltip: true,
+		baseChartHeightPx: 200,
 	};
 
-	const timeSelectors = [
-		time_selector_E.ONE_DAY,
-		time_selector_E.ONE_WEEK,
-		time_selector_E.ONE_MONTH,
-		time_selector_E.THREE_MONTHS,
-		time_selector_E.ONE_YEAR,
-		time_selector_E.ALL,
+	const timeSelectorOptions = [
+		TimeSelector.ONE_DAY,
+		TimeSelector.ONE_WEEK,
+		TimeSelector.ONE_MONTH,
+		TimeSelector.THREE_MONTHS,
+		TimeSelector.ONE_YEAR,
+		TimeSelector.ALL,
 	];
 
 	return (
@@ -118,15 +125,12 @@ export default function Market({ match }): JSX.Element | null {
 				<Typography.body color="text2">
 					<StyledInternalLink to={"/"}>Market</StyledInternalLink>
 					{" / "}
-					<StyledExternalLink
-						href={etherscanLink}
-						content={"c" + coinName + " (" + shortAddress(marketData.cTokenAddress) + ")"}
-					/>
+					<StyledExternalLink href={etherscanLink} content={"c" + token + " (" + shortAddress(cTokenAddress) + ")"} />
 				</Typography.body>
 			</Row>
 			<Row height="40px" margin={"20px 0"}>
-				<CoinLogo coin={coin} size="40px" />
-				<Typography.displayXL>{coinName}</Typography.displayXL>
+				<TokenLogo token={token} size="40px" />
+				<Typography.displayXL>{token}</Typography.displayXL>
 			</Row>
 			<ResponsiveRow reverse align="flex-start" gap={"32px"}>
 				<Column flex={2} gap={gap}>
@@ -141,87 +145,105 @@ export default function Market({ match }): JSX.Element | null {
 						</Row>
 					</Row>
 					<Card>
-						<CoinSelectorTimerSeriesChart
-							chartConfig={coinSelectorChartConfig}
-							dataSelectors={coinSelectorChartDataSelectors}
-							timeSelectors={timeSelectors}
-							mainCoin={coin}
+						<TokenSelectorTimeSeriesChart
+							chartConfig={tokenSelectorChartConfig}
+							dataSelectorOptions={apyChartDataSelectors}
+							timeSelectorOptions={timeSelectorOptions}
+							mainToken={token}
 						/>
 					</Card>
 					<SectionTitle title="Key Statistics" />
 					<Card>
-						<ResponsiveRow gap={theme.spacing.xl} gapSmall={theme.spacing.lg}>
+						<ResponsiveRow gap={theme.spacing.xxl} gapSmall={theme.spacing.lg}>
 							<Column gap={theme.spacing.lg}>
 								<StatRow
 									title={"Token price"}
 									tooltipContent="The current price of the asset."
-									value={marketData.underlyingPriceUsd}
+									value={summaryData.usdcPerUnderlying}
 									unit="$"
 								/>
 								<StatRow
 									title={"Reserve factor"}
 									tooltipContent="The percentage of a given asset's accrued interest that gets put into a reserve pool. A 5% reserve factor = 5% of the interest paid by borrowers gets put into the pool (which provides a safety net for lenders against borrower default and liquidation)."
-									value={marketData.reserveFactor}
+									value={summaryData.reserveFactor}
 									unit="%"
 								/>
-								<StatRow
+								{/* <StatRow
 									title={"Number of suppliers"}
 									tooltipContent="The number of wallets currently supplying this market."
-									value={marketData.numberOfSuppliers}
+									value={summaryData.numberOfSuppliers}
 								/>
 								<StatRow
 									title={"Number of borrowers"}
 									tooltipContent="The number of wallets currently borrowing this asset."
-									value={marketData.numberOfBorrowers}
+									value={summaryData.numberOfBorrowers}
+								/> */}
+								<StatRow
+									title={"Collateral factor"}
+									tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
+									value={summaryData.collateralFactor}
+									unit="%"
 								/>
 							</Column>
 							<Column gap={theme.spacing.lg}>
 								<StatRow
-									title={"Collateral factor"}
-									tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
-									value={marketData.collateralFactor}
-									unit="%"
-								/>
-								<StatRow
 									title={"Total borrow"}
 									tooltipContent="The total amount of funds borrowed from the market. (USD)"
-									value={marketData.totalBorrowUsd}
+									value={summaryData.totalBorrow * summaryData.usdcPerUnderlying}
 									unit="$"
 								/>
 								<StatRow
 									title={"Borrow cap"}
 									tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
-									value={marketData.borrowCapUsd ? marketData.borrowCapUsd : "No limit"}
+									value={summaryData.borrowCap !== "0" ? summaryData.borrowCap : "No limit"}
 								/>
 								<StatRow
 									title={"Available liquidity"}
 									tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
-									value={marketData.availableLiquidityUsd}
+									value={summaryData.availableLiquidityUsd}
 									unit="$"
 								/>
 							</Column>
 						</ResponsiveRow>
 					</Card>
-					<SectionTitle title={"Supply, Borrow and Reserves"} />
+					<Row>
+						<SectionTitle width="auto" title={"Supply, Borrow and Reserves"} />
+						<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
+							<TooltipText
+								baseText={<Typography.body color="text2">USD equivilent</Typography.body>}
+								tooltipContent="Toggle to convert to total number of tokens supplied, borrowed and in reserves to the USD equivilent values. That is, the number of tokens, times the token value at that time."
+							/>
+							<ToggleButton active={showInUsd} onClick={() => setShowInUsd(!showInUsd)} />
+						</Row>
+					</Row>
 					<Card>
 						<TimeSeriesChart
-							chartConfig={timeSeriesChartConfig}
-							lineInfoList={[{ coin: coin, color: theme.color.lineChartColors[1] }]}
-							dataSelectors={[
-								time_series_data_selector_E.SUPPLY_USD,
-								time_series_data_selector_E.BORROW_USD,
-								time_series_data_selector_E.RESERVES_USD,
-							]}
-							timeSelectors={timeSelectors}
+							chartConfig={lowerChartsConfig}
+							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
+							dataType={DataType.MARKET}
+							dataSelectorOptions={supplyBorrowReservesChartDataSelectors}
+							token={token}
+							timeSelectorOptions={timeSelectorOptions}
 						/>
 					</Card>
-					<SectionTitle title={"About " + coinName} />
+					<SectionTitle title={"Token price in USD"} />
+					<Card>
+						<TimeSeriesChart
+							chartConfig={lowerChartsConfig}
+							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
+							dataType={DataType.MARKET}
+							dataSelectorOptions={tokenPriceDataSelectors}
+							token={token}
+							timeSelectorOptions={timeSelectorOptions}
+						/>
+					</Card>
+					<SectionTitle title={"About " + token} />
 					<CoinInfoCard
-						value={coinInfo.desc}
-						whitepaper={coinInfo.whitepaper}
-						website={coinInfo.website}
-						twitter={coinInfo.twitter}
-						coingecko={coinInfo.coingecko}
+						value={tokenInfo.desc}
+						whitepaper={tokenInfo.whitepaper}
+						website={tokenInfo.website}
+						twitter={tokenInfo.twitter}
+						coingecko={tokenInfo.coingecko}
 					/>
 				</Column>
 				<Column gap={gap}>
@@ -229,21 +251,21 @@ export default function Market({ match }): JSX.Element | null {
 					<StatCard
 						title={"Total supplied"}
 						tooltipContent="The total value (USD) of tokens supplied to the market."
-						value={marketData.totalSupplyUsd}
+						value={summaryData.totalSupply * summaryData.usdcPerUnderlying}
 						unit="$"
 					/>
 					<ProgressCard
 						title={"Utilization"}
 						tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
-						value={marketData.utilization}
+						value={summaryData.utilization}
 						unit="%"
 						size={60}
-						progressPercent={marketData.utilization}
+						progressPercent={summaryData.utilization}
 					/>
 					<StatCard
 						title={"Reserves"}
 						tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders."
-						value={marketData.totalReservesUsd}
+						value={summaryData.totalReserves * summaryData.usdcPerUnderlying}
 						unit="$"
 					/>
 				</Column>

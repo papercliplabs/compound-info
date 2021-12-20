@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import { coin_E } from "common/enums";
-import { COIN_INFO } from "common/constants";
+import { Token } from "common/enums";
+import { TOKEN_INFO } from "common/constants";
 
 const Logo = styled.img<{
 	size?: string;
@@ -17,8 +17,8 @@ const Logo = styled.img<{
 
 export default Logo;
 
-export function CoinLogo({ coin, size }: { coin: coin_E; size?: string }): JSX.Element {
-	const imgSrc = COIN_INFO[coin].imgSrc;
+export function TokenLogo({ token, size }: { token: Token; size?: string }): JSX.Element {
+	const imgSrc = TOKEN_INFO[token].imgSrc;
 
 	return <Logo src={imgSrc} size={size} />;
 }
