@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { useTheme } from "styled-components";
 
-import { StyledInternalLink } from "components/Link";
+import { StyledExternalLink, StyledInternalLink } from "components/Link";
 import Row from "components/Row";
 import Column from "components/Column";
 import { Typography } from "theme";
@@ -9,6 +9,7 @@ import { HideSmall } from "components/shared";
 import { IconButton } from "components/Button/iconButton";
 import { useDataStatus } from "data/hooks";
 import { formatDate, formatNumber } from "common/utils";
+import { URLS } from "common/constants";
 
 const StyledHeader = styled(Row)`
 	width: 100%;
@@ -28,18 +29,23 @@ const DataErrorBanner = styled(Row)`
 	text-align: center;
 `;
 
-export default function Header(): JSX.Element {
+export default function Header({
+	dataError,
+	lastSyncedDate,
+}: {
+	dataError: boolean;
+	lastSyncedDate: number;
+}): JSX.Element {
 	const theme = useTheme();
-
-	const { dataError, lastSyncedDate } = useDataStatus();
 
 	return (
 		<>
 			{dataError && (
 				<DataErrorBanner>
 					<Typography.header color={theme.color.warning1}>
-						This site is currently experiencing data issues, the last synced data is from{" "}
-						{formatDate(lastSyncedDate, false, false)}
+						{/* This site is currently experiencing data issues, the last synced data is from{" "} */}
+						<StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} content={"The subgraph"} /> used for this sites data is
+						currently indexing, the last indexed date is {formatDate(lastSyncedDate, false, false)}
 					</Typography.header>
 				</DataErrorBanner>
 			)}

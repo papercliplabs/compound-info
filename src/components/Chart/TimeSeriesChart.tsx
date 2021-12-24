@@ -82,8 +82,6 @@ export default function TimeSeriesChart({
 
 	const selectedData = useHistoricalData(dataType, timeSelector, dataSelector);
 
-	console.log(selectedData);
-
 	const dataSelectorInfo = DataType.PROTOCOL === dataType ? PROTOCOL_DATA_SELECTOR_INFO : MARKET_DATA_SELECTOR_INFO;
 
 	const dataSelectorButtons = useMemo(() => {

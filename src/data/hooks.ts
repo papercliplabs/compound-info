@@ -176,8 +176,6 @@ export function useHistoricalData(
 	const protocolHistoricalData = useProtocolHistoricalData(dataSelector);
 	const marketHistoricalData = useMarketHistoricalData(timeSelector, dataSelector);
 
-	console.log(protocolHistoricalData);
-
 	return DataType.PROTOCOL === dataType ? protocolHistoricalData : marketHistoricalData;
 }
 
