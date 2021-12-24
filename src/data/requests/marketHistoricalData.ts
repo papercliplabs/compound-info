@@ -299,12 +299,17 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 		dayData.push(hourData.slice(-1)[0]);
 	}
 
-	console.log("WEEK");
-	console.log(weekData);
-	console.log("DAY");
-	console.log(dayData);
-	console.log("HOUR");
-	console.log(hourData);
+	// Remove the first point from each as comp speeds is weird here
+	weekData.shift();
+	dayData.shift();
+	hourData.shift();
+
+	// console.log("WEEK");
+	// console.log(weekData);
+	// console.log("DAY");
+	// console.log(dayData);
+	// console.log("HOUR");
+	// console.log(hourData);
 
 	return {
 		[DataResolution.WEEK]: weekData,
