@@ -2,6 +2,7 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 
 import paperclip from "assets/paperclip.svg";
+import compoundGif from "assets/compound.gif";
 import Column from "components/Column";
 import Logo from "components/Logo";
 
@@ -28,9 +29,9 @@ const AnimatedImg = styled.div`
 export default function Loader({ size }: { size: string }): JSX.Element {
 	return (
 		<Column height="100%" justify="center">
-			<AnimatedImg>
-				<Logo src={paperclip} size={size} />
-			</AnimatedImg>
+			{/* <AnimatedImg> */}
+			<Logo src={compoundGif} size={size} />
+			{/* </AnimatedImg> */}
 		</Column>
 	);
 }

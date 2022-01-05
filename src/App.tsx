@@ -8,7 +8,7 @@ import Header from "components/Header";
 import Footer from "components/Footer";
 import Overview from "pages/Overview";
 import Loader from "components/Loader";
-import { usePrefetchData } from "data/hooks";
+import { useDataStatus, usePrefetchData } from "data/hooks";
 
 const loadingScreenTimeMs = 1500; // ms to hold in loading screen on app load
 
@@ -30,14 +30,16 @@ const FooterWrapper = styled.div`
 	}
 `;
 
-const StyledBody = styled.div`
+const StyledBody = styled.div<{
+	dataError: boolean;
+}>`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	width: 100%;
 	padding: 40px;
-	padding-top: 150px;
+	padding-top: ${({ dataError }) => (dataError ? "150px" : "100px")};
 	column-gap: ${({ theme }) => theme.spacing.md};
 	row-gap: ${({ theme }) => theme.spacing.md};
 
@@ -45,11 +47,12 @@ const StyledBody = styled.div`
 		max-width: 1200px;
 	}
 
-	${({ theme }) => theme.mediaWidth.small`
+	${({ theme, dataError }) => theme.mediaWidth.small`
 		padding-left: 15px;
 		padding-right: 15px;
-		column-gap: ${({ theme }) => theme.spacing.xs};
-		row-gap: ${({ theme }) => theme.spacing.xs};
+		padding-top: ${dataError ? "180px" : "80px"};
+		column-gap: ${theme.spacing.xs};
+		row-gap: ${theme.spacing.xs};
 	`}
 `;
 
@@ -58,6 +61,7 @@ export default function App(): JSX.Element {
 
 	// Triggers data fetching on the first call during the loading state
 	usePrefetchData();
+	const { dataError, lastSyncedDate } = useDataStatus();
 
 	useEffect(() => {
 		setTimeout(() => setLoading(false), loadingScreenTimeMs);
@@ -71,9 +75,9 @@ export default function App(): JSX.Element {
 				<HashRouter>
 					<Route component={GoogleAnalyticsReporter} />
 					<HeaderWrapper>
-						<Header />
+						<Header dataError={dataError} lastSyncedDate={lastSyncedDate} />
 					</HeaderWrapper>
-					<StyledBody>
+					<StyledBody dataError={dataError}>
 						<Switch>
 							<Route exact strict path="/" component={Overview} />
 							<Route exact strict path="/:token" component={Market} />
