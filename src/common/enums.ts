@@ -85,3 +85,14 @@ export enum Unit {
 	USD = "$",
 	UNITLESS = "",
 }
+
+/**
+ * Type of each transaction on Compound
+ */
+export enum TransactionType {
+	MINT = "Supply",
+	REDEEM = "Redeem",
+	BORROW = "Borrow",
+	REPAY_BORROW = "Repay Borrow",
+	LIQUIDATION = "Liquidation",
+}

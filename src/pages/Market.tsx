@@ -8,7 +8,7 @@ import { TOKEN_INFO } from "common/constants";
 
 import { formatNumber, getEtherscanLink, getTokenForUnderlyingSymbol, shortAddress } from "common/utils";
 import ApyChartContainer from "components/ApyChartContainer";
-import { useMarketSummaryData, useTestData, useTimeSeriesData } from "data/hooks";
+import { useMarketSummaryData, useTestData, useTimeSeriesData, useTransactionData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
@@ -56,6 +56,10 @@ export default function Market({ match }): JSX.Element | null {
 
 	const summaryData = useMarketSummaryData(token);
 	// const marketData = useMarketSummaryData(coin);
+
+	const transactionData = useTransactionData(token);
+
+	console.log(transactionData);
 
 	if (!token) {
 		return <Redirect to={"/"} />;
