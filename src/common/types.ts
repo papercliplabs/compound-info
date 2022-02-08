@@ -1,4 +1,12 @@
-import { Token, TimeSelector, MarketDataSelector, ProtocolDataSelector, Unit, DataResolution } from "common/enums";
+import {
+	Token,
+	TimeSelector,
+	MarketDataSelector,
+	ProtocolDataSelector,
+	Unit,
+	DataResolution,
+	TransactionType,
+} from "common/enums";
 
 /**
  * Holds metadata information about a token
@@ -163,3 +171,14 @@ export type DataSelector = ProtocolDataSelector | MarketDataSelector;
 export type MarketHistoricalDataEntry = {
 	[selector in MarketDataSelector]: Record<Token, number>;
 };
+
+/**
+ * Compound transaction
+ */
+export interface Transaction {
+	type: TransactionType;
+	token: Token;
+	tokenAmount: number;
+	account: string;
+	time: number; // Sec since unix epoche
+}

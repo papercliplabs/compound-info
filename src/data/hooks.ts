@@ -19,11 +19,13 @@ import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
 import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
 import { Token } from "graphql";
+import { requestTransactionData } from "./requests/transactionData";
 
 const protocolSummaryDataKey = "protocolSummaryData";
 const protocolHistoricalDataKey = "protocolHistoricalData";
 const marketSummaryDataKey = "marketSummaryData";
 const marketHistoricalDataKey = "marketHistoricalData";
+const transactionDataKey = "transactionData";
 
 export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
@@ -177,6 +179,43 @@ export function useHistoricalData(
 	const marketHistoricalData = useMarketHistoricalData(timeSelector, dataSelector);
 
 	return DataType.PROTOCOL === dataType ? protocolHistoricalData : marketHistoricalData;
+}
+
+/**
+ * Hook to get transaction data
+ * @param token the token market the transactiond data is wanted for
+ * @param transactionType the type of transaction to filter for, all types will be returned if none is specified
+ * @returns list of transactions for the specified market
+ */
+export function useTransactionData(token: Token, transactionType?: TransactionType): Transaction[] {
+	const [store, { updateStore }] = useGlobalStore();
+	const data = store[transactionDataKey];
+
+	useEffect(() => {
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data) {
+				const data = await requestTransactionData();
+				updateStore(transactionDataKey, data);
+			}
+		}
+
+		checkForData();
+	}, [data, updateStore]);
+
+	let queriedData = [];
+	if (data) {
+		// Get the correct data type
+		queriedData = data.filter((transaction: Transaction) => {
+			{
+				const correctToken = transaction.token === token; // Filter for token
+				const correctTransactionType = transactionType ? transaction.type === transactionType : true; // Filter for transaction type
+				return correctToken && correctTransactionType;
+			}
+		});
+	}
+
+	return queriedData;
 }
 
 export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
