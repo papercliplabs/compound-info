@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import styled, { useTheme } from "styled-components";
 import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid } from "recharts";
 
-import { TimeSelector } from "common/enums";
+import { DateFormat, TimeSelector } from "common/enums";
 import { ChartConfig, LineInfo } from "common/types";
 import { TIME_SELECTOR_INFO } from "common/constants";
 
@@ -96,7 +96,7 @@ function CustomTooltip({
 	}, [onHover, hoverData]);
 
 	if (hoverDate) {
-		const formattedDate = formatDate(hoverDate, showTime, false);
+		const formattedDate = formatDate(hoverDate, showTime ? DateFormat.MMM_DD_TIME : DateFormat.MMM_DD_YY);
 
 		// Bound the right side of tooltip
 		const rightX = coordinate.x + toolTipWidth / 2;
@@ -114,12 +114,11 @@ function CustomTooltip({
 	}
 }
 
-// TODO: The x position is broken/wrong from recharts using my custom tick array
 function CustomXTick({ x, y, payload, showTime, yAxisShown, show, index, visibleTicksCount }) {
 	const width = 40;
 
 	const theme = useTheme();
-	const formattedDate = formatDate(payload.value, showTime, true);
+	const formattedDate = formatDate(payload.value, DateFormat.DD_YY);
 
 	if (!show) {
 		return null;

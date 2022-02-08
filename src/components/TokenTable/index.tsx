@@ -10,7 +10,7 @@ import { TokenLogo } from "components/Logo";
 import { SortButton } from "components/Button";
 
 import { MarketSummaryData, MarketSummaryDataSelectorInfo } from "common/types";
-import { MarketDataSelector, Unit, Token } from "common/enums";
+import { MarketDataSelector, Unit } from "common/enums";
 import { MARKET_DATA_SELECTOR_INFO } from "common/constants";
 
 const StyledTableRow = styled(Row)`
@@ -173,7 +173,6 @@ export default function TokenTable({
  * @returns sorted list of data
  */
 function sortData(data: MarketSummaryData[], key: keyof MarketSummaryData, asc: boolean): MarketSummaryData[] {
-	// TODO: this is doing a string sort, for some reason the numbers are string
 	const sortedData = [...data].sort((a, b) => {
 		const compVala = isNaN(Number(a[key])) ? a[key] : Number(a[key]);
 		const compValb = isNaN(Number(b[key])) ? b[key] : Number(b[key]);

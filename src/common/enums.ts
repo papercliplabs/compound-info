@@ -96,3 +96,32 @@ export enum TransactionType {
 	REPAY_BORROW = "Repay Borrow",
 	LIQUIDATION = "Liquidation",
 }
+
+/**
+ * Type of each etherscan link
+ */
+export enum EtherscanLinkType {
+	TOKEN = "token",
+	WALLET = "address",
+	CONTRACT = "address",
+	TRANSACTION = "tx",
+}
+
+/**
+ * Generaly purpose length enum
+ */
+export enum Length {
+	SHORT = 0,
+	MEDIUM,
+	LONG,
+}
+
+/**
+ * Differnet options for how to format a time
+ */
+export enum DateFormat {
+	DD_YY = 0,
+	MMM_DD_YY,
+	MMM_DD_TIME,
+	SINCE_NOW,
+}

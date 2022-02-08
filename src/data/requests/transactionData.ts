@@ -144,20 +144,21 @@ async function performPagenationRequest(
 
 		console.log(data);
 
-		const mintData = data.data[key];
+		const transactionData = data.data[key];
 
-		const len = mintData.length;
+		const len = transactionData.length;
 
 		for (let i = 0; i < len; i++) {
-			const tokenSymbol = mintData[i].userMarket.market.underlyingSymbol;
+			const tokenSymbol = transactionData[i].userMarket.market.underlyingSymbol;
 
 			if (tokenSymbol in Token) {
 				const entry: Transaction = {
 					type: transactionType,
 					token: tokenSymbol,
-					tokenAmount: mintData[i].underlyingAmount,
-					account: mintData[i].userMarket.user.id,
-					time: mintData[i].date,
+					hash: transactionData[i].id,
+					tokenAmount: transactionData[i].underlyingAmount,
+					account: transactionData[i].userMarket.user.id,
+					time: transactionData[i].date,
 				};
 
 				outputData.push(entry);
@@ -183,7 +184,7 @@ export type ProtocolSummaryRequestResult = {
 export async function requestTransactionData(): Promise<Transaction[]> {
 	console.log("Requesting transaction data");
 
-	const now = parseInt(Date.now() / 1000); // Unix timestamp in seconds
+	const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
 	const dateGraterThan = now - 3 * 24 * 60 * 60; // Last 2 days
 
 	const mints = await performPagenationRequest(mintsQuery, "mints", dateGraterThan, TransactionType.MINT);

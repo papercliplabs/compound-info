@@ -180,5 +180,6 @@ export interface Transaction {
 	token: Token;
 	tokenAmount: number;
 	account: string;
+	hash: string;
 	time: number; // Sec since unix epoche
 }

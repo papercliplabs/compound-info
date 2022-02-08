@@ -2,7 +2,7 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
-import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector } from "common/enums";
+import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector, Token } from "common/enums";
 import { useGlobalStore } from "data/store";
 
 import {
@@ -18,7 +18,6 @@ import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalD
 import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
 import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
-import { Token } from "graphql";
 import { requestTransactionData } from "./requests/transactionData";
 
 const protocolSummaryDataKey = "protocolSummaryData";
