@@ -1,15 +1,17 @@
+import { MissingFieldError } from "@apollo/client";
 import { MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO, TOKEN_INFO } from "common/constants";
 
-import { ProtocolDataSelector, MarketDataSelector, Token } from "common/enums";
+import { ProtocolDataSelector, MarketDataSelector, Token, EtherscanLinkType, Length, DateFormat } from "common/enums";
+import { maxHeaderSize } from "http";
+import { textSpanIntersectsWithTextSpan } from "typescript";
 
 /**
  * Convert unix time in ms to a date
  * @param dateInUnixSec the date represented in seconds since unix epoche
- * @param includeTime if true, includes the time of day in the date
- * @param short if true, the month and year will be shorted to MM/YY and no time will be shown
+ * @param dateFormat format for the date
  * @returns date in string format (ex: May 10, 2021, 1:00 AM)
  */
-export function formatDate(dateInUnixSec: number, includeTime: boolean, short: boolean): string {
+export function formatDate(dateInUnixSec: number, dateFormat: DateFormat): string {
 	const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	const date = new Date(dateInUnixSec * 1000); // date from ms since epoche
 	const monthIndex = date.getMonth();
@@ -18,15 +20,42 @@ export function formatDate(dateInUnixSec: number, includeTime: boolean, short: b
 	const month = months[monthIndex];
 
 	let formattedDate = "";
-	if (short) {
-		formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
-	} else {
-		if (includeTime) {
+	switch (dateFormat) {
+		case DateFormat.DD_YY:
+			formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
+			break;
+		case DateFormat.MMM_DD_YY:
+			formattedDate += month + " " + day + ", " + year;
+			break;
+		case DateFormat.MMM_DD_TIME:
 			const time = date.toLocaleTimeString("en-US", { hour: "numeric", minute: "numeric" });
 			formattedDate += month + " " + day + " " + time;
-		} else {
-			formattedDate += month + " " + day + ", " + year;
-		}
+			break;
+		case DateFormat.SINCE_NOW:
+			const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
+			const deltaSec = now - dateInUnixSec;
+			if (deltaSec < 60) {
+				formattedDate = `${deltaSec} sec ago`;
+			} else if (deltaSec < 60 * 60) {
+				const deltaMin = Math.round(deltaSec / 60);
+				formattedDate = `${deltaMin} min ago`;
+			} else if (deltaSec < 60 * 60 * 24) {
+				const deltaHour = Math.round(deltaSec / (60 * 60));
+				formattedDate = `${deltaHour} hr ago`;
+			} else if (deltaSec < 60 * 60 * 24 * 31) {
+				const deltaDay = Math.round(deltaSec / (60 * 60 * 24));
+				const base = deltaDay == 1 ? "day" : "days";
+				formattedDate = `${deltaDay} ${base} ago`;
+			} else if (deltaSec < 60 * 60 * 24 * 360) {
+				const deltaMonth = Math.round(deltaSec / (60 * 60 * 24 * 31));
+				const base = deltaMonth == 1 ? "month" : "months";
+				formattedDate = `${deltaMonth} ${base} ago`;
+			} else {
+				const deltaYear = Math.round(deltaSec / (60 * 60 * 24 * 365));
+				const base = deltaYear == 1 ? "year" : "years";
+				formattedDate = `${deltaYear} ${base} ago`;
+			}
+			break;
 	}
 
 	return formattedDate;
@@ -150,25 +179,38 @@ export function weiToGwei(wei: number): number {
 
 /**
  * Getter for the ethercan link given a coin address
- * @param address coin address to get the link for
+ * @param address token, wallet or contract address
+ * @param linkType type of the link
  * @returns etherscan link for the coin address
  */
-export function getEtherscanLink(address: string): string {
-	return "https://etherscan.io/token/" + address;
+export function getEtherscanLink(address: string, linkType: EtherscanLinkType): string {
+	return "https://etherscan.io/" + linkType + "/" + address;
 }
 
 /**
  * Format an address to a shorter version by adding ... in the middle
  * @param address address to be shortened
+ * @param length the length to shorten the address to
  * @returns shortened address
  */
-export function shortAddress(address: string): string {
+export function shortAddress(address: string, length: Length): string {
 	const len = address.length;
-	if (len < 12) return address;
-	if (len < 12) {
+	let keepLen = 12;
+	switch (length) {
+		case Length.SHORT:
+			keepLen = 6;
+			break;
+		case Length.MEDIUM:
+			keepLen = 12;
+			break;
+		case Length.LONG:
+			keepLen = 20;
+			break;
+	}
+	if (len < keepLen) {
 		return address;
 	} else {
-		return address.slice(0, 6) + "..." + address.slice(len - 6, len);
+		return address.slice(0, keepLen / 2) + "..." + address.slice(len - Math.max(4, keepLen / 2), len);
 	}
 }
 

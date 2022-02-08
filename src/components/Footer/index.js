@@ -31,12 +31,19 @@ export default function Footer() {
 				<Break />
 				<ResponsiveRow padding={theme.spacing.lg + " 0"} justify="space-between">
 					<Typography.subheader color={theme.color.text2}>
-						© 2021 <StyledExternalLink href={URLS.PAPERCLIP_HOME} content="Paperclip Labs" />
+						© 2021{" "}
+						<StyledExternalLink href={URLS.PAPERCLIP_HOME} variant="secondary">
+							Paperclip Labs
+						</StyledExternalLink>
 					</Typography.subheader>
 					<Typography.subheader color={theme.color.text2}>
 						<ResponsiveRow gap={"32px"}>
-							<StyledExternalLink href={URLS.COMPOUND_GRANTS} content="Compound Grants Batch 2" />
-							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />
+							<StyledExternalLink href={URLS.COMPOUND_GRANTS} variant="secondary">
+								Compound Grants Batch 2
+							</StyledExternalLink>
+							<StyledExternalLink href={URLS.GITHUB} variant="secondary">
+								Github
+							</StyledExternalLink>
 						</ResponsiveRow>
 					</Typography.subheader>
 				</ResponsiveRow>
