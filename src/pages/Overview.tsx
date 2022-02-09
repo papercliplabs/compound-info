@@ -10,7 +10,7 @@ import Logo from "components/Logo";
 import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import Row, { ResponsiveRow } from "components/Row";
 import Card, { StatCard, ProgressCard } from "components/Card";
-import CoinTable from "components/TokenTable";
+import TokenTable from "components/TokenTable";
 import { ToggleButton } from "components/Button";
 import TooltipText from "components/TooltipText";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
@@ -143,7 +143,7 @@ export default function Overview(): JSX.Element | null {
 				</Row>
 			</Row>
 			<TableCard>
-				<CoinTable data={marketSummaryData} dataSelectors={tokenTableDataSelectors} />
+				<TokenTable data={marketSummaryData} dataSelectors={tokenTableDataSelectors} />
 			</TableCard>
 		</>
 	);

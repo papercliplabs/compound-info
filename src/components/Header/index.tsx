@@ -10,6 +10,7 @@ import { IconButton } from "components/Button/iconButton";
 import { useDataStatus } from "data/hooks";
 import { formatDate, formatNumber } from "common/utils";
 import { URLS } from "common/constants";
+import { DateFormat } from "common/enums";
 
 const StyledHeader = styled(Row)`
 	width: 100%;
@@ -44,8 +45,11 @@ export default function Header({
 				<DataErrorBanner>
 					<Typography.header color={theme.color.warning1}>
 						{/* This site is currently experiencing data issues, the last synced data is from{" "} */}
-						<StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} content={"The subgraph"} /> used for this sites data is
-						currently indexing, the last indexed date is {formatDate(lastSyncedDate, false, false)}
+						<StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} variant="secondary">
+							the subgraph
+						</StyledExternalLink>
+						used for this sites data is currently indexing, the last indexed date is{" "}
+						{formatDate(lastSyncedDate, DateFormat.MMM_DD_YY)}
 					</Typography.header>
 				</DataErrorBanner>
 			)}

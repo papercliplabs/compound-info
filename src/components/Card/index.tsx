@@ -14,11 +14,12 @@ const Card = styled.div<{
 	height?: string;
 	width?: string;
 	padding?: string;
+	backgroundColor?: string;
 }>`
 	display: flex;
 	flex-direction: ${({ column }) => (column ? "column" : "row")};
 	border-radius: ${({ theme }) => theme.radius.lg};
-	background-color: ${({ theme }) => theme.color.bg1};
+	background-color: ${({ theme, backgroundColor }) => backgroundColor ?? theme.color.bg1};
 	height: ${({ height }) => height ?? "100%"};
 	width: ${({ width }) => width ?? "100%"};
 	padding: ${({ padding, theme }) => padding ?? theme.spacing.lg};

@@ -52,18 +52,27 @@ export function IconButton({}) {
 					<Row>
 						<Typography.caption>
 							This app is an open-source standalone dashboard for the{" "}
-							<StyledExternalLink href={URLS.COMPOUND_FINANCE} content="Compound protocol" />. It was built to provide
-							transparency on historical market APYs to borrowers and lenders in hopes of improving investment
-							decisions.
+							<StyledExternalLink href={URLS.COMPOUND_FINANCE} variant="secondary">
+								Compound protocol
+							</StyledExternalLink>
+							. It was built to provide transparency on historical market APYs to borrowers and lenders in hopes of
+							improving investment decisions.
 							<br />
 							<br />
 							Have a question? Want to improve the dashboard? Feel free to open an issue on{" "}
-							<StyledExternalLink href={URLS.GITHUB} content="GitHub" />.
+							<StyledExternalLink href={URLS.GITHUB} variant="secondary">
+								GitHub
+							</StyledExternalLink>
+							.
 						</Typography.caption>
 					</Row>
 					<Break />
 					<Typography.caption>
-						Powered by <StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} content="The Graph" />
+						Powered by{" "}
+						<StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} variant="secondary">
+							The Graph
+						</StyledExternalLink>
+						.
 					</Typography.caption>
 				</Card>
 			</Overlay>

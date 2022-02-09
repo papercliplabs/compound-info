@@ -8,7 +8,7 @@ import { TOKEN_INFO } from "common/constants";
 
 import { formatNumber, getEtherscanLink, getTokenForUnderlyingSymbol, shortAddress } from "common/utils";
 import ApyChartContainer from "components/ApyChartContainer";
-import { useMarketSummaryData, useTestData, useTimeSeriesData } from "data/hooks";
+import { useMarketSummaryData, useTestData, useTimeSeriesData, useTransactionData } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
@@ -23,7 +23,8 @@ import TokenSelectorTimeSeriesChart from "components/Chart/TokenSelectorTimeSeri
 import MultilineChart from "components/Chart/MultilineChart";
 
 import { ChartConfig } from "common/types";
-import { DataType, MarketDataSelector, TimeSelector } from "common/enums";
+import { DataType, EtherscanLinkType, Length, MarketDataSelector, TimeSelector } from "common/enums";
+import TransactionTable from "components/TransactionTable";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -68,7 +69,7 @@ export default function Market({ match }): JSX.Element | null {
 
 	const tokenInfo = TOKEN_INFO[token];
 	const cTokenAddress = summaryData.id;
-	const etherscanLink = getEtherscanLink(cTokenAddress);
+	const etherscanLink = getEtherscanLink(cTokenAddress, EtherscanLinkType.TOKEN);
 
 	const tokenSelectorChartConfig: ChartConfig = {
 		showAvg: true,
@@ -125,7 +126,9 @@ export default function Market({ match }): JSX.Element | null {
 				<Typography.body color="text2">
 					<StyledInternalLink to={"/"}>Market</StyledInternalLink>
 					{" / "}
-					<StyledExternalLink href={etherscanLink} content={"c" + token + " (" + shortAddress(cTokenAddress) + ")"} />
+					<StyledExternalLink href={etherscanLink} variant="secondary">
+						c{token} ({shortAddress(cTokenAddress, Length.MEDIUM)})
+					</StyledExternalLink>
 				</Typography.body>
 			</Row>
 			<Row height="40px" margin={"20px 0"}>
@@ -237,6 +240,8 @@ export default function Market({ match }): JSX.Element | null {
 							timeSelectorOptions={timeSelectorOptions}
 						/>
 					</Card>
+					<SectionTitle title="Transactions" />
+					<TransactionTable token={underlyingSymbol} />
 					<SectionTitle title={"About " + token} />
 					<CoinInfoCard
 						value={tokenInfo.desc}
