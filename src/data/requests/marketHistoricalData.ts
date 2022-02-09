@@ -294,6 +294,7 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 	);
 
 	// Add on the last entry in hour data to week and day data so the last point is the most recent
+	// TODO: this should actually be adding the current values from marketSummaryData
 	if (hourData.length > 0) {
 		weekData.push(hourData.slice(-1)[0]);
 		dayData.push(hourData.slice(-1)[0]);
