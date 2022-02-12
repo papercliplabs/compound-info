@@ -7,6 +7,7 @@ import { Transaction } from "common/types";
 import { Token, TransactionType } from "common/enums";
 
 const PAGE_LENGTH = 1000; // Max of 1000
+const WITHIN_DAYS = 3; // Number of days before now to get this data for
 
 const mintsQuery = gql`
 	query mintsQuery($skip: Int!, $pageLength: Int!, $dateGreaterThan: Int!) {
@@ -182,10 +183,10 @@ export type ProtocolSummaryRequestResult = {
  * @returns list of all transactions in the last 3 days sorted with the newest transaction first
  */
 export async function requestTransactionData(): Promise<Transaction[]> {
-	console.log("Requesting transaction data");
+	console.log("Performing request: transaction data");
 
 	const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
-	const dateGraterThan = now - 3 * 24 * 60 * 60; // Last 2 days
+	const dateGraterThan = now - WITHIN_DAYS * 24 * 60 * 60; // Last 2 days
 
 	const mints = await performPagenationRequest(mintsQuery, "mints", dateGraterThan, TransactionType.MINT);
 	const redeems = await performPagenationRequest(redeemsQuery, "redeems", dateGraterThan, TransactionType.REDEEM);
