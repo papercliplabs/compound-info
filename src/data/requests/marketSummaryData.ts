@@ -42,7 +42,7 @@ export type MarketSummaryRequestResult = {
 };
 
 export async function requestMarketSummaryData(): Promise<MarketSummaryData[]> {
-	console.log("Requesting market summary data");
+	console.log("Performing request: market summary data");
 	const { data, loading } = await compoundInfoSubgraphClient.query<MarketSummaryRequestResult>({
 		query: marketSummaryQuery,
 	});

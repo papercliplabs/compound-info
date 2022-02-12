@@ -8,7 +8,13 @@ import { TOKEN_INFO } from "common/constants";
 
 import { formatNumber, getEtherscanLink, getTokenForUnderlyingSymbol, shortAddress } from "common/utils";
 import ApyChartContainer from "components/ApyChartContainer";
-import { useMarketSummaryData, useTestData, useTimeSeriesData, useTransactionData } from "data/hooks";
+import {
+	useMarketSummaryData,
+	useTestData,
+	useTimeSeriesData,
+	useTransactionData,
+	useUserDominanceData,
+} from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
 import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
@@ -49,6 +55,9 @@ export default function Market({ match }): JSX.Element | null {
 
 	const underlyingSymbol = match.params.token; // From url
 	const token = getTokenForUnderlyingSymbol(underlyingSymbol);
+
+	const userDominanceData = useUserDominanceData(token);
+	console.log(userDominanceData);
 
 	// Scroll to the top of the page
 	useEffect(() => {

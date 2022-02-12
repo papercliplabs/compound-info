@@ -278,7 +278,7 @@ async function performPagenationRequest(
  * 			the values are records with token names as keys
  */
 export async function requestMarketHistoricalData(): Record<keyof MarketDataSelector, MarketHistoricalDataEntry[]> {
-	console.log("Requesting historical market data");
+	console.log("Performing request: historical market data");
 
 	const now = parseInt(Date.now() / 1000); // Unix timestamp in seconds
 

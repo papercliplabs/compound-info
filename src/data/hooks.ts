@@ -12,6 +12,7 @@ import {
 	ProtocolHistoricalData,
 	MarketHistoricalData,
 	MarketHistoricalDataEntry,
+	UserDominanceData,
 } from "common/types";
 import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
@@ -19,12 +20,14 @@ import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
 import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
 import { requestTransactionData } from "./requests/transactionData";
+import { requestUserDominanceData } from "./requests/userDominanceData";
 
 const protocolSummaryDataKey = "protocolSummaryData";
 const protocolHistoricalDataKey = "protocolHistoricalData";
 const marketSummaryDataKey = "marketSummaryData";
 const marketHistoricalDataKey = "marketHistoricalData";
 const transactionDataKey = "transactionData";
+const userDominanceDataBaseKey = "userDominanceData";
 
 export function useProtocolSummaryData(): ProtocolSummaryData {
 	const [store, { updateStore }] = useGlobalStore();
@@ -215,6 +218,58 @@ export function useTransactionData(token: Token, transactionType?: TransactionTy
 	}
 
 	return queriedData;
+}
+
+/**
+ * Hook to get user dominance data
+ * @param token the token to get the data for
+ * @returns user dominance data for the token
+ */
+export function useUserDominanceData(token: Token): UserDominanceData {
+	const [store, { updateStore }] = useGlobalStore();
+	const key = userDominanceDataBaseKey + token;
+	const data = store[key];
+
+	const marketSummaryData = useMarketSummaryData(token);
+	let marketTotalSupply = undefined;
+	let marketTotalBorrow = undefined;
+
+	if (marketSummaryData && !Array.isArray(marketSummaryData)) {
+		marketTotalSupply = marketSummaryData.totalSupply;
+		marketTotalBorrow = marketSummaryData.totalBorrow;
+	}
+
+	useEffect(() => {
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data && marketTotalSupply !== undefined && marketTotalBorrow !== undefined) {
+				const data = await requestUserDominanceData(token);
+
+				let topNSupplyDom = 0;
+				let topNBorrowDom = 0;
+
+				// Compute percent dominances
+				for (let i = 0; i < data.suppliers.length; i++) {
+					data.suppliers[i].percentDominance = data.suppliers[i].underlyingAmount / marketTotalSupply;
+					topNSupplyDom += data.suppliers[i].percentDominance;
+				}
+
+				for (let i = 0; i < data.borrowers.length; i++) {
+					data.borrowers[i].percentDominance = data.borrowers[i].underlyingAmount / marketTotalBorrow;
+					topNBorrowDom += data.borrowers[i].percentDominance;
+				}
+
+				console.log("Top N supply: %f", topNSupplyDom);
+				console.log("Top N borrow: %f", topNBorrowDom);
+
+				updateStore(key, data);
+			}
+		}
+
+		checkForData();
+	}, [data, updateStore, token, marketTotalBorrow, marketTotalSupply]);
+
+	return data ?? [];
 }
 
 export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
