@@ -69,8 +69,6 @@ export default function DropdownButton({
 		setPosition({ left: left, top: top });
 	}
 
-	console.log(position.top);
-
 	const items = selectionList.map((title, i) => {
 		return (
 			<DropdownItem key={i} onClick={() => setSelectionCallback(title)}>

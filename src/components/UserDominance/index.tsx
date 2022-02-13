@@ -70,7 +70,7 @@ export default function UserDominace({ token }: { token: Token }): JSX.Element {
 
 	const rows = useMemo(() => {
 		return userDominanceData[selection].map((entry, i) => {
-			return <UserDominaceRowEntry entry={entry} num={i} key={i} />;
+			return <UserDominaceRowEntry entry={entry} num={i + 1} key={i} />;
 		});
 	}, [userDominanceData, selection]);
 

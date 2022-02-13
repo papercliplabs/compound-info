@@ -86,12 +86,12 @@ export function CoinInfoCard({
 				<Typography.body>{value}</Typography.body>
 			</Row>
 			<br />
-			<ResponsiveRow align="flex-start" $xs={true}>
+			<Column align="flex-start">
 				<StyledExternalInfoLink href={whitepaper} content={"Whitepaper ↗"} />
 				<StyledExternalInfoLink href={website} content={"Website ↗"} />
 				<StyledExternalInfoLink href={twitter} content={"Twitter ↗"} />
 				<StyledExternalInfoLink href={coingecko} content={"Coingecko ↗"} />
-			</ResponsiveRow>
+			</Column>
 		</StyledStatCard>
 	);
 }
