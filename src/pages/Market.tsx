@@ -31,6 +31,7 @@ import MultilineChart from "components/Chart/MultilineChart";
 import { ChartConfig } from "common/types";
 import { DataType, EtherscanLinkType, Length, MarketDataSelector, TimeSelector } from "common/enums";
 import TransactionTable from "components/TransactionTable";
+import UserDominace from "components/UserDominance";
 
 function StatRow({ title, value, unit, tooltipContent }) {
 	const theme = useTheme();
@@ -55,9 +56,6 @@ export default function Market({ match }): JSX.Element | null {
 
 	const underlyingSymbol = match.params.token; // From url
 	const token = getTokenForUnderlyingSymbol(underlyingSymbol);
-
-	const userDominanceData = useUserDominanceData(token);
-	console.log(userDominanceData);
 
 	// Scroll to the top of the page
 	useEffect(() => {
@@ -282,6 +280,8 @@ export default function Market({ match }): JSX.Element | null {
 						value={summaryData.totalReserves * summaryData.usdcPerUnderlying}
 						unit="$"
 					/>
+					<SectionTitle title="User Dominance" />
+					<UserDominace token={token} />
 				</Column>
 			</ResponsiveRow>
 		</>

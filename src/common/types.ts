@@ -6,6 +6,7 @@ import {
 	Unit,
 	DataResolution,
 	TransactionType,
+	UserType,
 } from "common/enums";
 
 /**
@@ -197,6 +198,5 @@ export interface UserDominanceDataEntry {
  * Data on user domanance for a market
  */
 export type UserDominanceData = {
-	suppliers: UserDominanceDataEntry[];
-	borrowers: UserDominanceDataEntry[];
+	[userType in UserType]: UserDominanceDataEntry[];
 };

@@ -125,3 +125,8 @@ export enum DateFormat {
 	MMM_DD_TIME,
 	SINCE_NOW,
 }
+
+export enum UserType {
+	SUPPLIER = "Supplier",
+	BORROWER = "Borrower",
+}
