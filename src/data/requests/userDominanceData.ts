@@ -12,13 +12,13 @@ const userDominanceSingleMarketQuery = gql`
 	query userDominanceSingleMarketQuery($skip: Int!, $pageLength: Int!, $numTop: Int!, $marketSymbol: String!) {
 		markets(where: { underlyingSymbol: $marketSymbol }, first: $pageLength, skip: $skip) {
 			underlyingSymbol
-			topSupplierUserMarkets: userMarkets(orderBy: totalSupply, orderDirection: desc, first: $numTop) {
+			topSupplierUserMarkets: userMarket(orderBy: totalSupply, orderDirection: desc, first: $numTop) {
 				user {
 					id
 				}
 				totalSupply
 			}
-			topBorrowerUserMarkets: userMarkets(orderBy: totalBorrow, orderDirection: desc, first: $numTop) {
+			topBorrowerUserMarkets: userMarket(orderBy: totalBorrow, orderDirection: desc, first: $numTop) {
 				user {
 					id
 				}

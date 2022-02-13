@@ -237,7 +237,7 @@ async function performPagenationRequest(
 				totalSupplyLatestEntry[tokenSymbol] = totalSupplyEntry[tokenSymbol];
 				totalSupplyUsdLatestEntry[tokenSymbol] = totalSupplyUsdEntry[tokenSymbol];
 				totalBorrowLatestEntry[tokenSymbol] = totalBorrowEntry[tokenSymbol];
-				totalBorrowUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
+				totalBorrowUsdLatestEntry[tokenSymbol] = totalBorrowUsdEntry[tokenSymbol];
 				totalReservesLatestEntry[tokenSymbol] = totalReservesEntry[tokenSymbol];
 				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
 				utilizationLatestEntry[tokenSymbol] = utilizationEntry[tokenSymbol];
@@ -305,12 +305,12 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 	dayData.shift();
 	hourData.shift();
 
-	// console.log("WEEK");
-	// console.log(weekData);
-	// console.log("DAY");
-	// console.log(dayData);
-	// console.log("HOUR");
-	// console.log(hourData);
+	console.log("WEEK");
+	console.log(weekData);
+	console.log("DAY");
+	console.log(dayData);
+	console.log("HOUR");
+	console.log(hourData);
 
 	return {
 		[DataResolution.WEEK]: weekData,

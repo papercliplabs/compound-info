@@ -12,9 +12,9 @@ const StyledSectionTitle = styled.div<{ width?: string }>`
 
 export function SectionTitle({ title, width }: { title: string; width?: string }): JSX.Element {
 	return (
-		<StyledSectionTitle width={width}>
-			<Typography.displayS paddingTop={"10px"}>{title}</Typography.displayS>
-		</StyledSectionTitle>
+		// <StyledSectionTitle width={width}>
+		<Typography.displayS paddingTop={"10px"}>{title}</Typography.displayS>
+		// </StyledSectionTitle>
 	);
 }
 

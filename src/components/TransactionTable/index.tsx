@@ -28,10 +28,10 @@ const RowEntry = styled(Typography.body)<{
 
 const ResponsiveHideRow = styled(Row)`
 	${({ theme }) => theme.mediaWidth.extraSmall`
-		> *:nth-child(2) {
+		> *:nth-child(3) {
 			display: none;
 		}
-		> *:nth-child(3) {
+		> *:nth-child(4) {
 			display: none;
 		}
 	`}

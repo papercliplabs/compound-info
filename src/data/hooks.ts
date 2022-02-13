@@ -65,17 +65,35 @@ function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): Protocol
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolHistoricalDataKey];
 
+	console.log(data);
+
+	const protocolSummaryData = useProtocolSummaryData();
+
+	console.log(protocolSummaryData);
+
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
-			if (!data) {
+			if (!data && protocolSummaryData) {
 				const data = await requestProtocolHistoricalData();
+
+				const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
+				const lastEntey = {
+					date: now,
+					totalSupplyUsd: Number(protocolSummaryData.totalSupplyUsd),
+					totalBorrowUsd: Number(protocolSummaryData.totalBorrowUsd),
+					totalReservesUsd: Number(protocolSummaryData.totalReservesUsd),
+					utilization: Number(protocolSummaryData.utilization),
+				};
+
+				data.push(lastEntey); // Tack on most recent data
+
 				updateStore(protocolHistoricalDataKey, data);
 			}
 		}
 
 		checkForData();
-	}, [data, updateStore]);
+	}, [data, updateStore, protocolSummaryData]);
 
 	let queriedData = [];
 	if (data) {
@@ -315,6 +333,15 @@ export function usePrefetchData() {
 			updateStore(protocolSummaryDataKey, protocolSummaryData);
 
 			const protocolHistoricalData = await requestProtocolHistoricalData();
+			const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
+			const lastEntey = {
+				date: now,
+				totalSupplyUsd: Number(protocolSummaryData.totalSupplyUsd),
+				totalBorrowUsd: Number(protocolSummaryData.totalBorrowUsd),
+				totalReservesUsd: Number(protocolSummaryData.totalReservesUsd),
+				utilization: Number(protocolSummaryData.utilization),
+			};
+			protocolHistoricalData.push(lastEntey); // Tack on most recent data
 			updateStore(protocolHistoricalDataKey, protocolHistoricalData);
 
 			const marketSummaryData = await requestMarketSummaryData();
