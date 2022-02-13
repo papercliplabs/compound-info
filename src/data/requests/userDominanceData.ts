@@ -3,10 +3,10 @@ import { compoundInfoSubgraphClient } from "data/apollo";
 import { gql } from "@apollo/client";
 
 import { UserDominanceData } from "common/types";
-import { Token, TransactionType } from "common/enums";
+import { Token, TransactionType, UserType } from "common/enums";
 
 const PAGE_LENGTH = 1000;
-const NUM_OF_TOP_ACCOUNTS = 999; // Number of top accounts to get
+const NUM_OF_TOP_ACCOUNTS = 10; // Number of top accounts to get
 
 const userDominanceSingleMarketQuery = gql`
 	query userDominanceSingleMarketQuery($skip: Int!, $pageLength: Int!, $numTop: Int!, $marketSymbol: String!) {
@@ -37,8 +37,8 @@ const userDominanceSingleMarketQuery = gql`
  */
 async function performPagenationRequest(query: DocumentNode, key: string, token: Token): UserDominanceData {
 	const outputData: UserDominanceData = {
-		suppliers: [],
-		borrowers: [],
+		[UserType.SUPPLIER]: [],
+		[UserType.BORROWER]: [],
 	};
 
 	let allFound = false;
@@ -67,7 +67,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, token:
 				underlyingAmount: topSupplierUserMarkets[i].totalSupply,
 				percentDominance: 0, // Not populated in this request
 			};
-			outputData.suppliers.push(entry);
+			outputData[UserType.SUPPLIER].push(entry);
 		}
 
 		for (let i = 0; i < topBorrowerUserMarkets.length; i++) {
@@ -76,7 +76,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, token:
 				underlyingAmount: topBorrowerUserMarkets[i].totalBorrow,
 				percentDominance: 0, // Not populated in this request
 			};
-			outputData.borrowers.push(entry);
+			outputData[UserType.BORROWER].push(entry);
 		}
 
 		// If less than PAGE_LENGTH results were returned we found everything
@@ -96,8 +96,6 @@ export async function requestUserDominanceData(token: Token): Promise<UserDomina
 	console.log("Performing request: user dominance data");
 
 	const userDominanceData = await performPagenationRequest(userDominanceSingleMarketQuery, "markets", token);
-
-	console.log(userDominanceData);
 
 	return userDominanceData;
 }

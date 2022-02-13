@@ -2,7 +2,15 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
-import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector, Token } from "common/enums";
+import {
+	DataResolution,
+	DataType,
+	MarketDataSelector,
+	ProtocolDataSelector,
+	TimeSelector,
+	Token,
+	UserType,
+} from "common/enums";
 import { useGlobalStore } from "data/store";
 
 import {
@@ -245,22 +253,14 @@ export function useUserDominanceData(token: Token): UserDominanceData {
 			if (!data && marketTotalSupply !== undefined && marketTotalBorrow !== undefined) {
 				const data = await requestUserDominanceData(token);
 
-				let topNSupplyDom = 0;
-				let topNBorrowDom = 0;
-
 				// Compute percent dominances
-				for (let i = 0; i < data.suppliers.length; i++) {
-					data.suppliers[i].percentDominance = data.suppliers[i].underlyingAmount / marketTotalSupply;
-					topNSupplyDom += data.suppliers[i].percentDominance;
+				for (let i = 0; i < data[UserType.SUPPLIER].length; i++) {
+					data[UserType.SUPPLIER][i].percentDominance = data[UserType.SUPPLIER][i].underlyingAmount / marketTotalSupply;
 				}
 
-				for (let i = 0; i < data.borrowers.length; i++) {
-					data.borrowers[i].percentDominance = data.borrowers[i].underlyingAmount / marketTotalBorrow;
-					topNBorrowDom += data.borrowers[i].percentDominance;
+				for (let i = 0; i < data[UserType.BORROWER].length; i++) {
+					data[UserType.BORROWER][i].percentDominance = data[UserType.BORROWER][i].underlyingAmount / marketTotalBorrow;
 				}
-
-				console.log("Top N supply: %f", topNSupplyDom);
-				console.log("Top N borrow: %f", topNBorrowDom);
 
 				updateStore(key, data);
 			}
@@ -269,7 +269,7 @@ export function useUserDominanceData(token: Token): UserDominanceData {
 		checkForData();
 	}, [data, updateStore, token, marketTotalBorrow, marketTotalSupply]);
 
-	return data ?? [];
+	return data ?? { [UserType.SUPPLIER]: [], [UserType.BORROWER]: [] };
 }
 
 export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {

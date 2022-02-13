@@ -143,8 +143,6 @@ async function performPagenationRequest(
 			},
 		});
 
-		console.log(data);
-
 		const transactionData = data.data[key];
 
 		const len = transactionData.length;
@@ -204,11 +202,11 @@ export async function requestTransactionData(): Promise<Transaction[]> {
 		TransactionType.LIQUIDATION
 	);
 
-	console.log(mints);
-	console.log(redeems);
-	console.log(borrows);
-	console.log(repayBorrows);
-	console.log(liquidations);
+	// console.log(mints);
+	// console.log(redeems);
+	// console.log(borrows);
+	// console.log(repayBorrows);
+	// console.log(liquidations);
 
 	const transactionData = [...mints, ...redeems, ...borrows, ...repayBorrows, ...liquidations];
 
