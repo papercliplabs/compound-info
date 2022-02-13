@@ -16,9 +16,9 @@ import {
 	useUserDominanceData,
 } from "data/hooks";
 import Card, { StatCard, ProgressCard, CoinInfoCard } from "components/Card";
-import Row, { ResponsiveRow } from "components/Row";
+import Row, { ResponsiveJustifyRow, ResponsiveRow } from "components/Row";
 import Column from "components/Column";
-import { Typography } from "theme";
+import { mediaQuerySizes, Typography } from "theme";
 import { StyledInternalLink, StyledExternalLink } from "components/Link";
 import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import { TokenLogo } from "components/Logo";
@@ -50,7 +50,7 @@ function StatRow({ title, value, unit, tooltipContent }) {
 // Main content of the market page
 export default function Market({ match }): JSX.Element | null {
 	const theme = useTheme();
-	const gap = theme.spacing.md;
+	const gap = theme.spacing.lg;
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
 	const [showInUsd, setShowInUsd] = useState<boolean>(false);
 
@@ -78,18 +78,20 @@ export default function Market({ match }): JSX.Element | null {
 	const cTokenAddress = summaryData.id;
 	const etherscanLink = getEtherscanLink(cTokenAddress, EtherscanLinkType.TOKEN);
 
+	const mobileConfig = window.innerWidth < mediaQuerySizes.extraSmall;
+
 	const tokenSelectorChartConfig: ChartConfig = {
-		showAvg: true,
+		showAvg: !mobileConfig,
 		showXAxis: false,
 		showYAxis: false,
 		showXTick: true,
-		showYTick: true,
-		showHorizontalGrid: true,
+		showYTick: !mobileConfig,
+		showHorizontalGrid: !mobileConfig,
 		showVerticalGrid: false,
 		showAreaGradient: true,
 		numberOfXAxisTicks: 3,
 		animate: true,
-		showValueInTooltip: false,
+		showValueInTooltip: mobileConfig,
 		baseChartHeightPx: 300,
 	};
 
@@ -142,109 +144,125 @@ export default function Market({ match }): JSX.Element | null {
 				<TokenLogo token={token} size="40px" />
 				<Typography.displayXL>{token}</Typography.displayXL>
 			</Row>
-			<ResponsiveRow reverse align="flex-start" gap={"32px"}>
+			<ResponsiveRow align="flex-start" gapSmall={gap} gap={theme.spacing.xl}>
 				<Column flex={2} gap={gap}>
-					<Row>
-						<SectionTitle width="auto" title="APY Performance" />
-						<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
-							<TooltipText
-								baseText={<Typography.body color="text2">Include COMP</Typography.body>}
-								tooltipContent="Toggle to include the COMP token distribution in the APY chart data. Note that a negative borrow rate means that the Compound protocol pays you."
+					<Column>
+						<ResponsiveRow xs={true}>
+							<Row>
+								<Typography.displayS>APY Performance</Typography.displayS>
+							</Row>
+							<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="flex-end" justifyExtraSmall="flex-start">
+								<TooltipText
+									baseText={<Typography.body color={theme.color.text2}>Include COMP</Typography.body>}
+									tooltipContent="Toggle to include the COMP token distribution in the APY chart data. Note that a negative borrow rate means that the Compound protocol pays you."
+								/>
+								<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
+							</ResponsiveJustifyRow>
+						</ResponsiveRow>
+						<Card>
+							<TokenSelectorTimeSeriesChart
+								chartConfig={tokenSelectorChartConfig}
+								dataSelectorOptions={apyChartDataSelectors}
+								timeSelectorOptions={timeSelectorOptions}
+								mainToken={token}
 							/>
-							<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
-						</Row>
-					</Row>
-					<Card>
-						<TokenSelectorTimeSeriesChart
-							chartConfig={tokenSelectorChartConfig}
-							dataSelectorOptions={apyChartDataSelectors}
-							timeSelectorOptions={timeSelectorOptions}
-							mainToken={token}
-						/>
-					</Card>
+						</Card>
+					</Column>
 
-					<Row>
-						<SectionTitle width="auto" title={"Supply, Borrow and Reserves"} />
-						<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
-							<TooltipText
-								baseText={<Typography.body color="text2">Show in USD</Typography.body>}
-								tooltipContent="Toggle to convert to total number of tokens supplied, borrowed and in reserves to the USD equivilent values. That is, the number of tokens, times the token value at that time."
+					<Column>
+						<ResponsiveRow xs={true}>
+							<Row>
+								<Typography.displayS>Supply, Borrow and Reserves</Typography.displayS>
+							</Row>
+							<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="flex-end" justifyExtraSmall="flex-start">
+								<TooltipText
+									baseText={<Typography.body color={theme.color.text2}>Show in USD</Typography.body>}
+									tooltipContent="Toggle to convert to total number of tokens supplied, borrowed and in reserves to the USD equivilent values. That is, the number of tokens, times the token value at that time."
+								/>
+								<ToggleButton active={showInUsd} onClick={() => setShowInUsd(!showInUsd)} />
+							</ResponsiveJustifyRow>
+						</ResponsiveRow>
+						<Card>
+							<TimeSeriesChart
+								chartConfig={lowerChartsConfig}
+								lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
+								dataType={DataType.MARKET}
+								dataSelectorOptions={supplyBorrowReservesChartDataSelectors}
+								token={token}
+								timeSelectorOptions={timeSelectorOptions}
 							/>
-							<ToggleButton active={showInUsd} onClick={() => setShowInUsd(!showInUsd)} />
+						</Card>
+					</Column>
+
+					<Column>
+						<Row>
+							<Typography.displayS>Transactions</Typography.displayS>
 						</Row>
-					</Row>
-					<Card>
-						<TimeSeriesChart
-							chartConfig={lowerChartsConfig}
-							lineInfoList={[{ key: token, color: theme.color.lineChartColors[1] }]}
-							dataType={DataType.MARKET}
-							dataSelectorOptions={supplyBorrowReservesChartDataSelectors}
-							token={token}
-							timeSelectorOptions={timeSelectorOptions}
-						/>
-					</Card>
-					<SectionTitle title="Transactions" />
-					<TransactionTable token={underlyingSymbol} />
+						<TransactionTable token={underlyingSymbol} />
+					</Column>
 				</Column>
 				<Column gap={gap}>
-					<SectionTitle title="Key statistics" />
-					<Card>
-						<Column gap={theme.spacing.lg}>
-							<StatRow
-								title={"Token price"}
-								tooltipContent="The current price of the asset."
-								value={summaryData.usdcPerUnderlying}
-								unit="$"
-							/>
-							<StatRow
-								title={"Total supplied"}
-								tooltipContent="The total value (USD) of tokens supplied to the market."
-								value={summaryData.totalSupply * summaryData.usdcPerUnderlying}
-								unit="$"
-							/>
-							<StatRow
-								title={"Total borrow"}
-								tooltipContent="The total amount of funds borrowed from the market. (USD)"
-								value={summaryData.totalBorrow * summaryData.usdcPerUnderlying}
-								unit="$"
-							/>
-							<StatRow
-								title={"Utilization"}
-								tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
-								value={summaryData.utilization}
-								unit="%"
-							/>
-							<StatRow
-								title={"Reverses"}
-								tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders."
-								value={summaryData.totalReserves * summaryData.usdcPerUnderlying}
-								unit="$"
-							/>
-							<StatRow
-								title={"Reserve factor"}
-								tooltipContent="The percentage of a given asset's accrued interest that gets put into a reserve pool. A 5% reserve factor = 5% of the interest paid by borrowers gets put into the pool (which provides a safety net for lenders against borrower default and liquidation)."
-								value={summaryData.reserveFactor}
-								unit="%"
-							/>
-							<StatRow
-								title={"Collateral factor"}
-								tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
-								value={summaryData.collateralFactor}
-								unit="%"
-							/>
+					<Column>
+						<Row>
+							<Typography.displayS>Key Statistics</Typography.displayS>
+						</Row>
+						<Card>
+							<Column gap={theme.spacing.lg}>
+								<StatRow
+									title={"Token price"}
+									tooltipContent="The current price of the asset."
+									value={summaryData.usdcPerUnderlying}
+									unit="$"
+								/>
+								<StatRow
+									title={"Total supplied"}
+									tooltipContent="The total value (USD) of tokens supplied to the market."
+									value={summaryData.totalSupply * summaryData.usdcPerUnderlying}
+									unit="$"
+								/>
+								<StatRow
+									title={"Total borrow"}
+									tooltipContent="The total amount of funds borrowed from the market. (USD)"
+									value={summaryData.totalBorrow * summaryData.usdcPerUnderlying}
+									unit="$"
+								/>
+								<StatRow
+									title={"Utilization"}
+									tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
+									value={summaryData.utilization}
+									unit="%"
+								/>
+								<StatRow
+									title={"Reverses"}
+									tooltipContent="Compound takes a portion of all the interest paid by borrowers and stores it in a pool that acts as  insurance for lenders against borrower default and liquidation. The reserve pool is controlled by COMP token holders."
+									value={summaryData.totalReserves * summaryData.usdcPerUnderlying}
+									unit="$"
+								/>
+								<StatRow
+									title={"Reserve factor"}
+									tooltipContent="The percentage of a given asset's accrued interest that gets put into a reserve pool. A 5% reserve factor = 5% of the interest paid by borrowers gets put into the pool (which provides a safety net for lenders against borrower default and liquidation)."
+									value={summaryData.reserveFactor}
+									unit="%"
+								/>
+								<StatRow
+									title={"Collateral factor"}
+									tooltipContent="Each asset has a unique collateral factor that determines the maximum amount a user can borrow from the pool, relative to how much of that asset they supplied. If the collateral factor for ETH is 50%, a user who supplied 100 ETH can borrow a maximum of 50 ETH worth of other assets at a given time."
+									value={summaryData.collateralFactor}
+									unit="%"
+								/>
 
-							<StatRow
-								title={"Borrow cap"}
-								tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
-								value={summaryData.borrowCap !== "0" ? summaryData.borrowCap : "No limit"}
-							/>
-							<StatRow
-								title={"Available liquidity"}
-								tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
-								value={summaryData.availableLiquidityUsd}
-								unit="$"
-							/>
-							{/* <StatRow
+								<StatRow
+									title={"Borrow cap"}
+									tooltipContent="The maximum amount of an asset that can be borrowed from the market. The borrow cap is controlled by COMP token holders."
+									value={summaryData.borrowCap !== "0" ? summaryData.borrowCap : "No limit"}
+								/>
+								<StatRow
+									title={"Available liquidity"}
+									tooltipContent="The amount of assets that are currently available to be borrowed from the market. "
+									value={summaryData.availableLiquidityUsd}
+									unit="$"
+								/>
+								{/* <StatRow
 									title={"Number of suppliers"}
 									tooltipContent="The number of wallets currently supplying this market."
 									value={summaryData.numberOfSuppliers}
@@ -254,18 +272,29 @@ export default function Market({ match }): JSX.Element | null {
 									tooltipContent="The number of wallets currently borrowing this asset."
 									value={summaryData.numberOfBorrowers}
 								/> */}
-						</Column>
-					</Card>
-					<SectionTitle title="User Dominance" />
-					<UserDominace token={token} />
-					<SectionTitle title={"About " + token} />
-					<CoinInfoCard
-						value={tokenInfo.desc}
-						whitepaper={tokenInfo.whitepaper}
-						website={tokenInfo.website}
-						twitter={tokenInfo.twitter}
-						coingecko={tokenInfo.coingecko}
-					/>
+							</Column>
+						</Card>
+					</Column>
+
+					<Column>
+						<Row>
+							<Typography.displayS>User Dominance</Typography.displayS>
+						</Row>
+						<UserDominace token={token} />
+					</Column>
+
+					<Column>
+						<Row>
+							<Typography.displayS>About {token}</Typography.displayS>
+						</Row>
+						<CoinInfoCard
+							value={tokenInfo.desc}
+							whitepaper={tokenInfo.whitepaper}
+							website={tokenInfo.website}
+							twitter={tokenInfo.twitter}
+							coingecko={tokenInfo.coingecko}
+						/>
+					</Column>
 				</Column>
 			</ResponsiveRow>
 		</>

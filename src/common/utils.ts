@@ -22,7 +22,7 @@ export function formatDate(dateInUnixSec: number, dateFormat: DateFormat): strin
 	let formattedDate = "";
 	switch (dateFormat) {
 		case DateFormat.DD_YY:
-			formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
+			formattedDate = monthIndex + 1 + "/" + year.slice(2, 4);
 			break;
 		case DateFormat.MMM_DD_YY:
 			formattedDate += month + " " + day + ", " + year;
