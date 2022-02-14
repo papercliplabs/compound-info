@@ -2,7 +2,7 @@
 // @ts-nocheck
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect } from "react-router-dom";
-import { useTheme } from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import { TOKEN_INFO } from "common/constants";
 
@@ -78,20 +78,21 @@ export default function Market({ match }): JSX.Element | null {
 	const cTokenAddress = summaryData.id;
 	const etherscanLink = getEtherscanLink(cTokenAddress, EtherscanLinkType.TOKEN);
 
-	const mobileConfig = window.innerWidth < mediaQuerySizes.extraSmall;
+	const extraSmallScreen = window.innerWidth < mediaQuerySizes.extraSmall;
+	const singleColumn = window.innerWidth < mediaQuerySizes.small;
 
 	const tokenSelectorChartConfig: ChartConfig = {
-		showAvg: !mobileConfig,
+		showAvg: !extraSmallScreen,
 		showXAxis: false,
 		showYAxis: false,
 		showXTick: true,
-		showYTick: !mobileConfig,
-		showHorizontalGrid: !mobileConfig,
+		showYTick: !extraSmallScreen,
+		showHorizontalGrid: !extraSmallScreen,
 		showVerticalGrid: false,
 		showAreaGradient: true,
 		numberOfXAxisTicks: 3,
 		animate: true,
-		showValueInTooltip: mobileConfig,
+		showValueInTooltip: extraSmallScreen,
 		baseChartHeightPx: 300,
 	};
 
@@ -194,12 +195,14 @@ export default function Market({ match }): JSX.Element | null {
 						</Card>
 					</Column>
 
-					<Column>
-						<Row>
-							<Typography.displayS>Transactions</Typography.displayS>
-						</Row>
-						<TransactionTable token={underlyingSymbol} />
-					</Column>
+					{!singleColumn && (
+						<Column>
+							<Row>
+								<Typography.displayS>Transactions</Typography.displayS>
+							</Row>
+							<TransactionTable token={underlyingSymbol} />
+						</Column>
+					)}
 				</Column>
 				<Column gap={gap}>
 					<Column>
@@ -295,6 +298,15 @@ export default function Market({ match }): JSX.Element | null {
 							coingecko={tokenInfo.coingecko}
 						/>
 					</Column>
+
+					{singleColumn && (
+						<Column>
+							<Row>
+								<Typography.displayS>Transactions</Typography.displayS>
+							</Row>
+							<TransactionTable token={underlyingSymbol} />
+						</Column>
+					)}
 				</Column>
 			</ResponsiveRow>
 		</>

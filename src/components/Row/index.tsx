@@ -12,6 +12,7 @@ const Row = styled.div<{
 	gap?: string;
 	flex?: number;
 	overflow?: string;
+	order?: string;
 }>`
 	display: flex;
 	flex-direction: row;
