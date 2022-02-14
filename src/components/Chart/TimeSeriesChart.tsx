@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import styled, { useTheme } from "styled-components";
 
 import { TimeSelector, DataSelector, Token, DataType } from "common/enums";
@@ -84,6 +84,14 @@ export default function TimeSeriesChart({
 
 	const dataSelectorInfo = DataType.PROTOCOL === dataType ? PROTOCOL_DATA_SELECTOR_INFO : MARKET_DATA_SELECTOR_INFO;
 
+	// Update hover data callback when selectedData changes
+	useEffect(() => {
+		if (selectedData && selectedData.length != 0 && hoverDataCallback) {
+			const callbackData = JSON.parse(JSON.stringify(selectedData.slice(-1)[0])); // deep copy of most recent
+			hoverDataCallback(callbackData);
+		}
+	}, [hoverDataCallback, dataSelector]);
+
 	const dataSelectorButtons = useMemo(() => {
 		if (dataSelectorOptions.length <= 1) {
 			// Show no buttons for 1 item in list
@@ -105,7 +113,7 @@ export default function TimeSeriesChart({
 				/>
 			);
 		});
-	}, [dataSelector, dataSelectorOptions, setDataSelector, setDataSelectorIndex]);
+	}, [dataSelector, dataSelectorOptions, setDataSelector, setDataSelectorIndex, selectedData, hoverDataCallback]);
 
 	const timeSelectorButtons = useMemo(() => {
 		if (timeSelectorOptions.length <= 1) {

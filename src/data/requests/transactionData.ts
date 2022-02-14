@@ -16,6 +16,7 @@ const mintsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -34,6 +35,7 @@ const redeemsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -52,6 +54,7 @@ const borrowsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -76,6 +79,7 @@ const repayBorrowsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -101,6 +105,7 @@ const liquidationsQuery = gql`
 			userMarket: borrowerUserLiquidationMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id

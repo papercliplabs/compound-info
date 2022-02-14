@@ -22,6 +22,7 @@ const marketHistoricalWeekQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy
@@ -53,6 +54,7 @@ const marketHistoricalDayQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy
@@ -84,6 +86,7 @@ const marketHistoricalHourQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy

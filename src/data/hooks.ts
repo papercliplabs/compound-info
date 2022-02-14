@@ -65,11 +65,7 @@ function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): Protocol
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolHistoricalDataKey];
 
-	console.log(data);
-
 	const protocolSummaryData = useProtocolSummaryData();
-
-	console.log(protocolSummaryData);
 
 	useEffect(() => {
 		async function checkForData() {

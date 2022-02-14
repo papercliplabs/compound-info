@@ -98,7 +98,6 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 	];
 
 	function setSelectionCallback(selection: any) {
-		console.log(selection);
 		if (Object.values(TransactionType).includes(selection as TransactionType)) {
 			setFilterType(selection);
 		} else {
