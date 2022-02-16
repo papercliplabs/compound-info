@@ -19,6 +19,7 @@ const StyledChartContainer = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	row-gap: ${({ theme }) => theme.spacing.xs};
 `;
 
@@ -186,7 +187,7 @@ export default function TimeSeriesChart({
 				onHover={handleHover}
 				unit={dataSelectorUnit}
 			/>
-			<TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>
+			{timeSelectorOptions.length > 1 && <TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>}
 		</StyledChartContainer>
 	);
 }
