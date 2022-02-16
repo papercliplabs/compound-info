@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 
 import Row from "components/Row";
 import Column from "components/Column";
@@ -12,6 +12,7 @@ import { SortButton } from "components/Button";
 import { MarketSummaryData, MarketSummaryDataSelectorInfo } from "common/types";
 import { MarketDataSelector, Unit } from "common/enums";
 import { MARKET_DATA_SELECTOR_INFO } from "common/constants";
+import Skeleton from "components/Skeleton";
 
 const StyledTableRow = styled(Row)`
 	padding: ${({ theme }) => theme.spacing.md};
@@ -50,6 +51,7 @@ const StyledTableHeader = styled(Row)`
 const LinkWrapper = styled(Link)`
 	text-decoration: none;
 	display: flex;
+	padding: 0;
 	width: 100%;
 	:hover {
 		cursor: pointer;
@@ -106,13 +108,14 @@ export default function TokenTable({
 	data,
 	dataSelectors,
 }: {
-	data: MarketSummaryData[];
+	data: MarketSummaryData[] | undefined;
 	dataSelectors: MarketDataSelector[];
 }): JSX.Element | null {
+	const theme = useTheme();
 	const [sortKey, setSortKey] = useState<keyof MarketSummaryData>(dataSelectors[0]);
 	const [isAsc, setIsAsc] = useState<boolean>(false);
 
-	const sortedData = sortData(data, sortKey, isAsc);
+	const sortedData = data ? sortData(data, sortKey, isAsc) : undefined;
 
 	// List of dataSelectorInfo, which is used for each column in the table
 	const columnInfoList: MarketSummaryDataSelectorInfo[] = useMemo(() => {
@@ -127,7 +130,7 @@ export default function TokenTable({
 		};
 		infoList = [tokenSelectorInfo, ...infoList];
 		return infoList;
-	}, [dataSelectors, data]);
+	}, [dataSelectors]);
 
 	const sortButtons = useMemo(() => {
 		const buttons = columnInfoList.map((columnInfo, i) => {
@@ -153,9 +156,15 @@ export default function TokenTable({
 		return buttons;
 	}, [columnInfoList, sortKey, isAsc]);
 
-	const rows = sortedData.map((marketData, i) => {
-		return <TableRow key={i} marketData={marketData} columnInfoList={columnInfoList} />;
-	});
+	const rows = useMemo(() => {
+		if (sortedData) {
+			return sortedData.map((marketData, i) => {
+				return <TableRow key={i} marketData={marketData} columnInfoList={columnInfoList} />;
+			});
+		} else {
+			return <Skeleton count={10} height="50px" />;
+		}
+	}, [sortedData, columnInfoList]);
 
 	return (
 		<Column>

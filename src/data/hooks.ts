@@ -37,7 +37,7 @@ const marketHistoricalDataKey = "marketHistoricalData";
 const transactionDataKey = "transactionData";
 const userDominanceDataBaseKey = "userDominanceData";
 
-export function useProtocolSummaryData(): ProtocolSummaryData {
+export function useProtocolSummaryData(): ProtocolSummaryData | undefined {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolSummaryDataKey];
 
@@ -211,7 +211,7 @@ export function useHistoricalData(
  * @param transactionType the type of transaction to filter for, all types will be returned if none is specified
  * @returns list of transactions for the specified market
  */
-export function useTransactionData(token: Token, transactionType?: TransactionType): Transaction[] {
+export function useTransactionData(token: Token, transactionType?: TransactionType): Transaction[] | undefined {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[transactionDataKey];
 
@@ -239,7 +239,7 @@ export function useTransactionData(token: Token, transactionType?: TransactionTy
 		});
 	}
 
-	return queriedData;
+	return data ? queriedData : undefined;
 }
 
 /**

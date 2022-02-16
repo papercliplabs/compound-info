@@ -2,12 +2,11 @@
 import { compoundInfoSubgraphClient } from "data/apollo";
 import { gql } from "@apollo/client";
 
-import { PROTOCOL_ID } from "common/constants";
+import { PROTOCOL_ID, TRANSACTIONS_WITHIN_DAYS } from "common/constants";
 import { Transaction } from "common/types";
 import { Token, TransactionType } from "common/enums";
 
 const PAGE_LENGTH = 1000; // Max of 1000
-const WITHIN_DAYS = 3; // Number of days before now to get this data for
 
 const mintsQuery = gql`
 	query mintsQuery($skip: Int!, $pageLength: Int!, $dateGreaterThan: Int!) {
@@ -160,9 +159,9 @@ async function performPagenationRequest(
 					type: transactionType,
 					token: tokenSymbol,
 					hash: transactionData[i].id,
-					tokenAmount: transactionData[i].underlyingAmount,
+					tokenAmount: Number(transactionData[i].underlyingAmount),
 					account: transactionData[i].userMarket.user.id,
-					time: transactionData[i].date,
+					time: Number(transactionData[i].date),
 				};
 
 				outputData.push(entry);
@@ -189,7 +188,7 @@ export async function requestTransactionData(): Promise<Transaction[]> {
 	console.log("Performing request: transaction data");
 
 	const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
-	const dateGraterThan = now - WITHIN_DAYS * 24 * 60 * 60; // Last 2 days
+	const dateGraterThan = now - TRANSACTIONS_WITHIN_DAYS * 24 * 60 * 60; // Last 2 days
 
 	const mints = await performPagenationRequest(mintsQuery, "mints", dateGraterThan, TransactionType.MINT);
 	const redeems = await performPagenationRequest(redeemsQuery, "redeems", dateGraterThan, TransactionType.REDEEM);
@@ -217,7 +216,7 @@ export async function requestTransactionData(): Promise<Transaction[]> {
 
 	// Sort based on time
 	transactionData.sort((a, b) => {
-		return a.time < b.time;
+		return b.time - a.time;
 	});
 
 	return transactionData;

@@ -7,6 +7,7 @@ import { MarketHistoricalDataEntry } from "common/types";
 
 import { dummyMarketHistoricalData } from "data/requests/dummyData";
 import { working } from "data/requests/test";
+import { saturate } from "common/utils";
 
 const PAGE_LENGTH = 1000; // Max of 1000
 
@@ -245,6 +246,10 @@ async function performPagenationRequest(
 				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
 				utilizationLatestEntry[tokenSymbol] = utilizationEntry[tokenSymbol];
 				usdcPerUnderlyingLatestEntry[tokenSymbol] = usdcPerUnderlyingEntry[tokenSymbol];
+
+				// COMP and LINK both were dumb numbers on first data point, so apply saturation
+				totalSupplyApyEntry[tokenSymbol] = saturate(totalSupplyApyEntry[tokenSymbol], -2, 2);
+				totalBorrowApyEntry[tokenSymbol] = saturate(totalBorrowApyEntry[tokenSymbol], -2, 2);
 			}
 		}
 
@@ -308,12 +313,12 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 	dayData.shift();
 	hourData.shift();
 
-	console.log("WEEK");
-	console.log(weekData);
-	console.log("DAY");
-	console.log(dayData);
-	console.log("HOUR");
-	console.log(hourData);
+	// console.log("WEEK");
+	// console.log(weekData);
+	// console.log("DAY");
+	// console.log(dayData);
+	// console.log("HOUR");
+	// console.log(hourData);
 
 	return {
 		[DataResolution.WEEK]: weekData,
