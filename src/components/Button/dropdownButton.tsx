@@ -16,6 +16,7 @@ const DropdownButtonWrapper = styled(Button)`
 	background-color: ${({ theme }) => theme.color.bg2};
 	width: auto;
 	padding: 0;
+	overflow: hidden;
 `;
 
 const Base = styled.div`

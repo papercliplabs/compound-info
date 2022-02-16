@@ -215,6 +215,17 @@ export function shortAddress(address: string, length: Length): string {
 }
 
 /**
+ * Saturate val at the max and min values
+ * @param val value to saturate
+ * @param min lower bound for saturation
+ * @param max upper bound for saturation
+ * @return saturated val
+ */
+export function saturate(val: number, min: number, max: number): number {
+	return Math.max(Math.min(val, max), min);
+}
+
+/**
  * Get the Token corresponding to the underlying symbol
  * @param underlyingSymbol underlying symbol to get the token for
  * @return Token if it exists for the underlying symbol, otherwise undefined

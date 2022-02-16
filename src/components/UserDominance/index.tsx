@@ -12,6 +12,7 @@ import Row from "components/Row";
 import { UserDominanceDataEntry } from "common/types";
 import { formatNumber, getEtherscanLink, shortAddress } from "common/utils";
 import { StyledExternalLink } from "components/Link";
+import Skeleton from "components/Skeleton";
 
 const RowNumberBackground = styled.div`
 	display: flex;
@@ -69,9 +70,13 @@ export default function UserDominace({ token }: { token: Token }): JSX.Element {
 	}, [setSelection, selection]);
 
 	const rows = useMemo(() => {
-		return userDominanceData[selection].map((entry, i) => {
-			return <UserDominaceRowEntry entry={entry} num={i + 1} key={i} />;
-		});
+		if (userDominanceData[selection].length > 0) {
+			return userDominanceData[selection].map((entry, i) => {
+				return <UserDominaceRowEntry entry={entry} num={i + 1} key={i} />;
+			});
+		} else {
+			return <Skeleton count={10} height="25px" />;
+		}
 	}, [userDominanceData, selection]);
 
 	const topTenDominance = useMemo(() => {
@@ -81,20 +86,24 @@ export default function UserDominace({ token }: { token: Token }): JSX.Element {
 	}, [userDominanceData, selection]);
 
 	return (
-		<Card>
-			<Column align="flex-start">
-				<OptionButtonVariantBackdrop width="100%">{selectionButtons}</OptionButtonVariantBackdrop>
-				<Row justify="space-between">
-					<TooltipText
-						baseText={<Typography.header color={theme.color.bg4}>Top 10 dominance</Typography.header>}
-						tooltipContent={`The top 10 ${
-							selection == UserType.SUPPLIER ? "suppliers" : "borrowers"
-						} make up this percentage of the total ${selection == UserType.SUPPLIER ? "suppy" : "borrowed"}`}
-					/>
-					<Typography.header>{formatNumber(topTenDominance, "%")}</Typography.header>
-				</Row>
-				{rows}
-			</Column>
-		</Card>
+		<>
+			<Card>
+				<Column align="flex-start">
+					<OptionButtonVariantBackdrop width="100%">{selectionButtons}</OptionButtonVariantBackdrop>
+					<Row justify="space-between">
+						<TooltipText
+							baseText={<Typography.header color={theme.color.bg4}>Top 10 dominance</Typography.header>}
+							tooltipContent={`The top 10 ${
+								selection == UserType.SUPPLIER ? "suppliers" : "borrowers"
+							} make up this percentage of the total ${selection == UserType.SUPPLIER ? "suppy" : "borrowed"}`}
+						/>
+						<Typography.header>
+							{userDominanceData[selection].length > 0 ? formatNumber(topTenDominance, "%") : <Skeleton width="40px" />}
+						</Typography.header>
+					</Row>
+					{rows}
+				</Column>
+			</Card>
+		</>
 	);
 }

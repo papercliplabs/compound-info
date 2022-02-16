@@ -13,6 +13,7 @@ import { ScrollRow, ResponsiveRow } from "components/Row";
 import { Typography } from "theme";
 import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
+import Skeleton from "components/Skeleton";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -157,8 +158,8 @@ export default function TimeSeriesChart({
 
 	const currentValue =
 		selectedData && selectedData.length > 0
-			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? "-"
-			: "-";
+			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? undefined
+			: undefined;
 	const dataSelectorDescription = dataSelectorInfo[dataSelector].description;
 	const dataSelectorUnit = dataSelectorInfo[dataSelector].unit;
 
@@ -168,7 +169,11 @@ export default function TimeSeriesChart({
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 					<Column align="flex-start" overflow="visible" flex={1}>
 						<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
-						<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+						{currentValue ? (
+							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+						) : (
+							<Skeleton width="100px" />
+						)}
 					</Column>
 					{dataSelectorOptions.length > 1 && <DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>}
 				</ResponsiveRow>

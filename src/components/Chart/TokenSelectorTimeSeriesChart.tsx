@@ -26,7 +26,7 @@ const StyledChartContainer = styled.div`
 type TokenButtonStates = {
 	[token in Tokens]: {
 		token: Token;
-		value: number;
+		value: number | undefined;
 		color: string | undefined;
 		selectedPosition: number | undefined;
 	};
@@ -38,7 +38,7 @@ function defaultButtonStates(mainToken: Token, mainColor: string): TokenButtonSt
 		const isMain = token === mainToken;
 		buttonStates[token] = {
 			token: token,
-			value: 0,
+			value: undefined,
 			color: isMain ? mainColor : null,
 			selectedPosition: isMain ? 0 : null,
 		};

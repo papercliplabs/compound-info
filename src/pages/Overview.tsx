@@ -7,16 +7,14 @@ import { TimeSelector, MarketDataSelector, ProtocolDataSelector, DataType } from
 import { Typography } from "theme";
 import compoundLogo from "assets/compoundLogo.svg";
 import Logo from "components/Logo";
-import { SectionTitle, StyledDisclaimer } from "components/SpecialText";
 import Row, { ResponsiveRow } from "components/Row";
 import Card, { StatCard, ProgressCard } from "components/Card";
 import TokenTable from "components/TokenTable";
 import { ToggleButton } from "components/Button";
 import TooltipText from "components/TooltipText";
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
-import MultilineChart from "components/Chart/MultilineChart";
 
-import { useHistoricalData, useMarketSummaryData, useProtocolSummaryData } from "data/hooks";
+import { useMarketSummaryData, useProtocolSummaryData } from "data/hooks";
 
 const TableCard = styled(Card)`
 	padding: ${({ theme }) => theme.spacing.md + " " + theme.spacing.lg};
@@ -33,14 +31,13 @@ export default function Overview(): JSX.Element | null {
 	const protocolSummaryData = useProtocolSummaryData();
 	const marketSummaryData = useMarketSummaryData();
 
-	// const temp = useMarketHistoricalData(TimeSelector.ONE_WEEK, MarketDataSelector.SUPPLY_APY);
+	const protocolSummaryDataLoading = !protocolSummaryData;
 
 	// Scroll to the top of the page on first visit
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	// TODO: Change to TOTAL_SUPPLY_USD, TOTAL_BORROW_USD once I add these to the graph
 	const tokenTableDataSelectors = useMemo(() => {
 		if (includeComp) {
 			return [
@@ -58,10 +55,6 @@ export default function Overview(): JSX.Element | null {
 			];
 		}
 	}, [includeComp]);
-
-	if (!protocolSummaryData || !marketSummaryData) {
-		return null; // Loading data still
-	}
 
 	const chartConfig: chart_config_S = {
 		showAvg: false,
@@ -85,7 +78,9 @@ export default function Overview(): JSX.Element | null {
 				<Logo src={compoundLogo} size="40px" />
 				<Typography.displayXL>Compound Protocol</Typography.displayXL>
 			</Row>
-			<SectionTitle title="Compound Overview" />
+			<Row>
+				<Typography.displayS>All Markets</Typography.displayS>
+			</Row>
 			<ResponsiveRow gap={gap}>
 				<Card height="100%">
 					<TimeSeriesChart
@@ -115,25 +110,30 @@ export default function Overview(): JSX.Element | null {
 				<StatCard
 					title={"Total Supplied"}
 					tooltipContent="Sum total of all supplied assets to the protocol in USD"
-					value={protocolSummaryData.totalSupplyUsd}
+					value={protocolSummaryData ? protocolSummaryData.totalSupplyUsd : 0.0}
 					unit="$"
+					loading={protocolSummaryDataLoading}
 				/>
 				<StatCard
 					title={"Total Borrowed"}
 					tooltipContent="Sum total of all borrowed assets to the protocol in USD"
-					value={protocolSummaryData.totalBorrowUsd}
+					value={protocolSummaryData ? protocolSummaryData.totalBorrowUsd : 0.0}
 					unit="$"
+					loading={protocolSummaryDataLoading}
 				/>
 				<ProgressCard
 					title={"Utilization"}
 					tooltipContent="How much of the total supply is in use at a given time. If there's $100 in the pool and no one borrows anything, the utilization rate is 0%. If someone borrows $10, it's 10%, and so on. If an asset is 100% utilized, there's nothing in the pool right now - suppliers can't withdraw their original cash, and borrowers can't take out loans."
-					value={protocolSummaryData.utilization}
+					value={protocolSummaryData ? protocolSummaryData.utilization : 0.0}
 					unit="%"
 					size={60}
+					loading={protocolSummaryDataLoading}
 				/>
 			</ResponsiveRow>
 			<Row>
-				<SectionTitle title="All Markets" width="auto" />
+				<Row>
+					<Typography.displayS>All Markets</Typography.displayS>
+				</Row>
 				<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
 					<TooltipText
 						baseText={<Typography.body color="text2">Include COMP</Typography.body>}

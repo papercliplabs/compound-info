@@ -10,7 +10,7 @@ import Overview from "pages/Overview";
 import Loader from "components/Loader";
 import { useDataStatus, usePrefetchData } from "data/hooks";
 
-const loadingScreenTimeMs = 1500; // ms to hold in loading screen on app load
+const loadingScreenTimeMs = 1000; // ms to hold in loading screen on app load
 
 const HeaderWrapper = styled.div`
 	position: fixed;

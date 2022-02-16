@@ -23,7 +23,7 @@ const activeDotConfig = {
 	strokeWidth: 0,
 };
 
-const dataLoadTimeoutMs = 5000; // ms before it is considered we have a data error
+const dataLoadTimeoutMs = 15000; // ms before it is considered we have a data error
 
 const StyledTooltip = styled.div`
 	text-align: center;
