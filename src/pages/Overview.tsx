@@ -81,8 +81,8 @@ export default function Overview(): JSX.Element | null {
 			<Row>
 				<Typography.displayS>All Markets</Typography.displayS>
 			</Row>
-			<ResponsiveRow gap={gap}>
-				<Card height="100%">
+			<ResponsiveRow gap={gap} align="streach">
+				<Card height="auto">
 					<TimeSeriesChart
 						chartConfig={chartConfig}
 						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[0] }]}
@@ -91,7 +91,7 @@ export default function Overview(): JSX.Element | null {
 						timeSelectorOptions={[TimeSelector.ALL]}
 					/>
 				</Card>
-				<Card height="100%">
+				<Card height="auto">
 					<TimeSeriesChart
 						chartConfig={chartConfig}
 						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[1] }]}
