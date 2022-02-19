@@ -292,12 +292,13 @@ export default function Market({ match }): JSX.Element | null {
 						</Card>
 					</Column>
 
-					<Column>
+					{/* TODO: uncomment once new subgraph is done indexing */}
+					{/* <Column>
 						<Row>
 							<Typography.displayS>User Dominance</Typography.displayS>
 						</Row>
 						<UserDominace token={token} />
-					</Column>
+					</Column> */}
 
 					<Column>
 						<Row>

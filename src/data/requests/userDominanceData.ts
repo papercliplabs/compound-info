@@ -4,9 +4,9 @@ import { gql } from "@apollo/client";
 
 import { UserDominanceData } from "common/types";
 import { Token, TransactionType, UserType } from "common/enums";
+import { NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE } from "common/constants";
 
 const PAGE_LENGTH = 1000;
-const NUM_OF_TOP_ACCOUNTS = 10; // Number of top accounts to get
 
 const userDominanceSingleMarketQuery = gql`
 	query userDominanceSingleMarketQuery($skip: Int!, $pageLength: Int!, $numTop: Int!, $marketSymbol: String!) {
@@ -51,7 +51,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, token:
 			variables: {
 				skip: skip,
 				pageLength: PAGE_LENGTH,
-				numTop: NUM_OF_TOP_ACCOUNTS,
+				numTop: NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE,
 				marketSymbol: token,
 			},
 		});
