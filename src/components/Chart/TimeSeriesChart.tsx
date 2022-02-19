@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import styled, { useTheme } from "styled-components";
 
 import { TimeSelector, DataSelector, Token, DataType } from "common/enums";
@@ -13,11 +13,13 @@ import { ScrollRow, ResponsiveRow } from "components/Row";
 import { Typography } from "theme";
 import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
+import Skeleton from "components/Skeleton";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 	row-gap: ${({ theme }) => theme.spacing.xs};
 `;
 
@@ -84,6 +86,14 @@ export default function TimeSeriesChart({
 
 	const dataSelectorInfo = DataType.PROTOCOL === dataType ? PROTOCOL_DATA_SELECTOR_INFO : MARKET_DATA_SELECTOR_INFO;
 
+	// Update hover data callback when selectedData changes
+	useEffect(() => {
+		if (selectedData && selectedData.length != 0 && hoverDataCallback) {
+			const callbackData = JSON.parse(JSON.stringify(selectedData.slice(-1)[0])); // deep copy of most recent
+			hoverDataCallback(callbackData);
+		}
+	}, [hoverDataCallback, dataSelector]);
+
 	const dataSelectorButtons = useMemo(() => {
 		if (dataSelectorOptions.length <= 1) {
 			// Show no buttons for 1 item in list
@@ -105,7 +115,7 @@ export default function TimeSeriesChart({
 				/>
 			);
 		});
-	}, [dataSelector, dataSelectorOptions, setDataSelector, setDataSelectorIndex]);
+	}, [dataSelector, dataSelectorOptions, setDataSelector, setDataSelectorIndex, selectedData, hoverDataCallback]);
 
 	const timeSelectorButtons = useMemo(() => {
 		if (timeSelectorOptions.length <= 1) {
@@ -149,8 +159,8 @@ export default function TimeSeriesChart({
 
 	const currentValue =
 		selectedData && selectedData.length > 0
-			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? "-"
-			: "-";
+			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? undefined
+			: undefined;
 	const dataSelectorDescription = dataSelectorInfo[dataSelector].description;
 	const dataSelectorUnit = dataSelectorInfo[dataSelector].unit;
 
@@ -160,7 +170,11 @@ export default function TimeSeriesChart({
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 					<Column align="flex-start" overflow="visible" flex={1}>
 						<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
-						<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+						{currentValue ? (
+							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+						) : (
+							<Skeleton width="100px" />
+						)}
 					</Column>
 					{dataSelectorOptions.length > 1 && <DataSelectorRow>{dataSelectorButtons}</DataSelectorRow>}
 				</ResponsiveRow>
@@ -173,7 +187,7 @@ export default function TimeSeriesChart({
 				onHover={handleHover}
 				unit={dataSelectorUnit}
 			/>
-			<TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>
+			{timeSelectorOptions.length > 1 && <TimeSelectorRow>{timeSelectorButtons}</TimeSelectorRow>}
 		</StyledChartContainer>
 	);
 }

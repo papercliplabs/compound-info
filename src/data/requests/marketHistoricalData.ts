@@ -7,6 +7,7 @@ import { MarketHistoricalDataEntry } from "common/types";
 
 import { dummyMarketHistoricalData } from "data/requests/dummyData";
 import { working } from "data/requests/test";
+import { saturate } from "common/utils";
 
 const PAGE_LENGTH = 1000; // Max of 1000
 
@@ -22,6 +23,7 @@ const marketHistoricalWeekQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy
@@ -53,6 +55,7 @@ const marketHistoricalDayQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy
@@ -84,6 +87,7 @@ const marketHistoricalHourQuery = gql`
 			id
 			market {
 				underlyingSymbol
+				creationBlockNumber
 			}
 			date
 			supplyApy
@@ -237,11 +241,15 @@ async function performPagenationRequest(
 				totalSupplyLatestEntry[tokenSymbol] = totalSupplyEntry[tokenSymbol];
 				totalSupplyUsdLatestEntry[tokenSymbol] = totalSupplyUsdEntry[tokenSymbol];
 				totalBorrowLatestEntry[tokenSymbol] = totalBorrowEntry[tokenSymbol];
-				totalBorrowUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
+				totalBorrowUsdLatestEntry[tokenSymbol] = totalBorrowUsdEntry[tokenSymbol];
 				totalReservesLatestEntry[tokenSymbol] = totalReservesEntry[tokenSymbol];
 				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
 				utilizationLatestEntry[tokenSymbol] = utilizationEntry[tokenSymbol];
 				usdcPerUnderlyingLatestEntry[tokenSymbol] = usdcPerUnderlyingEntry[tokenSymbol];
+
+				// COMP and LINK both were dumb numbers on first data point, so apply saturation
+				totalSupplyApyEntry[tokenSymbol] = saturate(totalSupplyApyEntry[tokenSymbol], -2, 2);
+				totalBorrowApyEntry[tokenSymbol] = saturate(totalBorrowApyEntry[tokenSymbol], -2, 2);
 			}
 		}
 
@@ -278,7 +286,7 @@ async function performPagenationRequest(
  * 			the values are records with token names as keys
  */
 export async function requestMarketHistoricalData(): Record<keyof MarketDataSelector, MarketHistoricalDataEntry[]> {
-	console.log("Requesting historical market data");
+	console.log("Performing request: historical market data");
 
 	const now = parseInt(Date.now() / 1000); // Unix timestamp in seconds
 

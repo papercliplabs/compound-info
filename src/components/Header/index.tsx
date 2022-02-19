@@ -46,7 +46,7 @@ export default function Header({
 					<Typography.header color={theme.color.warning1}>
 						{/* This site is currently experiencing data issues, the last synced data is from{" "} */}
 						<StyledExternalLink href={URLS.SUBGRAPH_FRONT_END} variant="secondary">
-							the subgraph
+							The subgraph{" "}
 						</StyledExternalLink>
 						used for this sites data is currently indexing, the last indexed date is{" "}
 						{formatDate(lastSyncedDate, DateFormat.MMM_DD_YY)}

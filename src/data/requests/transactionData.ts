@@ -2,7 +2,7 @@
 import { compoundInfoSubgraphClient } from "data/apollo";
 import { gql } from "@apollo/client";
 
-import { PROTOCOL_ID } from "common/constants";
+import { PROTOCOL_ID, TRANSACTIONS_WITHIN_DAYS } from "common/constants";
 import { Transaction } from "common/types";
 import { Token, TransactionType } from "common/enums";
 
@@ -15,6 +15,7 @@ const mintsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -33,6 +34,7 @@ const redeemsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -51,6 +53,7 @@ const borrowsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -75,6 +78,7 @@ const repayBorrowsQuery = gql`
 			userMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -100,6 +104,7 @@ const liquidationsQuery = gql`
 			userMarket: borrowerUserLiquidationMarket {
 				market {
 					underlyingSymbol
+					creationBlockNumber
 				}
 				user {
 					id
@@ -142,8 +147,6 @@ async function performPagenationRequest(
 			},
 		});
 
-		console.log(data);
-
 		const transactionData = data.data[key];
 
 		const len = transactionData.length;
@@ -156,9 +159,9 @@ async function performPagenationRequest(
 					type: transactionType,
 					token: tokenSymbol,
 					hash: transactionData[i].id,
-					tokenAmount: transactionData[i].underlyingAmount,
+					tokenAmount: Number(transactionData[i].underlyingAmount),
 					account: transactionData[i].userMarket.user.id,
-					time: transactionData[i].date,
+					time: Number(transactionData[i].date),
 				};
 
 				outputData.push(entry);
@@ -182,10 +185,10 @@ export type ProtocolSummaryRequestResult = {
  * @returns list of all transactions in the last 3 days sorted with the newest transaction first
  */
 export async function requestTransactionData(): Promise<Transaction[]> {
-	console.log("Requesting transaction data");
+	console.log("Performing request: transaction data");
 
 	const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
-	const dateGraterThan = now - 3 * 24 * 60 * 60; // Last 2 days
+	const dateGraterThan = now - TRANSACTIONS_WITHIN_DAYS * 24 * 60 * 60; // Last 2 days
 
 	const mints = await performPagenationRequest(mintsQuery, "mints", dateGraterThan, TransactionType.MINT);
 	const redeems = await performPagenationRequest(redeemsQuery, "redeems", dateGraterThan, TransactionType.REDEEM);
@@ -203,17 +206,17 @@ export async function requestTransactionData(): Promise<Transaction[]> {
 		TransactionType.LIQUIDATION
 	);
 
-	console.log(mints);
-	console.log(redeems);
-	console.log(borrows);
-	console.log(repayBorrows);
-	console.log(liquidations);
+	// console.log(mints);
+	// console.log(redeems);
+	// console.log(borrows);
+	// console.log(repayBorrows);
+	// console.log(liquidations);
 
 	const transactionData = [...mints, ...redeems, ...borrows, ...repayBorrows, ...liquidations];
 
 	// Sort based on time
 	transactionData.sort((a, b) => {
-		return a.time < b.time;
+		return b.time - a.time;
 	});
 
 	return transactionData;

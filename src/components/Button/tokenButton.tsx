@@ -8,6 +8,7 @@ import closeIcon from "assets/closeIcon.svg";
 import { Token } from "common/enums";
 import { TOKEN_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
+import Skeleton from "components/Skeleton";
 
 const StyledTokenButton = styled.button<{
 	active: boolean;
@@ -19,7 +20,7 @@ const StyledTokenButton = styled.button<{
 	align-items: center;
 	border: solid ${({ theme }) => theme.border.thickness + " " + theme.color.border1};
 	background-color: ${({ theme }) => theme.color.bg2};
-	padding: "6px";
+	padding: ${({ theme }) => theme.spacing.xxs};
 	border-radius: ${({ theme }) => theme.radius.lg};
 	height: 100%;
 	box-shadow: ${({ theme }) => theme.shadow.card};
@@ -88,7 +89,7 @@ export function TokenButton({
 	clickCallback,
 }: {
 	token: Token;
-	value: number;
+	value: number | undefined;
 	color: string;
 	selected: boolean;
 	allowDeselect: boolean;
@@ -110,7 +111,9 @@ export function TokenButton({
 				) : (
 					<Typography.header useDefaultLineHeight>{coinName}</Typography.header>
 				)}
-				<Typography.caption useDefaultLineHeight>{formatNumber(value, "%")}</Typography.caption>
+				<Typography.caption useDefaultLineHeight>
+					{value ? formatNumber(value, "%") : <Skeleton height="15px" variant="light" />}
+				</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
 		</StyledTokenButton>

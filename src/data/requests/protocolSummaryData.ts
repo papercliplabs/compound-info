@@ -21,7 +21,7 @@ export type ProtocolSummaryRequestResult = {
 };
 
 export async function requestProtocolSummaryData(): Promise<ProtocolSummaryData> {
-	console.log("Requesting protocol summary data");
+	console.log("Performing request: protocol summary data");
 
 	const { data, loading } = await compoundInfoSubgraphClient.query<ProtocolSummaryRequestResult>({
 		query: protocolSummaryQuery,

@@ -11,6 +11,7 @@ export enum Token {
 	USDC = "USDC",
 	USDT = "USDT",
 	WBTC = "WBTC",
+	WBTCL = "WBTCL",
 	AAVE = "AAVE",
 	MKR = "MKR",
 	SUSHI = "SUSHI",
@@ -124,4 +125,9 @@ export enum DateFormat {
 	MMM_DD_YY,
 	MMM_DD_TIME,
 	SINCE_NOW,
+}
+
+export enum UserType {
+	SUPPLIER = "Supplier",
+	BORROWER = "Borrower",
 }

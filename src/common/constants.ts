@@ -122,6 +122,18 @@ export const TOKEN_INFO: TokenInfoList = {
 		twitter: "https://twitter.com/wrappedbtc",
 		coinGecko: "https://www.coingecko.com/coins/wrapped-bitcoin",
 	},
+	[Token.WBTCL]: {
+		symbol: Token.WBTCL,
+		imgSrc: wbtcSvg,
+		desc: `Wrapped Bitcoin (WBTC(legacy)) is an Ethereum token that is intended to 
+		represent Bitcoin (BTC) on the Ethereum blockchain. This version of WBTC on 
+		Compound is no longer being supported, with the community migrating 
+		to WBTC.`,
+		whitepaper: "https://wbtc.network/assets/wrapped-tokens-whitepaper.pdf",
+		website: "https://wbtc.network",
+		twitter: "https://twitter.com/wrappedbtc",
+		coinGecko: "https://www.coingecko.com/coins/wrapped-bitcoin",
+	},
 	[Token.AAVE]: {
 		symbol: Token.AAVE,
 		imgSrc: aaveSvg,
@@ -339,3 +351,6 @@ export const URLS = {
 export const PROTOCOL_ID = 1;
 
 export const DATA_BEHIND_TIME_THRESHOLD_S = 60 * 60 * 24 * 1; // 1 day
+
+export const TRANSACTIONS_WITHIN_DAYS = 3;
+export const NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE = 10;
