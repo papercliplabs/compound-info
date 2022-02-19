@@ -7,7 +7,7 @@ import { TimeSelector, MarketDataSelector, ProtocolDataSelector, DataType } from
 import { Typography } from "theme";
 import compoundLogo from "assets/compoundLogo.svg";
 import Logo from "components/Logo";
-import Row, { ResponsiveRow } from "components/Row";
+import Row, { ResponsiveJustifyRow, ResponsiveRow } from "components/Row";
 import Card, { StatCard, ProgressCard } from "components/Card";
 import TokenTable from "components/TokenTable";
 import { ToggleButton } from "components/Button";
@@ -130,18 +130,18 @@ export default function Overview(): JSX.Element | null {
 					loading={protocolSummaryDataLoading}
 				/>
 			</ResponsiveRow>
-			<Row>
+			<ResponsiveRow xs={true}>
 				<Row>
 					<Typography.displayS>All Markets</Typography.displayS>
 				</Row>
-				<Row justify="flex-end" height="100%" padding="20px 0 0 0" margin="0 0 8px 0">
+				<ResponsiveJustifyRow justifyLarge="flex-end" justifySmall="flex-end" justifyExtraSmall="flex-start">
 					<TooltipText
-						baseText={<Typography.body color="text2">Include COMP</Typography.body>}
+						baseText={<Typography.body color={theme.color.text2}>Include COMP</Typography.body>}
 						tooltipContent="Toggle to include the COMP token distribution in the APY's. Note that a negative borrow rate means that the Compound protocol pays you."
 					/>
 					<ToggleButton active={includeComp} onClick={() => setIncludeComp(!includeComp)} />
-				</Row>
-			</Row>
+				</ResponsiveJustifyRow>
+			</ResponsiveRow>
 			<TableCard>
 				<TokenTable data={marketSummaryData} dataSelectors={tokenTableDataSelectors} />
 			</TableCard>
