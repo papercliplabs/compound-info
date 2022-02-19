@@ -9,6 +9,7 @@ import { Typography } from "theme";
 import Button from ".";
 
 import chevronDownIcon from "assets/chevronDown.svg";
+import { rootCertificates } from "tls";
 
 const DropdownButtonWrapper = styled(Button)`
 	positon: relative;
@@ -48,6 +49,13 @@ const Overlay = styled.div<{
 	z-index: 999;
 `;
 
+const ChevronArrow = styled.img<{
+	open?: boolean;
+}>`
+	transform: ${({ open }) => (open ? "rotate(-180deg)" : "rotate(0deg)")};
+	transition: 300ms all;
+`;
+
 export default function DropdownButton({
 	selectionList,
 	setSelectionCallback,
@@ -83,7 +91,7 @@ export default function DropdownButton({
 			<Base onClick={(event) => handleToggle(event)}>
 				<Row gap={theme.spacing.xxs}>
 					{children}
-					<img src={chevronDownIcon} />
+					<ChevronArrow src={chevronDownIcon} open={overlayIsOpen} />
 				</Row>
 			</Base>
 			<Overlay open={overlayIsOpen}>
