@@ -1,7 +1,9 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import Market from "pages/Market";
 import styled from "styled-components";
 import { HashRouter, Route, Switch } from "react-router-dom";
+import smoothscroll from "smoothscroll-polyfill";
 
 import GoogleAnalyticsReporter from "components/analytics/GoogleAnalyticsReporter";
 import Header from "components/Header";
@@ -66,6 +68,8 @@ export default function App(): JSX.Element {
 	useEffect(() => {
 		setTimeout(() => setLoading(false), loadingScreenTimeMs);
 	}, []);
+
+	smoothscroll.polyfill();
 
 	return (
 		<>

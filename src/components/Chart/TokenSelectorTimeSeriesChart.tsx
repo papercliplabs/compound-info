@@ -8,16 +8,23 @@ import { ChartConfig, LineInfo } from "common/types";
 import { TOKEN_INFO } from "common/constants";
 
 import TimeSeriesChart from "components/Chart/TimeSeriesChart";
-import { ScrollRow } from "components/Row";
-import { TokenButton } from "components/Button";
-import { Typography } from "theme";
+import Row, { ScrollRow } from "components/Row";
+import Button, { TokenButton } from "components/Button";
+import { mediaQuerySizes, Typography } from "theme";
 import { tokenToString } from "typescript";
+import { HorizontalScrollButton } from "components/Button/horizontalScrollButton";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 	row-gap: ${({ theme }) => theme.spacing.xs};
+`;
+
+const CoinRowWrapper = styled.div`
+	display: ;
+	position: relative;
+	height: 50px;
 `;
 
 /**
@@ -31,6 +38,42 @@ type TokenButtonStates = {
 		selectedPosition: number | undefined;
 	};
 };
+
+function CoinRow({ children }) {
+	const scroll = useRef();
+	const [showLeftArrow, setShowLeftArrow] = useState(false);
+	const [showRightArrow, setShowRightArrow] = useState(true);
+
+	const maxScrollLeft = scroll && scroll.current ? scroll.current.scrollWidth - scroll.current.clientWidth : 0;
+
+	const showArrows = window.innerWidth > mediaQuerySizes.extraSmall;
+
+	function onScroll() {
+		const currentPos = scroll.current.scrollLeft;
+		setShowLeftArrow(currentPos > 0);
+		setShowRightArrow(currentPos < maxScrollLeft);
+	}
+
+	function leftScroll() {
+		// the leftmost point starts @ 0
+		scroll.current.scrollBy({ top: 0, left: -300, behavior: "smooth" });
+	}
+
+	function rightScroll() {
+		console.log(scroll);
+		scroll.current.scrollBy({ top: 0, left: 300, behavior: "smooth" });
+	}
+
+	return (
+		<CoinRowWrapper>
+			<ScrollRow ref={scroll} onScroll={onScroll}>
+				{children}
+			</ScrollRow>
+			{showArrows && showLeftArrow && <HorizontalScrollButton onClick={leftScroll} isRight={false} />}
+			{showArrows && showRightArrow && <HorizontalScrollButton onClick={rightScroll} isRight={true} />}
+		</CoinRowWrapper>
+	);
+}
 
 function defaultButtonStates(mainToken: Token, mainColor: string): TokenButtonStates[] {
 	const buttonStates = {};
@@ -218,7 +261,7 @@ export default function TokenSelectorTimeSeriesChart({
 				hoverDataCallback={handleHoverData}
 			/>
 			<Typography.header>Compare to:</Typography.header>
-			<ScrollRow>{tokenButtons}</ScrollRow>
+			<CoinRow>{tokenButtons}</CoinRow>
 		</StyledChartContainer>
 	);
 }
