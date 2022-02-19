@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 const Row = styled.div<{
@@ -12,6 +13,7 @@ const Row = styled.div<{
 	gap?: string;
 	flex?: number;
 	overflow?: string;
+	order?: string;
 }>`
 	display: flex;
 	flex-direction: row;
@@ -43,33 +45,37 @@ export const ScrollRow = styled(Row)`
 `;
 
 export const ResponsiveRow = styled(Row)<{
-	$xs?: boolean;
-	$reverse?: boolean;
-	$gapSmall?: string;
+	xs?: boolean;
+	reverse?: boolean;
+	gapSmall?: string;
 }>`
 	justify-content: space-between;
-	${({ theme, $xs, $reverse, $gapSmall }) =>
-		$xs
+	${({ theme, xs, reverse, gapSmall }) =>
+		xs
 			? theme.mediaWidth.extraSmall`
-				flex-direction: ${$reverse ? "column-reverse" : "column"};
-				row-gap: ${$gapSmall ?? theme.spacing.xs};
-				column-gap: ${$gapSmall ?? theme.spacing.xs};
+				flex-direction: ${reverse ? "column-reverse" : "column"};
+				row-gap: ${gapSmall ?? theme.spacing.xs};
+				column-gap: ${gapSmall ?? theme.spacing.xs};
 			`
 			: theme.mediaWidth.small`
-				flex-direction: ${$reverse ? "column-reverse" : "column"};
-				row-gap: ${$gapSmall ?? theme.spacing.xs};
-				column-gap: ${$gapSmall ?? theme.spacing.xs};
+				flex-direction: ${reverse ? "column-reverse" : "column"};
+				row-gap: ${gapSmall ?? theme.spacing.xs};
+				column-gap: ${gapSmall ?? theme.spacing.xs};
 			`}
 `;
 
 // Changes justification of content upon resize
 export const ResponsiveJustifyRow = styled(Row)<{
-	$justifyLarge?: string;
-	$justifySmall?: string;
+	justifyLarge?: string;
+	justifySmall?: string;
+	justifyExtraSmall?: string;
 }>`
-	justify-content: ${({ $justifyLarge }) => $justifyLarge ?? "flex-start"};
-	${({ theme, $justifySmall }) => theme.mediaWidth.small`
-		justify-content: ${$justifySmall ?? "flex-start"};
+	justify-content: ${({ justifyLarge }) => justifyLarge ?? "flex-start"};
+	${({ theme, justifySmall }) => theme.mediaWidth.small`
+		justify-content: ${justifySmall ?? "flex-start"};
+	`}
+	${({ theme, justifyExtraSmall, justifySmall }) => theme.mediaWidth.extraSmall`
+		justify-content: ${justifyExtraSmall ?? justifySmall ?? "flex-start"};
 	`}
 `;
 

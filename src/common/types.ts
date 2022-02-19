@@ -6,6 +6,7 @@ import {
 	Unit,
 	DataResolution,
 	TransactionType,
+	UserType,
 } from "common/enums";
 
 /**
@@ -183,3 +184,19 @@ export interface Transaction {
 	hash: string;
 	time: number; // Sec since unix epoche
 }
+
+/**
+ * Contains the account and amount information for user dominance data
+ */
+export interface UserDominanceDataEntry {
+	account: string;
+	underlyingAmount: number;
+	percentDominance: number;
+}
+
+/**
+ * Data on user domanance for a market
+ */
+export type UserDominanceData = {
+	[userType in UserType]: UserDominanceDataEntry[];
+};

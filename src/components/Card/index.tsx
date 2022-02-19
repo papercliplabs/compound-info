@@ -8,6 +8,7 @@ import Row, { ResponsiveRow } from "components/Row";
 import Column from "components/Column";
 import TooltipText from "components/TooltipText";
 import { StyledExternalInfoLink } from "components/Link";
+import Skeleton from "components/Skeleton";
 
 const Card = styled.div<{
 	column?: boolean;
@@ -48,11 +49,13 @@ export function StatCard({
 	value,
 	unit,
 	tooltipContent,
+	loading,
 }: {
 	title: string;
 	value: any;
 	unit?: string;
 	tooltipContent: any;
+	loading?: boolean;
 }): JSX.Element {
 	const formattedValue = formatNumber(value, unit);
 	return (
@@ -60,9 +63,7 @@ export function StatCard({
 			<Row>
 				<TooltipText baseText={<CardHeader>{title}</CardHeader>} tooltipContent={tooltipContent} />
 			</Row>
-			<Row>
-				<Typography.displayL>{formattedValue}</Typography.displayL>
-			</Row>
+			<Row>{loading ? <Skeleton /> : <Typography.displayL>{formattedValue}</Typography.displayL>}</Row>
 		</StyledStatCard>
 	);
 }
@@ -86,12 +87,12 @@ export function CoinInfoCard({
 				<Typography.body>{value}</Typography.body>
 			</Row>
 			<br />
-			<ResponsiveRow align="flex-start" $xs={true}>
+			<Column align="flex-start">
 				<StyledExternalInfoLink href={whitepaper} content={"Whitepaper ↗"} />
 				<StyledExternalInfoLink href={website} content={"Website ↗"} />
 				<StyledExternalInfoLink href={twitter} content={"Twitter ↗"} />
 				<StyledExternalInfoLink href={coingecko} content={"Coingecko ↗"} />
-			</ResponsiveRow>
+			</Column>
 		</StyledStatCard>
 	);
 }
@@ -104,6 +105,7 @@ export function ProgressCard({
 	size,
 	progressValue,
 	tooltipContent,
+	loading,
 }: {
 	title: string;
 	value: any;
@@ -111,6 +113,7 @@ export function ProgressCard({
 	size: number;
 	progressValue?: number;
 	tooltipContent: any;
+	loading?: boolean;
 }): JSX.Element {
 	const formattedValue = formatNumber(value, unit);
 	return (
@@ -119,7 +122,7 @@ export function ProgressCard({
 				<Row>
 					<TooltipText baseText={<CardHeader>{title}</CardHeader>} tooltipContent={tooltipContent} />
 				</Row>
-				<Typography.displayL>{formattedValue}</Typography.displayL>
+				{loading ? <Skeleton /> : <Typography.displayL>{formattedValue}</Typography.displayL>}
 			</Column>
 			<ProgressRing value={progressValue ?? value} size={size} />
 		</Card>

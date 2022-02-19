@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const StyledToggleButton = styled.div`
 	width: 40px;
@@ -7,7 +7,9 @@ const StyledToggleButton = styled.div`
 	position: relative;
 `;
 
-const Track = styled.div`
+const Track = styled.div<{
+	active: boolean;
+}>`
 	width: 34px;
 	height: 14px;
 	top: 3px;
@@ -17,16 +19,19 @@ const Track = styled.div`
 	position: absolute;
 `;
 
-const Knob = styled.div`
+const Knob = styled.div<{
+	active: boolean;
+}>`
 	background-color: ${({ theme }) => theme.color.white};
 	width: 20px;
 	height: 20px;
 	border-radius: 10px;
 	position: absolute;
 	left: ${({ active }) => (active ? "20px" : "0px")};
+	transition: 300ms all;
 `;
 
-export function ToggleButton({ active, onClick }) {
+export function ToggleButton({ active, onClick }: { active: boolean; onClick: any }) {
 	return (
 		<StyledToggleButton onClick={onClick}>
 			<Track active={active} />

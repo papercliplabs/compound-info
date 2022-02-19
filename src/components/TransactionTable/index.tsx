@@ -13,8 +13,10 @@ import { StyledExternalLink, StyledInternalLink } from "components/Link";
 import Button from "components/Button";
 import { Break } from "components/shared";
 import DropdownButton from "components/Button/dropdownButton";
+import Skeleton from "components/Skeleton";
+import { TRANSACTIONS_WITHIN_DAYS } from "common/constants";
 
-const transactionsPerPage = 10;
+const TRANSACTIONS_PER_PAGE = 10;
 
 const RowEntry = styled(Typography.body)<{
 	left: boolean;
@@ -28,10 +30,10 @@ const RowEntry = styled(Typography.body)<{
 
 const ResponsiveHideRow = styled(Row)`
 	${({ theme }) => theme.mediaWidth.extraSmall`
-		> *:nth-child(2) {
+		> *:nth-child(3) {
 			display: none;
 		}
-		> *:nth-child(3) {
+		> *:nth-child(4) {
 			display: none;
 		}
 	`}
@@ -78,27 +80,39 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 	const [filterType, setFilterType] = useState<TransactionType | undefined>(undefined);
 
 	const transactionData = useTransactionData(token, filterType);
-	const transactionCount = transactionData.length;
-	const maxPage = Math.floor(transactionCount / transactionsPerPage);
-	const startIndex = page * transactionsPerPage;
-	const endIndex = Math.min(startIndex + transactionsPerPage, transactionCount);
-	const pageTransactions = transactionData.slice(startIndex, endIndex);
 
-	const tableEntries = pageTransactions.map((transaction: Transaction, i) => (
-		<TransactionTableEntry transaction={transaction} key={i} />
-	));
+	const loadingTransactions = !transactionData;
+	const transactionCount = transactionData ? transactionData.length : 0;
+	const maxPage = Math.floor(transactionCount / TRANSACTIONS_PER_PAGE);
+	const startIndex = page * TRANSACTIONS_PER_PAGE;
+	const endIndex = Math.min(startIndex + TRANSACTIONS_PER_PAGE, transactionCount);
+	const pageTransactions = transactionData ? transactionData.slice(startIndex, endIndex) : [];
+
+	const tableEntries = useMemo(() => {
+		if (!loadingTransactions) {
+			if (transactionData.length === 0) {
+				return `No ${filterType?.toLowerCase()} transactions in the last ${TRANSACTIONS_WITHIN_DAYS} days`;
+			} else {
+				return pageTransactions.map((transaction: Transaction, i) => (
+					<TransactionTableEntry transaction={transaction} key={i} />
+				));
+			}
+		} else {
+			return <Skeleton count={TRANSACTIONS_PER_PAGE} />;
+		}
+	}, [pageTransactions, loadingTransactions]);
 
 	const dropdownSelections = [
 		"All",
 		TransactionType.MINT,
 		TransactionType.REDEEM,
-		TransactionType.BORROW,
-		TransactionType.REPAY_BORROW,
-		TransactionType.LIQUIDATION,
+		// TODO: uncomment when updating to new subgraph
+		// TransactionType.BORROW,
+		// TransactionType.REPAY_BORROW,
+		// TransactionType.LIQUIDATION,
 	];
 
 	function setSelectionCallback(selection: any) {
-		console.log(selection);
 		if (Object.values(TransactionType).includes(selection as TransactionType)) {
 			setFilterType(selection);
 		} else {
@@ -114,7 +128,7 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 	return (
 		<Card>
 			<Column gap={theme.spacing.md}>
-				<ResponsiveHideRow>
+				<ResponsiveHideRow overflow="visable">
 					<RowEntry left={true}>
 						<DropdownButton
 							selectionList={dropdownSelections}
@@ -139,7 +153,7 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 					<ButtonBackground onClick={() => setPage(Math.max(0, page - 1))} active={page != 0}>
 						←
 					</ButtonBackground>
-					Page {page + 1} of {maxPage + 1}
+					{loadingTransactions ? <Skeleton width="70px" /> : `Page ${page + 1} of ${maxPage + 1}`}
 					<ButtonBackground onClick={() => setPage(Math.min(maxPage, page + 1))} active={page != maxPage}>
 						→
 					</ButtonBackground>

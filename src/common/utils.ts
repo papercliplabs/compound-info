@@ -22,7 +22,7 @@ export function formatDate(dateInUnixSec: number, dateFormat: DateFormat): strin
 	let formattedDate = "";
 	switch (dateFormat) {
 		case DateFormat.DD_YY:
-			formattedDate = monthIndex + 1 + "/" + year.slice(0, 2);
+			formattedDate = monthIndex + 1 + "/" + year.slice(2, 4);
 			break;
 		case DateFormat.MMM_DD_YY:
 			formattedDate += month + " " + day + ", " + year;
@@ -212,6 +212,17 @@ export function shortAddress(address: string, length: Length): string {
 	} else {
 		return address.slice(0, keepLen / 2) + "..." + address.slice(len - Math.max(4, keepLen / 2), len);
 	}
+}
+
+/**
+ * Saturate val at the max and min values
+ * @param val value to saturate
+ * @param min lower bound for saturation
+ * @param max upper bound for saturation
+ * @return saturated val
+ */
+export function saturate(val: number, min: number, max: number): number {
+	return Math.max(Math.min(val, max), min);
 }
 
 /**

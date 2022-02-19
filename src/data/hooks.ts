@@ -2,7 +2,15 @@
 // @ts-nocheck
 import { useState, useEffect } from "react";
 
-import { DataResolution, DataType, MarketDataSelector, ProtocolDataSelector, TimeSelector, Token } from "common/enums";
+import {
+	DataResolution,
+	DataType,
+	MarketDataSelector,
+	ProtocolDataSelector,
+	TimeSelector,
+	Token,
+	UserType,
+} from "common/enums";
 import { useGlobalStore } from "data/store";
 
 import {
@@ -12,6 +20,7 @@ import {
 	ProtocolHistoricalData,
 	MarketHistoricalData,
 	MarketHistoricalDataEntry,
+	UserDominanceData,
 } from "common/types";
 import { requestProtocolSummaryData } from "data/requests/protocolSummaryData";
 import { requestProtocolHistoricalData } from "data/requests/protocolHistoricalData";
@@ -19,14 +28,16 @@ import { requestMarketSummaryData } from "data/requests/marketSummaryData";
 import { requestMarketHistoricalData } from "data/requests/marketHistoricalData";
 import { DATA_BEHIND_TIME_THRESHOLD_S, TIME_SELECTOR_INFO } from "common/constants";
 import { requestTransactionData } from "./requests/transactionData";
+import { requestUserDominanceData } from "./requests/userDominanceData";
 
 const protocolSummaryDataKey = "protocolSummaryData";
 const protocolHistoricalDataKey = "protocolHistoricalData";
 const marketSummaryDataKey = "marketSummaryData";
 const marketHistoricalDataKey = "marketHistoricalData";
 const transactionDataKey = "transactionData";
+const userDominanceDataBaseKey = "userDominanceData";
 
-export function useProtocolSummaryData(): ProtocolSummaryData {
+export function useProtocolSummaryData(): ProtocolSummaryData | undefined {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolSummaryDataKey];
 
@@ -54,17 +65,31 @@ function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): Protocol
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolHistoricalDataKey];
 
+	const protocolSummaryData = useProtocolSummaryData();
+
 	useEffect(() => {
 		async function checkForData() {
 			// Fetch the data if it hasn't been fetched already
-			if (!data) {
+			if (!data && protocolSummaryData) {
 				const data = await requestProtocolHistoricalData();
+
+				const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
+				const lastEntey = {
+					date: now,
+					totalSupplyUsd: Number(protocolSummaryData.totalSupplyUsd),
+					totalBorrowUsd: Number(protocolSummaryData.totalBorrowUsd),
+					totalReservesUsd: Number(protocolSummaryData.totalReservesUsd),
+					utilization: Number(protocolSummaryData.utilization),
+				};
+
+				data.push(lastEntey); // Tack on most recent data
+
 				updateStore(protocolHistoricalDataKey, data);
 			}
 		}
 
 		checkForData();
-	}, [data, updateStore]);
+	}, [data, updateStore, protocolSummaryData]);
 
 	let queriedData = [];
 	if (data) {
@@ -186,7 +211,7 @@ export function useHistoricalData(
  * @param transactionType the type of transaction to filter for, all types will be returned if none is specified
  * @returns list of transactions for the specified market
  */
-export function useTransactionData(token: Token, transactionType?: TransactionType): Transaction[] {
+export function useTransactionData(token: Token, transactionType?: TransactionType): Transaction[] | undefined {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[transactionDataKey];
 
@@ -214,7 +239,51 @@ export function useTransactionData(token: Token, transactionType?: TransactionTy
 		});
 	}
 
-	return queriedData;
+	return data ? queriedData : undefined;
+}
+
+/**
+ * Hook to get user dominance data
+ * @param token the token to get the data for
+ * @returns user dominance data for the token
+ */
+export function useUserDominanceData(token: Token): UserDominanceData {
+	const [store, { updateStore }] = useGlobalStore();
+	const key = userDominanceDataBaseKey + token;
+	const data = store[key];
+
+	const marketSummaryData = useMarketSummaryData(token);
+	let marketTotalSupply = undefined;
+	let marketTotalBorrow = undefined;
+
+	if (marketSummaryData && !Array.isArray(marketSummaryData)) {
+		marketTotalSupply = marketSummaryData.totalSupply;
+		marketTotalBorrow = marketSummaryData.totalBorrow;
+	}
+
+	useEffect(() => {
+		async function checkForData() {
+			// Fetch the data if it hasn't been fetched already
+			if (!data && marketTotalSupply !== undefined && marketTotalBorrow !== undefined) {
+				const data = await requestUserDominanceData(token);
+
+				// Compute percent dominances
+				for (let i = 0; i < data[UserType.SUPPLIER].length; i++) {
+					data[UserType.SUPPLIER][i].percentDominance = data[UserType.SUPPLIER][i].underlyingAmount / marketTotalSupply;
+				}
+
+				for (let i = 0; i < data[UserType.BORROWER].length; i++) {
+					data[UserType.BORROWER][i].percentDominance = data[UserType.BORROWER][i].underlyingAmount / marketTotalBorrow;
+				}
+
+				updateStore(key, data);
+			}
+		}
+
+		checkForData();
+	}, [data, updateStore, token, marketTotalBorrow, marketTotalSupply]);
+
+	return data ?? { [UserType.SUPPLIER]: [], [UserType.BORROWER]: [] };
 }
 
 export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } {
@@ -260,6 +329,15 @@ export function usePrefetchData() {
 			updateStore(protocolSummaryDataKey, protocolSummaryData);
 
 			const protocolHistoricalData = await requestProtocolHistoricalData();
+			const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
+			const lastEntey = {
+				date: now,
+				totalSupplyUsd: Number(protocolSummaryData.totalSupplyUsd),
+				totalBorrowUsd: Number(protocolSummaryData.totalBorrowUsd),
+				totalReservesUsd: Number(protocolSummaryData.totalReservesUsd),
+				utilization: Number(protocolSummaryData.utilization),
+			};
+			protocolHistoricalData.push(lastEntey); // Tack on most recent data
 			updateStore(protocolHistoricalDataKey, protocolHistoricalData);
 
 			const marketSummaryData = await requestMarketSummaryData();

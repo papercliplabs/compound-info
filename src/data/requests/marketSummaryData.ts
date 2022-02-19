@@ -3,7 +3,6 @@ import { gql } from "@apollo/client";
 
 import { Token } from "common/enums";
 import { MarketSummaryData } from "common/types";
-import { PROTOCOL_ID } from "common/constants";
 
 const marketSummaryQuery = gql`
 	query marketSummaryData {
@@ -42,8 +41,8 @@ export type MarketSummaryRequestResult = {
 };
 
 export async function requestMarketSummaryData(): Promise<MarketSummaryData[]> {
-	console.log("Requesting market summary data");
-	const { data, loading } = await compoundInfoSubgraphClient.query<MarketSummaryRequestResult>({
+	console.log("Performing request: market summary data");
+	const { data } = await compoundInfoSubgraphClient.query<MarketSummaryRequestResult>({
 		query: marketSummaryQuery,
 	});
 

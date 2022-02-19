@@ -80,7 +80,7 @@ export type ProtocolSummaryRequestResult = {
 };
 
 export async function requestProtocolHistoricalData(): Promise<ProtocolHistoricalData[]> {
-	console.log("Requesting protocol historical data");
+	console.log("performing request: protocol historical data");
 
 	const weekData = await performPagenationRequest(protocolHistoricalDataQuery, "protocolWeekDatas", 0);
 
