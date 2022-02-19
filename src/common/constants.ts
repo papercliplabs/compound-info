@@ -352,5 +352,5 @@ export const PROTOCOL_ID = 1;
 
 export const DATA_BEHIND_TIME_THRESHOLD_S = 60 * 60 * 24 * 1; // 1 day
 
-export const TRANSACTIONS_WITHIN_DAYS = 3;
+export const TRANSACTIONS_WITHIN_DAYS = 5;
 export const NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE = 10;
