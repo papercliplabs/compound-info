@@ -51,7 +51,7 @@ function CoinRow({ children }) {
 	function onScroll() {
 		const currentPos = scroll.current.scrollLeft;
 		setShowLeftArrow(currentPos > 0);
-		setShowRightArrow(currentPos < maxScrollLeft);
+		setShowRightArrow(currentPos < maxScrollLeft - 10); // -10 offset to not have at very end as this doesn't work in Chrome
 	}
 
 	function leftScroll() {
