@@ -18,6 +18,7 @@ const DropdownButtonWrapper = styled(Button)`
 	width: auto;
 	padding: 0;
 	overflow: hidden;
+	box-shadow: ${({ theme }) => theme.shadow.card};
 `;
 
 const Base = styled.div`

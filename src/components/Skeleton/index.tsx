@@ -17,9 +17,10 @@ const SkeletonWrapper = styled.div<{
 	height?: string;
 	width?: string;
 	$variant?: string;
+	borderRadius?: string;
 }>`
 	background: ${({ theme }) => theme.color.bg2};
-	border-radius: 10px;
+	border-radius: ${({ theme, borderRadius }) => borderRadius ?? theme.radius.sm};
 	overflow: hidden;
 	-webkit-mask-image: -webkit-radial-gradient(white, black);
 	width: ${({ width }) => width ?? "100%"};
@@ -42,7 +43,7 @@ const SkeletonInner = styled(Row)<{
 		${theme.color.bg3}60 50%,
 		${theme.color.bg3}00 100%
 	)`};
-	border-radius: ${({ theme }) => theme.radius.sm};
+	border-radius: ${({ theme }) => theme.radius.xs};
 	padding: ${({ theme }) => theme.spacing.md};
 
 	${({ $variant }) =>
@@ -63,6 +64,7 @@ const SkeletonInner = styled(Row)<{
  * @param height height of the skeleton, defaults to 30px if not provided
  * @param width width of the skeleton, defaults to 100% if not provided
  * @param varient specify color variant to use, options are: "light"
+ * @param borderRadius border radius to use for the skeleton, if not provided theme.sm is used
  * @returns
  */
 export default function Skeleton({
@@ -70,11 +72,13 @@ export default function Skeleton({
 	height,
 	width,
 	variant,
+	borderRadius,
 }: {
 	count?: number;
 	height?: string;
 	width?: string;
 	variant?: string;
+	borderRadius?: string;
 }): JSX.Element {
 	const theme = useTheme();
 
@@ -83,7 +87,7 @@ export default function Skeleton({
 		const skeletons = [];
 		for (let i = 0; i < numSkeletons; i++) {
 			skeletons.push(
-				<SkeletonWrapper key={i} width={width} height={height} $variant={variant}>
+				<SkeletonWrapper key={i} width={width} height={height} $variant={variant} borderRadius={borderRadius}>
 					<SkeletonInner $variant={variant} />
 				</SkeletonWrapper>
 			);
