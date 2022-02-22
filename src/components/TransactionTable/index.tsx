@@ -53,6 +53,7 @@ const ButtonBackground = styled(Button)<{
 		opacity: ${({ active }) => (active ? 0.8 : 0.5)};
 		cursor: ${({ active }) => (active ? "pointer" : "not-allowed")};
 	}
+	box-shadow: ${({ theme }) => theme.shadow.card};
 `;
 
 function TransactionTableEntry({ transaction }: { transaction: Transaction }): JSX.Element {
@@ -91,7 +92,9 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 	const tableEntries = useMemo(() => {
 		if (!loadingTransactions) {
 			if (transactionData.length === 0) {
-				return `No ${filterType?.toLowerCase()} transactions in the last ${TRANSACTIONS_WITHIN_DAYS} days`;
+				return `No ${
+					filterType ? filterType.toLowerCase() : ""
+				} transactions in the last ${TRANSACTIONS_WITHIN_DAYS} days`;
 			} else {
 				return pageTransactions.map((transaction: Transaction, i) => (
 					<TransactionTableEntry transaction={transaction} key={i} />
