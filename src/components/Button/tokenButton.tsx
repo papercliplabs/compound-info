@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from "styled-components";
+import styled, { css, useTheme } from "styled-components";
 
 import { Typography } from "theme";
 import { TokenLogo } from "components/Logo";
@@ -95,6 +95,7 @@ export function TokenButton({
 	allowDeselect: boolean;
 	clickCallback: () => void;
 }): JSX.Element | null {
+	const theme = useTheme();
 	const open = selected ? undefined : clickCallback;
 	const coinName = TOKEN_INFO[token].symbol;
 	return (
@@ -112,7 +113,7 @@ export function TokenButton({
 					<Typography.header useDefaultLineHeight>{coinName}</Typography.header>
 				)}
 				<Typography.caption useDefaultLineHeight>
-					{value ? formatNumber(value, "%") : <Skeleton height="15px" variant="light" />}
+					{value ? formatNumber(value, "%") : <Skeleton height="15px" variant="light" borderRadius={theme.radius.xs} />}
 				</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />
