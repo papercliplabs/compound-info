@@ -109,10 +109,9 @@ export default function TransactionTable({ token }: { token: Token }): JSX.Eleme
 		"All",
 		TransactionType.MINT,
 		TransactionType.REDEEM,
-		// TODO: uncomment when updating to new subgraph
-		// TransactionType.BORROW,
-		// TransactionType.REPAY_BORROW,
-		// TransactionType.LIQUIDATION,
+		TransactionType.BORROW,
+		TransactionType.REPAY_BORROW,
+		TransactionType.LIQUIDATION,
 	];
 
 	function setSelectionCallback(selection: any) {

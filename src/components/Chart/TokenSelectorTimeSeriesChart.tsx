@@ -60,7 +60,6 @@ function CoinRow({ children }) {
 	}
 
 	function rightScroll() {
-		console.log(scroll);
 		scroll.current.scrollBy({ top: 0, left: 300, behavior: "smooth" });
 	}
 

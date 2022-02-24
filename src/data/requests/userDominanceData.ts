@@ -10,15 +10,15 @@ const PAGE_LENGTH = 1000;
 
 const userDominanceSingleMarketQuery = gql`
 	query userDominanceSingleMarketQuery($skip: Int!, $pageLength: Int!, $numTop: Int!, $marketSymbol: String!) {
-		markets(where: { underlyingSymbol: $marketSymbol }, first: $pageLength, skip: $skip) {
+		markets(where: { underlyingSymbol: $marketSymbol }, first: $pageLength) {
 			underlyingSymbol
-			topSupplierUserMarkets: userMarket(orderBy: totalSupply, orderDirection: desc, first: $numTop) {
+			topSupplierUserMarkets: userMarkets(orderBy: totalSupply, orderDirection: desc, first: $numTop, skip: $skip) {
 				user {
 					id
 				}
 				totalSupply
 			}
-			topBorrowerUserMarkets: userMarket(orderBy: totalBorrow, orderDirection: desc, first: $numTop) {
+			topBorrowerUserMarkets: userMarkets(orderBy: totalBorrow, orderDirection: desc, first: $numTop, skip: $skip) {
 				user {
 					id
 				}
@@ -51,7 +51,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, token:
 			variables: {
 				skip: skip,
 				pageLength: PAGE_LENGTH,
-				numTop: NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE,
+				numTop: Math.min(PAGE_LENGTH, NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE), // 1000 is max
 				marketSymbol: token,
 			},
 		});
@@ -80,7 +80,7 @@ async function performPagenationRequest(query: DocumentNode, key: string, token:
 		}
 
 		// If less than PAGE_LENGTH results were returned we found everything
-		allFound = len !== PAGE_LENGTH;
+		allFound = len !== PAGE_LENGTH || skip > NUM_TOP_ACCOUNT_FOR_USER_DOMINANCE;
 		skip += PAGE_LENGTH;
 	}
 
