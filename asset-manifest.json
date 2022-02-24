@@ -1,24 +1,27 @@
 {
   "files": {
-    "main.js": "/static/js/main.2547f630.chunk.js",
-    "main.js.map": "/static/js/main.2547f630.chunk.js.map",
+    "main.js": "/static/js/main.b7b70f0d.chunk.js",
+    "main.js.map": "/static/js/main.b7b70f0d.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.db3c6310.js",
     "runtime-main.js.map": "/static/js/runtime-main.db3c6310.js.map",
-    "static/js/2.23ccc812.chunk.js": "/static/js/2.23ccc812.chunk.js",
-    "static/js/2.23ccc812.chunk.js.map": "/static/js/2.23ccc812.chunk.js.map",
+    "static/js/2.58c7b6cf.chunk.js": "/static/js/2.58c7b6cf.chunk.js",
+    "static/js/2.58c7b6cf.chunk.js.map": "/static/js/2.58c7b6cf.chunk.js.map",
     "index.html": "/index.html",
-    "static/js/2.23ccc812.chunk.js.LICENSE.txt": "/static/js/2.23ccc812.chunk.js.LICENSE.txt",
+    "static/js/2.58c7b6cf.chunk.js.LICENSE.txt": "/static/js/2.58c7b6cf.chunk.js.LICENSE.txt",
     "static/media/AAVE.22030d27.svg": "/static/media/AAVE.22030d27.svg",
     "static/media/BAT.67fb43cb.svg": "/static/media/BAT.67fb43cb.svg",
     "static/media/COMP.1d38f23c.svg": "/static/media/COMP.1d38f23c.svg",
     "static/media/DAI.2fa815ce.svg": "/static/media/DAI.2fa815ce.svg",
     "static/media/ETH.8b73e520.svg": "/static/media/ETH.8b73e520.svg",
+    "static/media/FEI.356cfef7.svg": "/static/media/FEI.356cfef7.svg",
     "static/media/LINK.b8368226.svg": "/static/media/LINK.b8368226.svg",
     "static/media/MKR.6b101b5b.svg": "/static/media/MKR.6b101b5b.svg",
+    "static/media/REP.2193f446.svg": "/static/media/REP.2193f446.svg",
     "static/media/SUSHI.c3fab7f4.svg": "/static/media/SUSHI.c3fab7f4.svg",
     "static/media/TUSD.215c1692.svg": "/static/media/TUSD.215c1692.svg",
     "static/media/UNI.4c88dba0.svg": "/static/media/UNI.4c88dba0.svg",
     "static/media/USDC.c3105ea5.svg": "/static/media/USDC.c3105ea5.svg",
+    "static/media/USDP.c7cbe2b7.svg": "/static/media/USDP.c7cbe2b7.svg",
     "static/media/USDT.112dc7c9.svg": "/static/media/USDT.112dc7c9.svg",
     "static/media/WBTC.a67385b1.svg": "/static/media/WBTC.a67385b1.svg",
     "static/media/YFI.021be439.svg": "/static/media/YFI.021be439.svg",
@@ -33,7 +36,7 @@
   },
   "entrypoints": [
     "static/js/runtime-main.db3c6310.js",
-    "static/js/2.23ccc812.chunk.js",
-    "static/js/main.2547f630.chunk.js"
+    "static/js/2.58c7b6cf.chunk.js",
+    "static/js/main.b7b70f0d.chunk.js"
   ]
 }
