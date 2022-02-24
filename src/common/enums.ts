@@ -18,6 +18,10 @@ export enum Token {
 	TUSD = "TUSD",
 	YFI = "YFI",
 	LINK = "LINK",
+	SAI = "SAI",
+	USDP = "USDP",
+	REP = "REP",
+	FEI = "FEI",
 }
 
 /**

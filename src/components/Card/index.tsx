@@ -73,13 +73,13 @@ export function CoinInfoCard({
 	whitepaper,
 	website,
 	twitter,
-	coingecko,
+	coinGecko,
 }: {
 	value: any;
 	whitepaper: string;
 	website: string;
 	twitter: string;
-	coingecko: string;
+	coinGecko: string;
 }): JSX.Element {
 	return (
 		<StyledStatCard>
@@ -91,7 +91,7 @@ export function CoinInfoCard({
 				<StyledExternalInfoLink href={whitepaper} content={"Whitepaper ↗"} />
 				<StyledExternalInfoLink href={website} content={"Website ↗"} />
 				<StyledExternalInfoLink href={twitter} content={"Twitter ↗"} />
-				<StyledExternalInfoLink href={coingecko} content={"Coingecko ↗"} />
+				<StyledExternalInfoLink href={coinGecko} content={"CoinGecko ↗"} />
 			</Column>
 		</StyledStatCard>
 	);
