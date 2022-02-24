@@ -13,6 +13,10 @@ import sushiSvg from "assets/coins/SUSHI.svg";
 import tusdSvg from "assets/coins/TUSD.svg";
 import yfiSvg from "assets/coins/YFI.svg";
 import linkSvg from "assets/coins/LINK.svg";
+import saiSvg from "assets/coins/DAI.svg";
+import usdpSvg from "assets/coins/USDP.svg";
+import repSvg from "assets/coins/REP.svg";
+import feiSvg from "assets/coins/FEI.svg";
 
 import { Token, TimeSelector, ProtocolDataSelector, MarketDataSelector, DataResolution, Unit } from "common/enums";
 import {
@@ -187,6 +191,46 @@ export const TOKEN_INFO: TokenInfoList = {
 		website: "https://chain.link",
 		twitter: "https://twitter.com/chainlink",
 		coinGecko: "https://www.coingecko.com/coins/chainlink",
+	},
+	[Token.SAI]: {
+		symbol: Token.SAI,
+		imgSrc: saiSvg,
+		desc: `Single Collatorilized Dai(SAI) is the predecessor to DAI stable coin. It is a decentralized stablecoin that attempts to maintain a
+		value of $1.00 USD. Unlike centralized stablecoins, SAI isn't backed by US
+		dollars in a bank account. Instead, it’s backed by collateral on the Maker
+		platform. SAI can be converted into DAI using Makers migration.`,
+		whitepaper: "https://makerdao.com/en/whitepaper/#abstract",
+		website: "https://makerdao.com",
+		twitter: "https://twitter.com/MakerDAO",
+		coinGecko: "https://www.coingecko.com/coins/sai",
+	},
+	[Token.USDP]: {
+		symbol: Token.USDP,
+		imgSrc: usdpSvg,
+		desc: `Pax Dollar (USDP) is a US Dollar-backed token while honoring the Paxos brand. Unlike some other “stablecoins,” USDP is regulated and always redeemable one-to-one with USD.`,
+		whitepaper: "https://insights.paxos.com/hubfs/USDP-whitepaper.pdf",
+		website: "https://paxos.com/usdp/",
+		twitter: "https://twitter.com/paxosglobal",
+		coinGecko: "https://www.coingecko.com/en/coins/pax-dollar",
+	},
+	[Token.REP]: {
+		symbol: Token.REP,
+		imgSrc: repSvg,
+		desc: `Augur’s Reputation token (REP) is an Ethereum token designed for reporting and disputing the outcome of events on online prediction markets. Reporters are rewarded for reporting the outcome of events correctly.`,
+		whitepaper:
+			"https://medium.com/@AugurProject/the-augur-white-paper-a-decentralized-oracle-and-prediction-market-platform-ed8907401c48",
+		website: "https://augur.net",
+		twitter: "https://twitter.com/AugurProject",
+		coinGecko: "https://www.coingecko.com/en/coins/augur",
+	},
+	[Token.FEI]: {
+		symbol: Token.FEI,
+		imgSrc: feiSvg,
+		desc: `The Fei protocol is a fully decentralized stablecoin project developed by Fei Labs Inc. The project uses a stability mechanism called Protocol Controlled Value (PCV), as well as numerous other mechanisms to keep the Uniswap liquidity pool and FEI, its native stablecoin, close to the exchange rate of the US dollar.`,
+		whitepaper: "https://assets.fei.money/docs/whitepaper.pdf",
+		website: "https://fei.money",
+		twitter: "https://twitter.com/feiprotocol",
+		coinGecko: "https://www.coingecko.com/en/coins/fei-usd",
 	},
 };
 

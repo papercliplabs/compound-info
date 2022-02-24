@@ -308,7 +308,7 @@ export default function Market({ match }): JSX.Element | null {
 							whitepaper={tokenInfo.whitepaper}
 							website={tokenInfo.website}
 							twitter={tokenInfo.twitter}
-							coingecko={tokenInfo.coingecko}
+							coinGecko={tokenInfo.coinGecko}
 						/>
 					</Column>
 
