@@ -14,6 +14,7 @@ import { Typography } from "theme";
 import { TIME_SELECTOR_INFO, MARKET_DATA_SELECTOR_INFO, PROTOCOL_DATA_SELECTOR_INFO } from "common/constants";
 import { formatNumber } from "common/utils";
 import Skeleton from "components/Skeleton";
+import { time } from "console";
 
 const StyledChartContainer = styled.div`
 	width: 100%;
@@ -161,6 +162,7 @@ export default function TimeSeriesChart({
 		selectedData && selectedData.length > 0
 			? selectedData.slice(-1)[0][token] ?? selectedData.slice(-1)[0]["value"] ?? undefined
 			: undefined;
+
 	const dataSelectorDescription = dataSelectorInfo[dataSelector].description;
 	const dataSelectorUnit = dataSelectorInfo[dataSelector].unit;
 
@@ -170,8 +172,8 @@ export default function TimeSeriesChart({
 				<ResponsiveRow align="flex-start" overflow="visible" reverse xs>
 					<Column align="flex-start" overflow="visible" flex={1}>
 						<Typography.header color={theme.color.text2}>Current {dataSelectorDescription}</Typography.header>
-						{currentValue ? (
-							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit)}</Typography.displayL>
+						{currentValue != undefined ? (
+							<Typography.displayL>{formatNumber(currentValue, dataSelectorUnit, 2)}</Typography.displayL>
 						) : (
 							<Skeleton width="100px" />
 						)}

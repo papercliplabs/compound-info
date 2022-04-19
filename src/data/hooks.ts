@@ -58,10 +58,14 @@ export function useProtocolSummaryData(): ProtocolSummaryData | undefined {
 
 /**
  * Hook to get protocol historical data, the resolution is fixed to weekly
+ * @param timeSelector time frame to get the data for, the resolution is derived from this
  * @param dataSelector data type to get the data for
  * @returns protocol historical data, [{date: number, value: number}]
  */
-function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): ProtocolHistoricalData[] {
+function useProtocolHistoricalData(
+	timeSelector: TimeSelector,
+	dataSelector: ProtocolDataSelector
+): ProtocolHistoricalData[] {
 	const [store, { updateStore }] = useGlobalStore();
 	const data = store[protocolHistoricalDataKey];
 
@@ -93,8 +97,23 @@ function useProtocolHistoricalData(dataSelector: ProtocolDataSelector): Protocol
 
 	let queriedData = [];
 	if (data) {
+		queriedData = data;
+
+		// Filter on time
+		const days = TIME_SELECTOR_INFO[timeSelector].days;
+
+		// undefined if ALL so don't filter if thats the case
+		if (days) {
+			const filterSecs = days * 24 * 60 * 60;
+			const nowSec = parseInt(new Date() / 1000);
+			const cutoffSecs = nowSec - filterSecs;
+			queriedData = queriedData.filter((entry) => {
+				return entry.date > cutoffSecs;
+			});
+		}
+
 		// Get the correct data type
-		queriedData = data.map((entry) => {
+		queriedData = queriedData.map((entry) => {
 			return { date: entry.date, value: entry[dataSelector] };
 		});
 	}
@@ -199,7 +218,7 @@ export function useHistoricalData(
 	timeSelector: TimeSelector,
 	dataSelector: MarketDataSelector
 ): Record<string, number>[] {
-	const protocolHistoricalData = useProtocolHistoricalData(dataSelector);
+	const protocolHistoricalData = useProtocolHistoricalData(timeSelector, dataSelector);
 	const marketHistoricalData = useMarketHistoricalData(timeSelector, dataSelector);
 
 	return DataType.PROTOCOL === dataType ? protocolHistoricalData : marketHistoricalData;
@@ -308,7 +327,7 @@ export function useDataStatus(): { dataError: boolean; lastSyncedDate: number } 
 		lastSyncedDate = Math.max(weekLatestDate, dayLatestDate, hourLatestDate);
 
 		const now = new Date() / 1000; // in sec since unix epoche
-		if (DATA_BEHIND_TIME_THRESHOLD_S < now - lastSyncedDate) {
+		if (DATA_BEHIND_TIME_THRESHOLD_S < Math.max(now - lastSyncedDate, 0)) {
 			dataBehind = true;
 		}
 	}
@@ -324,11 +343,22 @@ export function usePrefetchData() {
 
 	useEffect(() => {
 		async function fetchData() {
-			// Fetch the data if it hasn't been fetched already
-			const protocolSummaryData = await requestProtocolSummaryData();
-			updateStore(protocolSummaryDataKey, protocolSummaryData);
+			// Fetch summary data first
+			const [protocolSummaryData, marketSummaryData] = await Promise.all([
+				requestProtocolSummaryData(),
+				requestMarketSummaryData(),
+			]);
 
-			const protocolHistoricalData = await requestProtocolHistoricalData();
+			updateStore(protocolSummaryDataKey, protocolSummaryData);
+			updateStore(marketSummaryDataKey, marketSummaryData);
+
+			// Then fetch the slower historical data
+			const [protocolHistoricalData, marketHistoricalData] = await Promise.all([
+				requestProtocolHistoricalData(),
+				requestMarketHistoricalData(),
+			]);
+
+			// const protocolHistoricalData = await requestProtocolHistoricalData();
 			const now = Math.round(Date.now() / 1000); // Unix timestamp in seconds
 			const lastEntey = {
 				date: now,
@@ -338,12 +368,8 @@ export function usePrefetchData() {
 				utilization: Number(protocolSummaryData.utilization),
 			};
 			protocolHistoricalData.push(lastEntey); // Tack on most recent data
+
 			updateStore(protocolHistoricalDataKey, protocolHistoricalData);
-
-			const marketSummaryData = await requestMarketSummaryData();
-			updateStore(marketSummaryDataKey, marketSummaryData);
-
-			const marketHistoricalData = await requestMarketHistoricalData();
 			updateStore(marketHistoricalDataKey, marketHistoricalData);
 		}
 

@@ -72,6 +72,8 @@ export default function Overview(): JSX.Element | null {
 		baseChartHeightPx: 200,
 	};
 
+	const timeSelectorOptions = [TimeSelector.THREE_MONTHS, TimeSelector.ONE_YEAR, TimeSelector.ALL];
+
 	return (
 		<>
 			<Row height="40px" margin={"20px 0"}>
@@ -88,7 +90,7 @@ export default function Overview(): JSX.Element | null {
 						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[0] }]}
 						dataType={DataType.PROTOCOL}
 						dataSelectorOptions={[ProtocolDataSelector.TOTAL_SUPPLY_USD, ProtocolDataSelector.TOTAL_BORROW_USD]}
-						timeSelectorOptions={[TimeSelector.ALL]}
+						timeSelectorOptions={timeSelectorOptions}
 					/>
 				</Card>
 				<Card height="auto">
@@ -97,7 +99,7 @@ export default function Overview(): JSX.Element | null {
 						lineInfoList={[{ key: "value", color: theme.color.lineChartColors[1] }]}
 						dataType={DataType.PROTOCOL}
 						dataSelectorOptions={[ProtocolDataSelector.TOTAL_RESERVES_USD]}
-						timeSelectorOptions={[TimeSelector.ALL]}
+						timeSelectorOptions={timeSelectorOptions}
 					/>
 				</Card>
 			</ResponsiveRow>
