@@ -113,7 +113,11 @@ export function TokenButton({
 					<Typography.header useDefaultLineHeight>{coinName}</Typography.header>
 				)}
 				<Typography.caption useDefaultLineHeight>
-					{value ? formatNumber(value, "%") : <Skeleton height="15px" variant="light" borderRadius={theme.radius.xs} />}
+					{value != undefined ? (
+						formatNumber(value, "%", 2)
+					) : (
+						<Skeleton height="15px" variant="light" borderRadius={theme.radius.xs} />
+					)}
 				</Typography.caption>
 			</CoinInfo>
 			<CloseIndicator src={closeIcon} onClick={clickCallback} hidden={!selected || !allowDeselect} />

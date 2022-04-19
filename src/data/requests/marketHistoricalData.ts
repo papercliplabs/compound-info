@@ -122,40 +122,24 @@ async function performPagenationRequest(
 	console.log("Performing request: " + key);
 
 	const outputData = [];
-
-	// Latest values, this is used to stick onto the end of hour data
-	const nowSec = parseInt(new Date() / 1000);
-	const supplyApyLatestEntry = { date: nowSec };
-	const borrowApyLatestEntry = { date: nowSec };
-	const totalSupplyApyLatestEntry = { date: nowSec };
-	const totalBorrowApyLatestEntry = { date: nowSec };
-	const totalSupplyLatestEntry = { date: nowSec };
-	const totalSupplyUsdLatestEntry = { date: nowSec };
-	const totalBorrowLatestEntry = { date: nowSec };
-	const totalBorrowUsdLatestEntry = { date: nowSec };
-	const totalReservesLatestEntry = { date: nowSec };
-	const totalReservesUsdLatestEntry = { date: nowSec };
-	const utilizationLatestEntry = { date: nowSec };
-	const usdcPerUnderlyingLatestEntry = { date: nowSec };
-
-	// Accumulators
-	let supplyApyEntry = {};
-	let borrowApyEntry = {};
-	let totalSupplyApyEntry = {};
-	let totalBorrowApyEntry = {};
-	let totalSupplyEntry = {};
-	let totalSupplyUsdEntry = {};
-	let totalBorrowEntry = {};
-	let totalBorrowUsdEntry = {};
-	let totalReservesEntry = {};
-	let totalReservesUsdEntry = {};
-	let utilizationEntry = {};
-	let usdcPerUnderlyingEntry = {};
+	let currentDate = 0;
+	const entry = {
+		supplyApy: {},
+		borrowApy: {},
+		totalSupplyApy: {},
+		totalBorrowApy: {},
+		totalSupply: {},
+		totalSupplyUsd: {},
+		totalBorrow: {},
+		totalBorrowUsd: {},
+		totalReserves: {},
+		totalReservesUsd: {},
+		utilization: {},
+		usdcPerUnderlying: {},
+	};
 
 	let allFound = false;
 	let skip = 0;
-
-	let currentDate = 0;
 
 	// Pagenation of requests
 	while (!allFound) {
@@ -175,44 +159,17 @@ async function performPagenationRequest(
 		for (let i = 0; i < len; i++) {
 			// Finished gathering all data for that date
 			if (Number(historicalData[i].date) !== currentDate) {
-				// On the first run through, currentDate will be 0, so lets not load anything
+				// On the first run through, date will be 0, so lets not load anything
 				if (currentDate != 0) {
-					// Load accumulated values
-					const entry = {
-						supplyApy: supplyApyEntry,
-						borrowApy: borrowApyEntry,
-						totalSupplyApy: totalSupplyApyEntry,
-						totalBorrowApy: totalBorrowApyEntry,
-						totalSupply: totalSupplyEntry,
-						totalSupplyUsd: totalSupplyUsdEntry,
-						totalBorrow: totalBorrowEntry,
-						totalBorrowUsd: totalBorrowUsdEntry,
-						totalReserves: totalReservesEntry,
-						totalReservesUsd: totalReservesUsdEntry,
-						utilization: utilizationEntry,
-						usdcPerUnderlying: usdcPerUnderlyingEntry,
-					};
-
-					// Add full entry
-					outputData.push(entry);
+					const entryDeepCopy = JSON.parse(JSON.stringify(entry));
+					outputData.push(entryDeepCopy);
 				}
 
 				// Update date
 				currentDate = Number(historicalData[i].date);
-
-				// Reset accumulators
-				supplyApyEntry = { date: currentDate };
-				borrowApyEntry = { date: currentDate };
-				totalSupplyApyEntry = { date: currentDate };
-				totalBorrowApyEntry = { date: currentDate };
-				totalSupplyEntry = { date: currentDate };
-				totalSupplyUsdEntry = { date: currentDate };
-				totalBorrowEntry = { date: currentDate };
-				totalBorrowUsdEntry = { date: currentDate };
-				totalReservesEntry = { date: currentDate };
-				totalReservesUsdEntry = { date: currentDate };
-				utilizationEntry = { date: currentDate };
-				usdcPerUnderlyingEntry = { date: currentDate };
+				for (const key of Object.keys(entry)) {
+					entry[key]["date"] = currentDate;
+				}
 			}
 
 			const tokenSymbol = historicalData[i].market.underlyingSymbol;
@@ -220,36 +177,22 @@ async function performPagenationRequest(
 			// Load accumulators
 			if (tokenSymbol in Token) {
 				// TOOD: this type casting is inefficient
-				supplyApyEntry[tokenSymbol] = Number(Number(historicalData[i].supplyApy).toFixed(4));
-				borrowApyEntry[tokenSymbol] = Number(Number(historicalData[i].borrowApy).toFixed(4));
-				totalSupplyApyEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupplyApy).toFixed(4));
-				totalBorrowApyEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrowApy).toFixed(4));
-				totalSupplyEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupply).toFixed(4));
-				totalSupplyUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalSupplyUsd).toFixed(2));
-				totalBorrowEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrow).toFixed(4));
-				totalBorrowUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalBorrowUsd).toFixed(2));
-				totalReservesEntry[tokenSymbol] = Number(Number(historicalData[i].totalReserves).toFixed(4));
-				totalReservesUsdEntry[tokenSymbol] = Number(Number(historicalData[i].totalReservesUsd).toFixed(4));
-				utilizationEntry[tokenSymbol] = Number(Number(historicalData[i].utilization).toFixed(4));
-				usdcPerUnderlyingEntry[tokenSymbol] = Number(Number(historicalData[i].usdcPerUnderlying).toFixed(2));
-
-				// Update the latest values for this symbol
-				supplyApyLatestEntry[tokenSymbol] = supplyApyEntry[tokenSymbol];
-				borrowApyLatestEntry[tokenSymbol] = borrowApyEntry[tokenSymbol];
-				totalSupplyApyLatestEntry[tokenSymbol] = totalSupplyApyEntry[tokenSymbol];
-				totalBorrowApyLatestEntry[tokenSymbol] = totalBorrowApyEntry[tokenSymbol];
-				totalSupplyLatestEntry[tokenSymbol] = totalSupplyEntry[tokenSymbol];
-				totalSupplyUsdLatestEntry[tokenSymbol] = totalSupplyUsdEntry[tokenSymbol];
-				totalBorrowLatestEntry[tokenSymbol] = totalBorrowEntry[tokenSymbol];
-				totalBorrowUsdLatestEntry[tokenSymbol] = totalBorrowUsdEntry[tokenSymbol];
-				totalReservesLatestEntry[tokenSymbol] = totalReservesEntry[tokenSymbol];
-				totalReservesUsdLatestEntry[tokenSymbol] = totalReservesUsdEntry[tokenSymbol];
-				utilizationLatestEntry[tokenSymbol] = utilizationEntry[tokenSymbol];
-				usdcPerUnderlyingLatestEntry[tokenSymbol] = usdcPerUnderlyingEntry[tokenSymbol];
+				entry.supplyApy[tokenSymbol] = Number(Number(historicalData[i].supplyApy).toFixed(4));
+				entry.borrowApy[tokenSymbol] = Number(Number(historicalData[i].borrowApy).toFixed(4));
+				entry.totalSupplyApy[tokenSymbol] = Number(Number(historicalData[i].totalSupplyApy).toFixed(4));
+				entry.totalBorrowApy[tokenSymbol] = Number(Number(historicalData[i].totalBorrowApy).toFixed(4));
+				entry.totalSupply[tokenSymbol] = Number(Number(historicalData[i].totalSupply).toFixed(4));
+				entry.totalSupplyUsd[tokenSymbol] = Number(Number(historicalData[i].totalSupplyUsd).toFixed(2));
+				entry.totalBorrow[tokenSymbol] = Number(Number(historicalData[i].totalBorrow).toFixed(4));
+				entry.totalBorrowUsd[tokenSymbol] = Number(Number(historicalData[i].totalBorrowUsd).toFixed(2));
+				entry.totalReserves[tokenSymbol] = Number(Number(historicalData[i].totalReserves).toFixed(4));
+				entry.totalReservesUsd[tokenSymbol] = Number(Number(historicalData[i].totalReservesUsd).toFixed(4));
+				entry.utilization[tokenSymbol] = Number(Number(historicalData[i].utilization).toFixed(4));
+				entry.usdcPerUnderlying[tokenSymbol] = Number(Number(historicalData[i].usdcPerUnderlying).toFixed(2));
 
 				// COMP and LINK both were dumb numbers on first data point, so apply saturation
-				totalSupplyApyEntry[tokenSymbol] = saturate(totalSupplyApyEntry[tokenSymbol], -2, 2);
-				totalBorrowApyEntry[tokenSymbol] = saturate(totalBorrowApyEntry[tokenSymbol], -2, 2);
+				entry.totalSupplyApy[tokenSymbol] = saturate(entry.totalSupplyApy[tokenSymbol], -2, 2);
+				entry.totalBorrowApy[tokenSymbol] = saturate(entry.totalBorrowApy[tokenSymbol], -2, 2);
 			}
 		}
 
@@ -258,24 +201,13 @@ async function performPagenationRequest(
 		skip += PAGE_LENGTH;
 	}
 
-	const finalEntry = {
-		supplyApy: supplyApyLatestEntry,
-		borrowApy: borrowApyLatestEntry,
-		totalSupplyApy: totalSupplyApyLatestEntry,
-		totalBorrowApy: totalBorrowApyLatestEntry,
-		totalSupply: totalSupplyLatestEntry,
-		totalSupplyUsd: totalSupplyUsdLatestEntry,
-		totalBorrow: totalBorrowLatestEntry,
-		totalBorrowUsd: totalBorrowUsdLatestEntry,
-		totalReserves: totalReservesLatestEntry,
-		totalReservesUsd: totalReservesUsdLatestEntry,
-		utilization: utilizationLatestEntry,
-		usdcPerUnderlying: usdcPerUnderlyingLatestEntry,
-	};
-
-	if (key === "marketHourDatas" && outputData.length > 0) {
-		outputData.push(finalEntry);
-	}
+	// // Latest values
+	// const nowSec = parseInt(new Date() / 1000);
+	// for (const key of Object.keys(entry)) {
+	// 	entry[key]["date"] = nowSec;
+	// }
+	// const entryDeepCopy = JSON.parse(JSON.stringify(entry));
+	// outputData.push(entryDeepCopy);
 
 	return outputData;
 }
@@ -302,16 +234,32 @@ export async function requestMarketHistoricalData(): Record<keyof MarketDataSele
 	);
 
 	// Add on the last entry in hour data to week and day data so the last point is the most recent
-	// TODO: this should actually be adding the current values from marketSummaryData
 	if (hourData.length > 0) {
-		weekData.push(hourData.slice(-1)[0]);
-		dayData.push(hourData.slice(-1)[0]);
+		const lastEntry = JSON.parse(JSON.stringify(weekData.slice(-1)[0]));
+		const lastDayDataEntry = JSON.parse(JSON.stringify(dayData.slice(-1)[0]));
+		const lastHourDataEntry = JSON.parse(JSON.stringify(hourData.slice(-1)[0]));
+
+		// Update with newest day data
+		for (const subEntry of Object.keys(lastDayDataEntry)) {
+			for (const subSubEntry of Object.keys(lastDayDataEntry[subEntry])) {
+				lastEntry[subEntry][subSubEntry] = lastDayDataEntry[subEntry][subSubEntry];
+			}
+		}
+
+		// Update with newest hour data
+		for (const subEntry of Object.keys(lastHourDataEntry)) {
+			for (const subSubEntry of Object.keys(lastHourDataEntry[subEntry])) {
+				lastEntry[subEntry][subSubEntry] = lastHourDataEntry[subEntry][subSubEntry];
+			}
+		}
+
+		weekData.push(lastEntry);
+		dayData.push(lastEntry);
+		hourData.push(lastEntry);
 	}
 
 	// Remove the first point from each as comp speeds is weird here
 	weekData.shift();
-	dayData.shift();
-	hourData.shift();
 
 	// console.log("WEEK");
 	// console.log(weekData);

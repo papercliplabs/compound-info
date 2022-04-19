@@ -245,7 +245,14 @@ export default function MultilineChart({
 	// Used to make the linear gradient def for the id different
 	const randomId = Math.floor(Math.random() * 10000);
 
+	let hasData = false;
 	const lines = lineInfoList.map((lineInfo, i) => {
+		hasData =
+			(dataLoaded &&
+				data.length > 1 &&
+				data[data.length - 1][lineInfo.key] != undefined &&
+				data[data.length - 2][lineInfo.key] != undefined) ||
+			hasData;
 		return (
 			<Area
 				type="monotone"
@@ -263,7 +270,7 @@ export default function MultilineChart({
 		);
 	});
 
-	const maxDate = dataLoaded ? data[data.length - 1][dateKey] : 0;
+	const maxDate = dataLoaded && data.length > 1 ? data[data.length - 1][dateKey] : 0;
 	const { minDate, minDateIndex } = useMemo(() => {
 		return dataLoaded
 			? findMinDate(
@@ -292,7 +299,7 @@ export default function MultilineChart({
 
 	return (
 		<ResponsiveContainer width="100%" height={chartHeight}>
-			{dataLoaded ? (
+			{dataLoaded && hasData ? (
 				<AreaChart
 					height={chartHeight}
 					margin={{
@@ -365,7 +372,11 @@ export default function MultilineChart({
 				<>
 					{dataLoadTimeout ? (
 						<NoDataWrapper>
-							<Typography.header color={theme.color.text2}>Error loading data</Typography.header>
+							{!hasData && dataLoaded ? (
+								<Typography.header color={theme.color.text2}>No data in selected time range</Typography.header>
+							) : (
+								<Typography.header color={theme.color.text2}>Error loading data</Typography.header>
+							)}
 						</NoDataWrapper>
 					) : (
 						<Loader size="100px" />
