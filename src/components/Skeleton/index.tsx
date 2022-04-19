@@ -45,6 +45,7 @@ const SkeletonInner = styled(Row)<{
 	)`};
 	border-radius: ${({ theme }) => theme.radius.xs};
 	padding: ${({ theme }) => theme.spacing.md};
+	height: 100%;
 
 	${({ $variant }) =>
 		$variant == "light" &&
@@ -80,8 +81,6 @@ export default function Skeleton({
 	variant?: string;
 	borderRadius?: string;
 }): JSX.Element {
-	const theme = useTheme();
-
 	const skeletons = useMemo(() => {
 		const numSkeletons = count ?? 1;
 		const skeletons = [];
