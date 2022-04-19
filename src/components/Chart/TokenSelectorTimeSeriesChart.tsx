@@ -142,7 +142,7 @@ export default function TokenSelectorTimeSeriesChart({
 			setButtonStates((prevState) => {
 				const nextState = JSON.parse(JSON.stringify(prevState)); // deep copy
 				for (const token in Token) {
-					nextState[token].value = hoverData[token] ?? "-";
+					nextState[token].value = hoverData[token] ?? "NA";
 				}
 				return nextState;
 			});
