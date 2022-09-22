@@ -387,7 +387,8 @@ export const URLS = {
 	COMPOUND_FINANCE: "https://compound.finance",
 	COMPOUND_GRANTS: "https://twitter.com/compoundgrants",
 	GITHUB: "https://github.com/papercliplabs/compound-info",
-	SUBGRAPH_API: process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_URL as string,
+	SUBGRAPH_API:
+		`https://gateway.thegraph.com/api/${process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_API_KEY}/subgraphs/id/AcQLRyJfoDLzTAMMdR6wVE5WCowMLVP8uGkoLvZmxmAv` as string,
 	SUBGRAPH_FRONT_END: "https://thegraph.com/hosted-service/subgraph/papercliplabs/compound-info?version=current",
 };
 
