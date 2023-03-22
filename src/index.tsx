@@ -5,7 +5,6 @@ import App from "App";
 import Theme, { GlobalStyle } from "theme";
 import GlobalStoreProvider from "data/store";
 import ReactGA from "react-ga";
-import { withRouter } from "react-router-dom";
 
 // Google Analytics
 const trackingId = "UA-199555486-1";

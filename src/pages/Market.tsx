@@ -1,8 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { Redirect } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
+import { useParams } from "react-router-dom";
 
 import { TOKEN_INFO } from "common/constants";
 
@@ -55,18 +56,19 @@ export default function Market({ match }): JSX.Element | null {
 	const [includeComp, setIncludeComp] = useState<boolean>(false);
 	const [showInUsd, setShowInUsd] = useState<boolean>(false);
 
-	const underlyingSymbol = match.params.token; // From url
+	const { token: underlyingSymbol } = useParams();
+
 	const token = getTokenForUnderlyingSymbol(underlyingSymbol);
 
 	// Scroll to the top of the page
 	useEffect(() => {
 		window.scrollTo(0, 0);
-	}, [match.params.token]);
+	}, [underlyingSymbol]);
 
 	const summaryData = useMarketSummaryData(token);
 
 	if (!token) {
-		return <Redirect to={"/"} />;
+		return redirect("/");
 	}
 
 	if (Array.isArray(summaryData)) {

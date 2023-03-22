@@ -19,3 +19,9 @@ Note: to run locally you will need to make a .env.local file for API keys, messa
 ```bash
 yarn run deploy
 ```
+
+###### Deploy changes to IPFS
+
+```bash
+yarn run deploy-ipfs
+```

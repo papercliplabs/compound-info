@@ -1,9 +1,10 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import Market from "pages/Market";
-import styled from "styled-components";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import styled, { css } from "styled-components";
+import { HashRouter, Route, Routes, useSearchParams } from "react-router-dom";
 import smoothscroll from "smoothscroll-polyfill";
+import { matchPath } from "react-router";
 
 import GoogleAnalyticsReporter from "components/analytics/GoogleAnalyticsReporter";
 import Header from "components/Header";
@@ -34,6 +35,7 @@ const FooterWrapper = styled.div`
 
 const StyledBody = styled.div<{
 	dataError: boolean;
+	embedded: boolean;
 }>`
 	display: flex;
 	flex-direction: column;
@@ -49,17 +51,25 @@ const StyledBody = styled.div<{
 		max-width: 1200px;
 	}
 
-	${({ theme, dataError }) => theme.mediaWidth.small`
+	${({ theme, dataError, embedded }) => theme.mediaWidth.small`
 		padding-left: 15px;
 		padding-right: 15px;
-		padding-top: ${dataError ? "180px" : "80px"};
+		padding-top: ${dataError ? (embedded ? "100px" : "180px") : embedded ? "10px" : "80px"};
 		column-gap: ${theme.spacing.xs};
 		row-gap: ${theme.spacing.xs};
 	`}
+
+	${({ embedded }) =>
+		embedded &&
+		css`
+			padding: 10px;
+		`}
 `;
 
 export default function App(): JSX.Element {
 	const [loading, setLoading] = useState<boolean>(true);
+	const searchParams = new URLSearchParams(document.location.search);
+	const embedded = searchParams.get("embedded") !== null;
 
 	// Triggers data fetching on the first call during the loading state
 	usePrefetchData();
@@ -77,19 +87,23 @@ export default function App(): JSX.Element {
 				<Loader size="200px" />
 			) : (
 				<HashRouter>
-					<Route component={GoogleAnalyticsReporter} />
-					<HeaderWrapper>
-						<Header dataError={dataError} lastSyncedDate={lastSyncedDate} />
-					</HeaderWrapper>
-					<StyledBody dataError={dataError}>
-						<Switch>
-							<Route exact strict path="/" component={Overview} />
-							<Route exact strict path="/:token" component={Market} />
-						</Switch>
+					{!embedded && (
+						<HeaderWrapper>
+							<Header dataError={dataError} lastSyncedDate={lastSyncedDate} />
+						</HeaderWrapper>
+					)}
+					<StyledBody dataError={dataError} embedded={embedded}>
+						<Routes>
+							<Route exact strict path="/" element={<Overview />} />
+							<Route exact strict path="/:token" element={<Market />} />
+							<Route component={<GoogleAnalyticsReporter />} />
+						</Routes>
 					</StyledBody>
-					<FooterWrapper>
-						<Footer />
-					</FooterWrapper>
+					{!embedded && (
+						<FooterWrapper>
+							<Footer />
+						</FooterWrapper>
+					)}
 				</HashRouter>
 			)}
 		</>

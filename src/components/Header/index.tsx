@@ -55,7 +55,7 @@ export default function Header({
 			)}
 			<StyledHeader>
 				<StyledInternalLink to="/">
-					<Typography.displayL>Compound Info</Typography.displayL>
+					<Typography.displayL>Compound V2 Info</Typography.displayL>
 				</StyledInternalLink>
 				<HideSmall>
 					<Row>

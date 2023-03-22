@@ -78,7 +78,7 @@ export default function Overview(): JSX.Element | null {
 		<>
 			<Row height="40px" margin={"20px 0"}>
 				<Logo src={compoundLogo} size="40px" />
-				<Typography.displayXL>Compound Protocol</Typography.displayXL>
+				<Typography.displayXL>Compound V2 Protocol</Typography.displayXL>
 			</Row>
 			<Row>
 				<Typography.displayS>All Markets</Typography.displayS>
