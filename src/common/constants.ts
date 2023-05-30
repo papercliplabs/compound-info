@@ -387,8 +387,8 @@ export const URLS = {
 	COMPOUND_FINANCE: "https://compound.finance",
 	COMPOUND_GRANTS: "https://twitter.com/compoundgrants",
 	GITHUB: "https://github.com/papercliplabs/compound-info",
-	// SUBGRAPH_API: `https://gateway.thegraph.com/api/${process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_API_KEY}/deployments/id/QmdzmaeKuBroxvAdRrENGKyCAMvAresZuKXop5hqPvjYeA`,
-	SUBGRAPH_API: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-info",
+	SUBGRAPH_API: `https://gateway.thegraph.com/api/${process.env.REACT_APP_COMPOUND_INFO_SUBGRAPH_API_KEY}/deployments/id/Qma2AGkEDaTqkvHC8kABTjezh3WXqgPJCAdXGQKBX1srMf`,
+	// SUBGRAPH_API: "https://api.thegraph.com/subgraphs/name/papercliplabs/compound-info",
 	SUBGRAPH_FRONT_END: "https://thegraph.com/hosted-service/subgraph/papercliplabs/compound-info?version=current",
 };
 
